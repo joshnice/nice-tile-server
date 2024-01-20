@@ -2,10 +2,10 @@
   "name": "nice-map-tiles",
   "version": "1.0.0",
   "description": "A tool to serve local map tiles",
-  "main": "index.js",
   "workspaces":["api", "frontend"],
   "scripts": {
-    "dev": "npm run dev -ws"
+    "frontend": "npm run dev -w frontend",
+    "api": "npm run dev -w api"
   },
   "author": "joshnice",
   "license": "ISC"
