@@ -1,0 +1,16 @@
+# Use the official PostgreSQL image from Docker Hub
+FROM postgres:14
+
+# Set environment variables for PostgreSQL
+ENV POSTGRES_DB mydatabase
+ENV POSTGRES_USER myuser
+ENV POSTGRES_PASSWORD mypassword
+
+RUN apt-get update
+RUN apt-get install postgresql-14-postgis-3 -y
+
+# Copy the initialization script to the Docker container
+COPY init.sql /docker-entrypoint-initdb.d/
+
+# Expose the default PostgreSQL port
+EXPOSE 5432
