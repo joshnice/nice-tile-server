@@ -17,6 +17,10 @@ export class Mapbox {
         });
     }
 
+    public onDrawingClicked(type: "Point" | "Line" | "Area") {
+        console.log("type", type);
+    }
+
     public destory() {
         this.map.remove();
     }

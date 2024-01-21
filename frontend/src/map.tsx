@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Mapbox } from "./mapbox";
+import MapControlsComponent from "./map-controls";
 
 export default function MapComponent() {
 
@@ -13,6 +14,10 @@ export default function MapComponent() {
         }
     }
 
+    const handleDrawingClicked = (type: "Point" | "Line" | "Area") => {
+        map.current?.onDrawingClicked(type);
+    }
+
     useEffect(() => {
         return () => {  
             map.current?.destory?.();
@@ -22,7 +27,10 @@ export default function MapComponent() {
 
   
     return (
-      <div className="mapbox-map" ref={handleMapRender} />
+        <>
+            {mapReady && <MapControlsComponent onControlClick={handleDrawingClicked} /> }
+            <div className="mapbox-map" ref={handleMapRender} />
+        </>
     )
 
 }
