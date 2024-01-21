@@ -1,10 +1,11 @@
+import MapComponent from './map'
 import './App.css'
 
 function App() {
   return (
-    <>
-      hello world
-    </>
+    <div className="map-container">
+      <MapComponent />
+    </div>
   )
 }
 
