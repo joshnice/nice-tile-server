@@ -2,9 +2,9 @@
 FROM postgres:14
 
 # Set environment variables for PostgreSQL
-ENV POSTGRES_DB mydatabase
-ENV POSTGRES_USER myuser
-ENV POSTGRES_PASSWORD mypassword
+ENV POSTGRES_DB nice-tile-server
+ENV POSTGRES_USER admin
+ENV POSTGRES_PASSWORD password
 
 RUN apt-get update
 RUN apt-get install postgresql-14-postgis-3 -y
