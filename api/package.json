@@ -5,9 +5,11 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.3.5",
-    "hono": "^3.12.6"
+    "hono": "^3.12.6",
+    "pg": "^8.11.3"
   },
   "devDependencies": {
+    "@types/pg": "^8.10.9",
     "tsx": "^3.12.2"
   }
 }
