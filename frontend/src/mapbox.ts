@@ -1,8 +1,12 @@
-import { Map, ResourceType } from "mapbox-gl";
+import { Map } from "mapbox-gl";
 
 export class Mapbox {
 
     private readonly map: Map;
+
+    private readonly sourceId = "vector-tile-source";
+
+    private layers: {[layerId: string]: MapboxLayer} = {}
 
     constructor(mapContainerElement: HTMLDivElement) {
         console.log("mapContainerElement", mapContainerElement);
@@ -23,28 +27,56 @@ export class Mapbox {
         });
 
         this.map.once("load", () => {
-            const sourceId = "vector-tile-source";
-            this.map.addSource(sourceId, { type: "vector", tiles: ["http://localhost:3000/objects/{z}/{x}/{y}"] });
-    
-            this.map.addLayer({ 
-                id: "layer",
-                type: "circle",
-                source: sourceId,
-                "source-layer": "layer_a",
-                paint: { "circle-color": "red" },
-            });
-
-            console.log(this.map.getStyle().layers);
+            this.addSource();
+            this.addLayers();
         });
-
-       
     }
 
     public onDrawingClicked(type: "Point" | "Line" | "Area") {
         console.log("type", type);
     }
 
+    private addLayers() {
+        const circleLayer = new MapboxCircleLayer(this.map, "circle-layer", this.sourceId);
+        this.layers["circle-layer"] = circleLayer;
+    }
+
+    private addSource() {
+        this.map.addSource(this.sourceId, { type: "vector", tiles: ["http://localhost:3000/objects/{z}/{x}/{y}"] });
+    }
+
     public destory() {
         this.map.remove();
     }
+}
+
+abstract class MapboxLayer {
+
+    public readonly map: Map;
+
+    constructor(map: Map) {
+        this.map = map;
+    }
+        
+}
+
+class MapboxCircleLayer extends MapboxLayer {
+
+    constructor(map: Map, id: string, sourceId: string) {
+        super(map);
+        this.createLayer(id, sourceId);
+    }
+
+    private createLayer(id: string, sourceId: string): void {
+        this.map.addLayer({
+            id, 
+            source: sourceId,
+            "source-layer": "layer_a",
+            type: "circle",
+            paint: {
+                "circle-color": "red",
+            }
+        });
+    }
+
 }
