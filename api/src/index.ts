@@ -1,16 +1,17 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
-import { client } from './db/connection';
+import { cors } from "hono/cors"
+import { objectRoutes } from './routes/object';
 
-const app = new Hono()
 
-app.get('/', async (c) => {
-  const res = await client.query("select * from maps");
-  console.log(res.rows[0]);
-  return c.json(res.rows[0]);
-})
+const app = new Hono();
+
+app.use('/*', cors());
+
+app.route("/objects", objectRoutes);
 
 const port = 3000
+
 console.log(`Server is running on port ${port}`)
 
 serve({
