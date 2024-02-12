@@ -8,7 +8,7 @@ const app = new Hono();
 
 app.use('/*', cors());
 
-app.route("/objects", objectRoutes);
+app.route("/object", objectRoutes);
 
 const port = 3000
 

@@ -9,7 +9,6 @@ export class Mapbox {
     private layers: {[layerId: string]: MapboxLayer} = {}
 
     constructor(mapContainerElement: HTMLDivElement) {
-        console.log("mapContainerElement", mapContainerElement);
         this.map = new Map({
             container: mapContainerElement,
             center: [-0.54588, 53.22821], 
@@ -21,10 +20,6 @@ export class Mapbox {
         });
 
         this.map.showTileBoundaries = true; 
-
-        this.map.on("click", (e) => {
-            console.log("e", e.lngLat);
-        });
 
         this.map.once("load", () => {
             this.addSource();
@@ -42,7 +37,7 @@ export class Mapbox {
     }
 
     private addSource() {
-        this.map.addSource(this.sourceId, { type: "vector", tiles: ["http://localhost:3000/objects/{z}/{x}/{y}"] });
+        this.map.addSource(this.sourceId, { type: "vector", tiles: ["http://localhost:3000/object/{z}/{x}/{y}"] });
     }
 
     public destory() {
