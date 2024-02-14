@@ -1,4 +1,11 @@
 import { Map } from "mapbox-gl";
+import { Api } from "./api";
+import { createPointFeature } from "./geojson-helpers";
+
+interface MapboxOptions {
+    containerElement: HTMLDivElement;
+    api: Api;
+}
 
 export class Mapbox {
 
@@ -6,11 +13,14 @@ export class Mapbox {
 
     private readonly sourceId = "vector-tile-source";
 
+    private readonly api: Api;
+
     private layers: {[layerId: string]: MapboxLayer} = {}
 
-    constructor(mapContainerElement: HTMLDivElement) {
+
+    constructor(options: MapboxOptions) {
         this.map = new Map({
-            container: mapContainerElement,
+            container: options.containerElement,
             center: [-0.54588, 53.22821], 
             style: 'mapbox://styles/mapbox/streets-v11',
             zoom: 15,
@@ -19,7 +29,7 @@ export class Mapbox {
             hash: true,
         });
 
-        this.map.showTileBoundaries = true; 
+        this.api = options.api;
 
         this.map.once("load", () => {
             this.addSource();
@@ -28,7 +38,14 @@ export class Mapbox {
     }
 
     public onDrawingClicked(type: "Point" | "Line" | "Area") {
-        console.log("type", type);
+        switch (type) {
+            case "Point": 
+                new PointDrawing(this.map, this.api);
+                break;
+            default: 
+                throw new Error("not handled");
+        }
+
     }
 
     private addLayers() {
@@ -43,6 +60,39 @@ export class Mapbox {
     public destory() {
         this.map.remove();
     }
+}
+
+abstract class Drawing {
+
+    public readonly map: Map;
+
+    public readonly api: Api;
+
+    constructor(map: Map, api: Api) {
+        this.map = map;
+        this.api = api;
+        this.addEventListeners();
+    }
+
+    public abstract addEventListeners(): void;
+
+    public abstract onClick(): void;    
+}
+
+class PointDrawing extends Drawing {
+    
+    public addEventListeners(): void {
+        this.onClick();
+    }
+
+    public onClick(): void {
+        this.map.on("click", (event) => {
+            const lngLat = event.lngLat.toArray();
+            const pointObject = createPointFeature(lngLat);
+            this.api.createObject(pointObject);
+        });
+    }
+
 }
 
 abstract class MapboxLayer {
