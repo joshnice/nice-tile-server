@@ -1,11 +1,9 @@
 import { Map } from "mapbox-gl";
 import { Api } from "./api";
-import { createPointFeature } from "./geojson-helpers";
-
-interface MapboxOptions {
-    containerElement: HTMLDivElement;
-    api: Api;
-}
+import { MapboxOptions } from "./mapbox-types";
+import { Layer } from "./layers/layer";
+import { PointDrawing } from "./drawing/point-drawing";
+import { MapboxCircleLayer } from "./layers/circle-layer";
 
 export class Mapbox {
 
@@ -15,7 +13,7 @@ export class Mapbox {
 
     private readonly api: Api;
 
-    private layers: {[layerId: string]: MapboxLayer} = {}
+    private layers: {[layerId: string]: Layer} = {}
 
 
     constructor(options: MapboxOptions) {
@@ -66,78 +64,14 @@ export class Mapbox {
         } 
     }
 
-
     public destory() {
         this.map.remove();
     }
 }
 
-abstract class Drawing {
 
-    public readonly map: Map;
 
-    public readonly api: Api;
 
-    public readonly refreshTiles: () => void;
 
-    constructor(map: Map, api: Api, refreshTiles: () => void) {
-        this.map = map;
-        this.api = api;
-        this.refreshTiles = refreshTiles;
 
-        this.addEventListeners();
-    }
 
-    public abstract addEventListeners(): void;
-
-    public abstract onClick(): void;    
-}
-
-class PointDrawing extends Drawing {
-    
-    public addEventListeners(): void {
-        this.onClick();
-    }
-
-    public onClick(): void {
-        this.map.on("click", async (event) => {
-            const lngLat = event.lngLat.toArray();
-            const pointObject = createPointFeature(lngLat);
-            await this.api.createObject(pointObject);
-            console.log("createObject")
-            this.refreshTiles();
-        });
-    }
-
-}
-
-abstract class MapboxLayer {
-
-    public readonly map: Map;
-
-    constructor(map: Map) {
-        this.map = map;
-    }
-        
-}
-
-class MapboxCircleLayer extends MapboxLayer {
-
-    constructor(map: Map, id: string, sourceId: string) {
-        super(map);
-        this.createLayer(id, sourceId);
-    }
-
-    private createLayer(id: string, sourceId: string): void {
-        this.map.addLayer({
-            id, 
-            source: sourceId,
-            "source-layer": "layer_a",
-            type: "circle",
-            paint: {
-                "circle-color": "red",
-            }
-        });
-    }
-
-}

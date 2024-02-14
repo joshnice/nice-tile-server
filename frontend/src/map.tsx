@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { Mapbox } from "./mapbox";
+import { Mapbox } from "./mapbox/mapbox";
 import MapControlsComponent from "./map-controls";
-import { Api } from "./api";
+import { Api } from "./mapbox/api";
 
 const mapId = "86b86b93-7842-4e4c-82a2-8fee8da01a60";
 const baseUrl = "http://localhost:3000"
