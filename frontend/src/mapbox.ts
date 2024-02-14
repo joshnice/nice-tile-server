@@ -40,7 +40,7 @@ export class Mapbox {
     public onDrawingClicked(type: "Point" | "Line" | "Area") {
         switch (type) {
             case "Point": 
-                new PointDrawing(this.map, this.api);
+                new PointDrawing(this.map, this.api, this.refreshSource.bind(this));
                 break;
             default: 
                 throw new Error("not handled");
@@ -57,6 +57,16 @@ export class Mapbox {
         this.map.addSource(this.sourceId, { type: "vector", tiles: ["http://localhost:3000/object/{z}/{x}/{y}"] });
     }
 
+    private refreshSource() {
+        const source = this.map.getSource(this.sourceId);
+        console.log("refreshSource", source);
+        if (source.type === "vector") {
+            const key = Math.random();
+            source.setTiles([`http://localhost:3000/object/{z}/{x}/{y}?bustCache=${key}`])
+        } 
+    }
+
+
     public destory() {
         this.map.remove();
     }
@@ -68,9 +78,13 @@ abstract class Drawing {
 
     public readonly api: Api;
 
-    constructor(map: Map, api: Api) {
+    public readonly refreshTiles: () => void;
+
+    constructor(map: Map, api: Api, refreshTiles: () => void) {
         this.map = map;
         this.api = api;
+        this.refreshTiles = refreshTiles;
+
         this.addEventListeners();
     }
 
@@ -86,10 +100,12 @@ class PointDrawing extends Drawing {
     }
 
     public onClick(): void {
-        this.map.on("click", (event) => {
+        this.map.on("click", async (event) => {
             const lngLat = event.lngLat.toArray();
             const pointObject = createPointFeature(lngLat);
-            this.api.createObject(pointObject);
+            await this.api.createObject(pointObject);
+            console.log("createObject")
+            this.refreshTiles();
         });
     }
 
