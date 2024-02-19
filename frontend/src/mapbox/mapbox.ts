@@ -59,7 +59,8 @@ export class Mapbox {
             throw new Error("Tile source has to be created before adding any layers");
         }
 
-        const circleLayer = new MapboxCircleLayer(this.map, "circle-layer", this.tileSource.id);
+        const circleLayer = new MapboxCircleLayer(this.map, "circle-layer", this.tileSource.id, "layer_a");
+
         this.layers["circle-layer"] = circleLayer;
     }
 
