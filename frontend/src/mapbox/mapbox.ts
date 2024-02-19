@@ -5,12 +5,13 @@ import { Layer } from "./layers/layer";
 import { PointDrawing } from "./drawing/point-drawing";
 import { MapboxCircleLayer } from "./layers/circle-layer";
 import { Drawing } from "./drawing/drawing";
+import { VectorSource } from "./sources/vector-source";
 
 export class Mapbox {
 
     private readonly map: Map;
 
-    private readonly sourceId = "vector-tile-source";
+    private tileSource: VectorSource | null = null;
 
     private readonly api: Api;
 
@@ -24,7 +25,6 @@ export class Mapbox {
             center: [-0.54588, 53.22821], 
             style: 'mapbox://styles/mapbox/streets-v11',
             zoom: 15,
-            testMode: true,
             accessToken: "pk.eyJ1Ijoiam9zaG5pY2U5OCIsImEiOiJja2VtcnFwNGQwbXdnMndvODNzYm9wNzE3In0.hNLvS8f4FVGbgnwF7Xepow",
             hash: true,
         });
@@ -41,7 +41,7 @@ export class Mapbox {
         switch (type) {
             case "Point": 
                 if (this.drawing?.type !== "Point") {
-                    this.drawing = new PointDrawing(this.map, this.api, "Point", () => this.refreshSource());
+                    this.drawing = new PointDrawing(this.map, this.api, "Point", () => this.tileSource?.updateSource());
                 } else {
                     this.drawing.remove();
                     this.drawing = null; 
@@ -54,20 +54,17 @@ export class Mapbox {
     }
 
     private addLayers() {
-        const circleLayer = new MapboxCircleLayer(this.map, "circle-layer", this.sourceId);
+
+        if (this.tileSource == null) {
+            throw new Error("Tile source has to be created before adding any layers");
+        }
+
+        const circleLayer = new MapboxCircleLayer(this.map, "circle-layer", this.tileSource.id);
         this.layers["circle-layer"] = circleLayer;
     }
 
     private addSource() {
-        this.map.addSource(this.sourceId, { type: "vector", tiles: ["http://localhost:3000/object/{z}/{x}/{y}"] });
-    }
-
-    private refreshSource() {
-        const source = this.map.getSource(this.sourceId);
-        if (source.type === "vector") {
-            const key = Math.random();
-            source.setTiles([`http://localhost:3000/object/{z}/{x}/{y}?bustCache=${key}`])
-        } 
+        this.tileSource = new VectorSource(this.map, "vector-tile-source", "http://localhost:3000/object/{z}/{x}/{y}");
     }
 
     public destory() {
