@@ -4,6 +4,7 @@ import { MapboxOptions } from "./mapbox-types";
 import { Layer } from "./layers/layer";
 import { PointDrawing } from "./drawing/point-drawing";
 import { MapboxCircleLayer } from "./layers/circle-layer";
+import { Drawing } from "./drawing/drawing";
 
 export class Mapbox {
 
@@ -15,6 +16,7 @@ export class Mapbox {
 
     private layers: {[layerId: string]: Layer} = {}
 
+    private drawing: Drawing | null = null;
 
     constructor(options: MapboxOptions) {
         this.map = new Map({
@@ -38,7 +40,12 @@ export class Mapbox {
     public onDrawingClicked(type: "Point" | "Line" | "Area") {
         switch (type) {
             case "Point": 
-                new PointDrawing(this.map, this.api, this.refreshSource.bind(this));
+                if (this.drawing?.type !== "Point") {
+                    this.drawing = new PointDrawing(this.map, this.api, "Point", () => this.refreshSource());
+                } else {
+                    this.drawing.remove();
+                    this.drawing = null; 
+                }
                 break;
             default: 
                 throw new Error("not handled");
@@ -57,7 +64,6 @@ export class Mapbox {
 
     private refreshSource() {
         const source = this.map.getSource(this.sourceId);
-        console.log("refreshSource", source);
         if (source.type === "vector") {
             const key = Math.random();
             source.setTiles([`http://localhost:3000/object/{z}/{x}/{y}?bustCache=${key}`])
