@@ -32,8 +32,9 @@ const isObjectValid = (feature: Feature<Point | Polygon | LineString>) => {
     }
 
     const isValidPoint = feature.geometry.type === "Point" && typeof feature.geometry.coordinates[0] === "number" && typeof feature.geometry.coordinates[1] === "number";
+    const isValidLine = feature.geometry.type === "LineString" && feature.geometry.coordinates.length !== 1 && feature.geometry.coordinates.every((coord) => coord.length === 2 && coord.every(c => typeof c === "number" && isNaN(c) === false));
 
-    return isValidPoint;
+    return isValidPoint || isValidLine;
 }
 
 objectRoutes.post("", validator("json", (body, c) => {
