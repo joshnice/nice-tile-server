@@ -42,7 +42,7 @@ export class Mapbox {
         switch (type) {
             case "Point": 
                 if (this.drawing?.type !== "Point") {
-                    this.drawing = new PointDrawing(this.map, this.api, "Point", () => this.tileSource?.updateSource());
+                    this.drawing = new PointDrawing(this.map, this.api, "Point");
                 } else {
                     this.drawing.remove();
                     this.drawing = null; 

@@ -7,17 +7,14 @@ export abstract class Drawing {
 
     public readonly api: Api;
 
-    public readonly refreshTiles: () => void;
-
     public readonly type: "Point" | "Line" | "Area";
 
     public onClickReference: any;
 
-    constructor(map: Map, api: Api,  type: "Point" | "Line" | "Area", refreshTiles: () => void) {
+    constructor(map: Map, api: Api,  type: "Point" | "Line" | "Area") {
         this.map = map;
         this.api = api;
         this.type = type;
-        this.refreshTiles = refreshTiles;
         this.addEventListeners();
     }
 

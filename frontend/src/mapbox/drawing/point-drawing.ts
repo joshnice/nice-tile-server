@@ -11,8 +11,8 @@ export class PointDrawing extends Drawing {
 
     public readonly localLayer: MapboxCircleLayer;
 
-    constructor(map: Map, api: Api,  type: "Point" | "Line" | "Area", refreshTiles: () => void) {
-        super(map, api,type, refreshTiles);
+    constructor(map: Map, api: Api,  type: "Point" | "Line" | "Area") {
+        super(map, api,type);
 
         const layerId = "local-point-layer";
         const sourceId = `${layerId}-source`
