@@ -6,6 +6,7 @@ import { PointDrawing } from "./drawing/point-drawing";
 import { MapboxCircleLayer } from "./layers/circle-layer";
 import { Drawing } from "./drawing/drawing";
 import { VectorSource } from "./sources/vector-source";
+import { MapboxLineLayer } from "./layers/line-layer";
 
 export class Mapbox {
 
@@ -59,9 +60,11 @@ export class Mapbox {
             throw new Error("Tile source has to be created before adding any layers");
         }
 
-        const circleLayer = new MapboxCircleLayer(this.map, "circle-layer", this.tileSource.id, "layer_a");
+        const circleLayer = new MapboxCircleLayer(this.map, "circle-layer", this.tileSource.id, "Circle");
+        const lineLayer = new MapboxLineLayer(this.map, "line-layer", this.tileSource.id, "Line");
 
         this.layers["circle-layer"] = circleLayer;
+        this.layers["line-layer"] = lineLayer;
     }
 
     private addSource() {
