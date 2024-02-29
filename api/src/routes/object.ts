@@ -15,7 +15,6 @@ objectRoutes.get("/:z/:x/:y", async (ctx) => {
     const numZ = parseInt(z, 10);
 
     const objectTile = await getObjects(numX, numY, numZ);
-    console.log("objectTile", objectTile);
     // @ts-ignore
     const response = new Response(objectTile, { status: 200 });
     response.headers.set('Content-Type', 'application/vnd.mapbox-vector-tile');

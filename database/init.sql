@@ -12,5 +12,6 @@ CREATE TABLE objects (
     id uuid primary key,
     geom geometry,
     map_id uuid,
+    layer varchar,
     constraint fk_map_id foreign key(map_id) references maps(id)
 );

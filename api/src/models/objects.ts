@@ -7,23 +7,26 @@ const mercator = new SphericalMercator({size: 256});
 export async function getObjects(x: number, y: number, z: number) {
 
     const bbox = mercator.bbox(x, y, z, false);
-    const layerName = "layer_a"
 
     const SQL = `
-    SELECT ST_AsMVT(q, '${layerName}', 4096, 'geom') FROM (
-        SELECT 
-          ST_AsMVTGeom(
-            geom,
-            ST_MakeEnvelope(${bbox[0]}, ${bbox[1]}, ${bbox[2]}, ${bbox[3]}, 4326),
-            4096,
-            256,
-            true
-          ) geom FROM objects
-        ) q
-    `;
+    with mvtgeom as ( 
+      select 
+        ST_AsMVTGeom( geom, ST_MakeEnvelope(${bbox[0]}, ${bbox[1]}, ${bbox[2]}, ${bbox[3]}, 4326), 4096, 256,true ) geom, layer
+      from
+        objects 
+    ),   
+    tiles as (
+      select 
+        ST_AsMVT( mvtgeom.*, layer ) AS mvt
+      from
+        mvtgeom
+      group by
+        layer
+      ) SELECT string_agg(mvt, '') from tiles;
+    `;  
 
     const response = await client.query(SQL);
-    return response.rows[0].st_asmvt;
+    return response.rows[0].string_agg;
 };
 
 export async function postObject(mapId: string, object: Feature<Point>) {
