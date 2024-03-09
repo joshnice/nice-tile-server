@@ -78,9 +78,11 @@ export class LineDrawing extends Drawing {
     }
 
     private onDoubleClick(event: MapMouseEvent & EventData) {
-        this.localSource.updateSource(createLineFeature([...this.drawingSourceCoordiantes, event.lngLat.toArray()]));
+        const newObject = createLineFeature([...this.drawingSourceCoordiantes, event.lngLat.toArray()]);
+        this.localSource.updateSource(newObject);
         this.drawingSource.resetSource();
         this.drawingSourceCoordiantes = [];
+        this.api.createObject(newObject)
     }
 
     private onMouseMoveHandler(event: MapMouseEvent & EventData) {
