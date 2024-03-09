@@ -4,6 +4,11 @@ import { client } from "../db/connection";
 const SphericalMercator = require('@mapbox/sphericalmercator');
 const mercator = new SphericalMercator({size: 256});
 
+
+// Todo: improve sql
+// 1 - Remove sql inject
+// 2 - improve union
+// 3 - remove mercator bbox
 export async function getObjects(x: number, y: number, z: number, mapId: string) {
 
     const bbox = mercator.bbox(x, y, z, false);

@@ -35,8 +35,6 @@ export default function MapComponent() {
 
     const handleMapSelected = (id: string) => {
         map.current?.destory?.();
-        console.log("mapElement", mapElement.current);
-        console.log("id", id);
         if (mapElement.current != null) {
             map.current = new Mapbox({containerElement: mapElement.current, api: new Api(id, baseUrl)});
             setSelectedMap(id);
