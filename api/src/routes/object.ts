@@ -2,7 +2,6 @@ import { Hono } from "hono";
 import { validator } from "hono/validator";
 import { Feature, Point, LineString, Polygon } from "geojson";
 import { getObjects, postObject } from "../models/objects";
-import { ErrorBoundary } from "hono/jsx";
 
 export const objectRoutes = new Hono();
 

@@ -8,7 +8,7 @@ create table maps (
 );
 
 -- Objects table
-CREATE TABLE objects (
+create table objects (
     id uuid primary key,
     geom geometry,
     map_id uuid,
