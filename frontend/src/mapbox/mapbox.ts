@@ -86,7 +86,7 @@ export class Mapbox {
 
     private addSources() {
         // Remote sources
-        this.tileSource = new VectorSource(this.map, "vector-tile-source", "http://localhost:3000/object/{z}/{x}/{y}");
+        this.tileSource = new VectorSource(this.map, "vector-tile-source", this.api.createTilesUrl());
         // Local sources
         this.localSources["local-point-layer-source"] = new GeoJsonSource(this.map, "local-point-layer-source", null);
         this.localSources["local-line-layer-source"] = new GeoJsonSource(this.map, "local-line-layer-source", null);

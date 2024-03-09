@@ -6,9 +6,10 @@ import { faSlash } from "@fortawesome/free-solid-svg-icons/faSlash";
 
 export type Control = "Point" | "Line" | "Area";
 
-export default function MapControlsComponent({ selectedControl, onControlClick }: { selectedControl: Control | null, onControlClick: (type: Control) =>  void}) {
+export default function MapControlsComponent({ selectedControl, maps, selectedMap, onMapSelected, onControlClick }: { selectedControl: Control | null, maps: { id: string, name: string }[], selectedMap: string, onMapSelected: (id: string) => void; onControlClick: (type: Control) =>  void}) {
     return (
-        <div className="map-controls-container">
+        <>
+        <div className="map-controls-container map-controls-container-left">
             <ControlComponent selected={selectedControl === "Area"} onClick={() => onControlClick("Area")}>
                 <FontAwesomeIcon className="map-control-icon" icon={faSquare} />
             </ControlComponent>
@@ -19,6 +20,12 @@ export default function MapControlsComponent({ selectedControl, onControlClick }
                 <FontAwesomeIcon className="map-control-icon" icon={faCircle} />
             </ControlComponent>
         </div>
+        <div className="map-controls-container map-controls-container-right">
+            <select className="map-selection" value={selectedMap} onChange={(event) => onMapSelected(event.target.value)}>
+                {maps.map((map) => (<option key={map.id} className="map-option" value={map.id}>{map.name}</option>))}
+            </select>
+        </div>
+        </>
     )
 } 
 

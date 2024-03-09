@@ -22,6 +22,10 @@ export class Api {
         });
     }
 
+    public createTilesUrl() {
+        return `http://localhost:3000/object/${this.mapId}/{z}/{x}/{y}`;
+    }
+
     private getHeaders() {
         return {
             "Content-Type": "application/json",
