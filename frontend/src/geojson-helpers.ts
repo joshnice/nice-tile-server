@@ -18,7 +18,7 @@ export function createPointFeature(coordinates: number[]): Feature<Point> {
 
 export function createLineFeature(coordinates: number[][]): Feature<LineString> {
 
-    if (coordinates == null || coordinates.length !== 1 || !coordinates[0].every(checkCoordinateIsNumber)) {
+    if (coordinates == null || coordinates.length < 2 || !coordinates[0].every(checkCoordinateIsNumber)) {
         throw new Error("Invalid coordinates")
     }
 

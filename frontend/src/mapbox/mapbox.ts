@@ -7,6 +7,7 @@ import { MapboxCircleLayer } from "./layers/circle-layer";
 import { Drawing } from "./drawing/drawing";
 import { VectorSource } from "./sources/vector-source";
 import { MapboxLineLayer } from "./layers/line-layer";
+import { LineDrawing } from "./drawing/line-drawing";
 
 export class Mapbox {
 
@@ -32,6 +33,8 @@ export class Mapbox {
 
         this.api = options.api;
 
+        this.map.doubleClickZoom.disable();
+
         this.map.once("load", () => {
             this.addSource();
             this.addLayers();
@@ -46,6 +49,14 @@ export class Mapbox {
                 } else {
                     this.drawing.remove();
                     this.drawing = null; 
+                }
+                break;
+            case "Line": 
+                if (this.drawing?.type !== "Line") {
+                    this.drawing = new LineDrawing(this.map, this.api, "Line");
+                } else {
+                    this.drawing.remove();
+                    this.drawing = null;
                 }
                 break;
             default: 
