@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { validator } from "hono/validator";
 import { Feature, Point, LineString, Polygon } from "geojson";
 import { getObjects, postObject } from "../models/objects";
+import { ErrorBoundary } from "hono/jsx";
 
 export const objectRoutes = new Hono();
 
@@ -47,8 +48,20 @@ objectRoutes.post("", validator("json", (body, c) => {
     return c.text("Invalid", 400);
 }), async (c) => {
     const {body} = c.req.valid("json")
-    console.log("body", body);
-    await postObject(body.mapId, body.object);
+    await postObject(body.mapId, body.object, getLayerType(body.object));
     return c.text("Success", 200)    
 });
 
+
+const getLayerType = (feature: Feature<Point | LineString | Polygon>) => {
+    switch(feature.geometry.type) {
+        case "Point":
+            return "Circle";
+        case "LineString":
+            return "Line";
+        case "Polygon":
+            "Fill";
+        default:
+            throw new Error();
+    }
+}

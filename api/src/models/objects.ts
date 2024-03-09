@@ -29,16 +29,14 @@ export async function getObjects(x: number, y: number, z: number) {
     return response.rows[0].string_agg;
 };
 
-export async function postObject(mapId: string, object: Feature<Point>) {
+export async function postObject(mapId: string, object: Feature<Point>, layer: string) {
 
   const id = uuid();
 
   const sql = `
-    INSERT INTO objects(id, geom, map_id)
-    VALUES ('${id}', '${JSON.stringify(object.geometry)}', '${mapId}');
+    INSERT INTO objects(id, geom, map_id, layer)
+    VALUES ('${id}', '${JSON.stringify(object.geometry)}', '${mapId}', '${layer}' );
   `
-
-  console.log("sql", sql);
 
   return client.query(sql);
 
