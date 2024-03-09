@@ -11,6 +11,8 @@ export abstract class Drawing {
 
     public onClickReference: any;
 
+    public onMouseMoveReference: any;
+
     constructor(map: Map, api: Api,  type: "Point" | "Line" | "Area") {
         this.map = map;
         this.api = api;
@@ -22,7 +24,10 @@ export abstract class Drawing {
 
     public abstract onClick(): void;
 
+    public abstract onMouseMove(): void;
+
     public remove() {
         this.map.off("click", this.onClickReference);
+        this.map.off("mousemove", this.onMouseMoveReference);
     }
 }

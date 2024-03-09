@@ -32,18 +32,22 @@ export class LineDrawing extends Drawing {
         this.localLayer = new MapboxLineLayer(this.map, layerId, sourceId);
 
         this.drawingSource = new GeoJsonSource(this.map, "line-drawing", null);
-        this.drawingLayer = new MapboxLineLayer(this.map, "line-drawing-layer", "line-drawing", undefined, "blue");
+        this.drawingLayer = new MapboxLineLayer(this.map, "line-drawing-layer", "line-drawing", undefined);
     }
 
     public addEventListeners(): void {
         this.onClick();
+        this.onMouseMove();
     }
     
     public onClick(): void {
-        console.log("add onClick")
         this.onClickReference = this.onClickHandler.bind(this);
         this.map.on("click", this.onClickReference);
     }
+
+    public onMouseMove(): void {
+        this.onMouseMoveReference = this.onMouseMoveHandler.bind(this);
+        this.map.on("mousemove", this.onMouseMoveReference);    }
 
 
     private async onClickHandler(event: MapMouseEvent & EventData) {
@@ -77,6 +81,12 @@ export class LineDrawing extends Drawing {
         this.localSource.updateSource(createLineFeature([...this.drawingSourceCoordiantes, event.lngLat.toArray()]));
         this.drawingSource.resetSource();
         this.drawingSourceCoordiantes = [];
+    }
+
+    private onMouseMoveHandler(event: MapMouseEvent & EventData) {
+        if (this.drawingSourceCoordiantes.length !== 0) {
+            this.drawingSource.overwriteSource(createLineFeature([...this.drawingSourceCoordiantes, event.lngLat.toArray()]));            
+        }
     }
     
 }

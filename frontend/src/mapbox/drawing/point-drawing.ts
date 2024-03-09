@@ -6,7 +6,6 @@ import { MapboxCircleLayer } from "../layers/circle-layer";
 import { GeoJsonSource } from "../sources/geojson-source";
 
 export class PointDrawing extends Drawing {
-
     public readonly localSource: GeoJsonSource;
 
     public readonly localLayer: MapboxCircleLayer;
@@ -33,5 +32,9 @@ export class PointDrawing extends Drawing {
         const pointObject = createPointFeature(event.lngLat.toArray());
         await this.api.createObject(pointObject);
         this.localSource.updateSource(pointObject);
+    }
+
+    public onMouseMove(): void {
+        throw new Error("Method not implemented.");
     }
 }
