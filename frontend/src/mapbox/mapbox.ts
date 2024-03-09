@@ -8,6 +8,7 @@ import { Drawing } from "./drawing/drawing";
 import { VectorSource } from "./sources/vector-source";
 import { MapboxLineLayer } from "./layers/line-layer";
 import { LineDrawing } from "./drawing/line-drawing";
+import { GeoJsonSource } from "./sources/geojson-source";
 
 export class Mapbox {
 
@@ -18,6 +19,8 @@ export class Mapbox {
     private readonly api: Api;
 
     private layers: {[layerId: string]: Layer} = {}
+
+    private localSources: {[sourceId: string]: GeoJsonSource} = {}
 
     private drawing: Drawing | null = null;
 
@@ -36,28 +39,32 @@ export class Mapbox {
         this.map.doubleClickZoom.disable();
 
         this.map.once("load", () => {
-            this.addSource();
+            this.addTileSource();
             this.addLayers();
+            this.addLocalSources();
+            this.addLocalLayers();
         });
     }
 
     public onDrawingClicked(type: "Point" | "Line" | "Area") {
+
+        // Toggle the same drawing tool
+        if (this.drawing?.type === type) {
+            this.drawing.remove();
+            this.drawing = null;
+            return;
+        }
+
+        if (this.drawing != null) {
+            this.drawing.remove();
+        }
+
         switch (type) {
             case "Point": 
-                if (this.drawing?.type !== "Point") {
-                    this.drawing = new PointDrawing(this.map, this.api, "Point");
-                } else {
-                    this.drawing.remove();
-                    this.drawing = null; 
-                }
+                this.drawing = new PointDrawing(this.map, this.api, "Point", this.localSources["local-point-layer-source"]);
                 break;
             case "Line": 
-                if (this.drawing?.type !== "Line") {
-                    this.drawing = new LineDrawing(this.map, this.api, "Line");
-                } else {
-                    this.drawing.remove();
-                    this.drawing = null;
-                }
+                this.drawing = new LineDrawing(this.map, this.api, "Line", this.localSources["local-line-layer-source"]);
                 break;
             default: 
                 throw new Error("not handled");
@@ -78,8 +85,19 @@ export class Mapbox {
         this.layers["line-layer"] = lineLayer;
     }
 
-    private addSource() {
+    private addTileSource() {
         this.tileSource = new VectorSource(this.map, "vector-tile-source", "http://localhost:3000/object/{z}/{x}/{y}");
+    }
+
+    private addLocalLayers() {
+        this.layers["local-circle-layer"] = new MapboxCircleLayer(this.map, "local-circle-layer", "local-point-layer-source");
+        this.layers["local-line-layer"] = new MapboxLineLayer(this.map, "local-line-layer", "local-line-layer-source");
+
+    }
+
+    private addLocalSources() {
+        this.localSources["local-point-layer-source"] = new GeoJsonSource(this.map, "local-point-layer-source", null);
+        this.localSources["local-line-layer-source"] = new GeoJsonSource(this.map, "local-line-layer-source", null);
     }
 
     public destory() {

@@ -8,31 +8,21 @@ import { MapboxLineLayer } from "../layers/line-layer";
 
 export class LineDrawing extends Drawing {
 
-    public readonly localSource: GeoJsonSource;
-
-    public readonly localLayer: MapboxLineLayer;
-
     private drawingSourceCoordiantes: LineString["coordinates"] = [];
-
-    private readonly drawingSource: GeoJsonSource;
-
-    private readonly drawingLayer: MapboxLineLayer;
 
     private clickedRecently = false;
 
     private isDoubleClick = false;
 
-    constructor(map: Map, api: Api,  type: "Point" | "Line" | "Area") {
-        super(map, api, type);
+    public drawingLayer: MapboxLineLayer;
 
-        const layerId = "local-line-layer";
-        const sourceId = `${layerId}-source`
+    public drawingSource: GeoJsonSource;
 
-        this.localSource = new GeoJsonSource(this.map, sourceId, null);
-        this.localLayer = new MapboxLineLayer(this.map, layerId, sourceId);
+    constructor(map: Map, api: Api,  type: "Point" | "Line" | "Area", localSource: GeoJsonSource) {
+        super(map, api, type, localSource);
 
-        this.drawingSource = new GeoJsonSource(this.map, "line-drawing", null);
-        this.drawingLayer = new MapboxLineLayer(this.map, "line-drawing-layer", "line-drawing", undefined);
+        this.drawingSource = new GeoJsonSource(this.map, "drawing", null);
+        this.drawingLayer = new MapboxLineLayer(this.map, "drawing-layer", "drawing", undefined);
     }
 
     public addEventListeners(): void {
@@ -90,5 +80,4 @@ export class LineDrawing extends Drawing {
             this.drawingSource.overwriteSource(createLineFeature([...this.drawingSourceCoordiantes, event.lngLat.toArray()]));            
         }
     }
-    
 }

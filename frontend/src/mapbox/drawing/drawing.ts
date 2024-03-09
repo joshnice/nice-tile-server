@@ -1,5 +1,7 @@
 import { Map } from "mapbox-gl";
 import { Api } from "../api";
+import { GeoJsonSource } from "../sources/geojson-source";
+import { Layer } from "../layers/layer";
 
 export abstract class Drawing {
 
@@ -9,14 +11,22 @@ export abstract class Drawing {
 
     public readonly type: "Point" | "Line" | "Area";
 
+    public readonly localSource: GeoJsonSource;
+
+    // Rename layer class
+    public drawingLayer: Layer | null = null;
+
+    public drawingSource: GeoJsonSource | null = null;
+
     public onClickReference: any;
 
     public onMouseMoveReference: any;
 
-    constructor(map: Map, api: Api,  type: "Point" | "Line" | "Area") {
+    constructor(map: Map, api: Api,  type: "Point" | "Line" | "Area", localSource: GeoJsonSource) {
         this.map = map;
         this.api = api;
         this.type = type;
+        this.localSource = localSource;
         this.addEventListeners();
     }
 
