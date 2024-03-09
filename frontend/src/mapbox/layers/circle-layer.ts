@@ -1,7 +1,7 @@
 import { CircleLayer, Map } from "mapbox-gl";
-import { Layer } from "./layer";
+import { MapboxLayer } from "./layer";
 
-export class MapboxCircleLayer extends Layer {
+export class MapboxCircleLayer extends MapboxLayer {
 
     constructor(map: Map, id: string, sourceId: string, sourceLayerId?: string) {
         super(map);

@@ -1,7 +1,7 @@
 import { Map } from "mapbox-gl";
 import { Api } from "./api";
 import { MapboxOptions } from "./mapbox-types";
-import { Layer } from "./layers/layer";
+import { MapboxLayer } from "./layers/layer";
 import { PointDrawing } from "./drawing/point-drawing";
 import { MapboxCircleLayer } from "./layers/circle-layer";
 import { Drawing } from "./drawing/drawing";
@@ -18,7 +18,7 @@ export class Mapbox {
 
     private readonly api: Api;
 
-    private layers: {[layerId: string]: Layer} = {}
+    private layers: {[layerId: string]: MapboxLayer} = {}
 
     private localSources: {[sourceId: string]: GeoJsonSource} = {}
 

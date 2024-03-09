@@ -1,7 +1,7 @@
 import { Map } from "mapbox-gl";
 import { Api } from "../api";
 import { GeoJsonSource } from "../sources/geojson-source";
-import { Layer } from "../layers/layer";
+import { MapboxLayer } from "../layers/layer";
 
 export abstract class Drawing {
 
@@ -14,7 +14,7 @@ export abstract class Drawing {
     public readonly localSource: GeoJsonSource;
 
     // Rename layer class
-    public drawingLayer: Layer | null = null;
+    public drawingLayer: MapboxLayer | null = null;
 
     public drawingSource: GeoJsonSource | null = null;
 

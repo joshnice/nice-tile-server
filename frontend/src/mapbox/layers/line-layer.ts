@@ -1,7 +1,7 @@
 import { Map, LineLayer } from "mapbox-gl";
-import { Layer } from "./layer";
+import { MapboxLayer } from "./layer";
 
-export class MapboxLineLayer extends Layer {
+export class MapboxLineLayer extends MapboxLayer {
 
     constructor(map: Map, id: string, sourceId: string, sourceLayerId?: string) {
         super(map);
