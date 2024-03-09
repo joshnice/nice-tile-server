@@ -1,4 +1,4 @@
-import { Feature, Point } from "geojson";
+import { Feature, Point, LineString } from "geojson";
 
 export function createPointFeature(coordinates: number[]): Feature<Point> {
 
@@ -10,6 +10,22 @@ export function createPointFeature(coordinates: number[]): Feature<Point> {
         type: "Feature",
         geometry: {
             type: "Point",
+            coordinates: coordinates
+        },
+        properties: {},
+    }
+}
+
+export function createLineFeature(coordinates: number[][]): Feature<LineString> {
+
+    if (coordinates == null || coordinates.length !== 1 || !coordinates[0].every(checkCoordinateIsNumber)) {
+        throw new Error("Invalid coordinates")
+    }
+
+    return {
+        type: "Feature",
+        geometry: {
+            type: "LineString",
             coordinates: coordinates
         },
         properties: {},
