@@ -39,10 +39,8 @@ export class Mapbox {
         this.map.doubleClickZoom.disable();
 
         this.map.once("load", () => {
-            this.addTileSource();
+            this.addSources();
             this.addLayers();
-            this.addLocalSources();
-            this.addLocalLayers();
         });
     }
 
@@ -77,25 +75,19 @@ export class Mapbox {
         if (this.tileSource == null) {
             throw new Error("Tile source has to be created before adding any layers");
         }
-
-        const circleLayer = new MapboxCircleLayer(this.map, "circle-layer", this.tileSource.id, "Circle");
-        const lineLayer = new MapboxLineLayer(this.map, "line-layer", this.tileSource.id, "Line");
-
-        this.layers["circle-layer"] = circleLayer;
-        this.layers["line-layer"] = lineLayer;
-    }
-
-    private addTileSource() {
-        this.tileSource = new VectorSource(this.map, "vector-tile-source", "http://localhost:3000/object/{z}/{x}/{y}");
-    }
-
-    private addLocalLayers() {
+        
+        // Remote layers
+        this.layers["circle-layer"] = new MapboxCircleLayer(this.map, "circle-layer", this.tileSource.id, "Circle");
+        this.layers["line-layer"] = new MapboxLineLayer(this.map, "line-layer", this.tileSource.id, "Line");
+        // Local layers
         this.layers["local-circle-layer"] = new MapboxCircleLayer(this.map, "local-circle-layer", "local-point-layer-source");
         this.layers["local-line-layer"] = new MapboxLineLayer(this.map, "local-line-layer", "local-line-layer-source");
-
     }
 
-    private addLocalSources() {
+    private addSources() {
+        // Remote sources
+        this.tileSource = new VectorSource(this.map, "vector-tile-source", "http://localhost:3000/object/{z}/{x}/{y}");
+        // Local sources
         this.localSources["local-point-layer-source"] = new GeoJsonSource(this.map, "local-point-layer-source", null);
         this.localSources["local-line-layer-source"] = new GeoJsonSource(this.map, "local-line-layer-source", null);
     }
