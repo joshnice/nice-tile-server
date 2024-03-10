@@ -1,12 +1,12 @@
 import { Map } from "mapbox-gl";
 import { Api } from "./api";
 import { MapboxOptions } from "./mapbox-types";
-import { MapboxLayer } from "./layers/layer";
+import { Layer } from "./layers/layer";
 import { PointDrawing } from "./drawing/point-drawing";
-import { MapboxCircleLayer } from "./layers/circle-layer";
+import { CircleLayer } from "./layers/circle-layer";
 import { Drawing } from "./drawing/drawing";
 import { VectorSource } from "./sources/vector-source";
-import { MapboxLineLayer } from "./layers/line-layer";
+import { LineLayer } from "./layers/line-layer";
 import { LineDrawing } from "./drawing/line-drawing";
 import { GeoJsonSource } from "./sources/geojson-source";
 
@@ -18,7 +18,7 @@ export class Mapbox {
 
     private readonly api: Api;
 
-    private layers: {[layerId: string]: MapboxLayer} = {}
+    private layers: {[layerId: string]: Layer} = {}
 
     private localSources: {[sourceId: string]: GeoJsonSource} = {}
 
@@ -77,11 +77,11 @@ export class Mapbox {
         }
         
         // Remote layers
-        this.layers["circle-layer"] = new MapboxCircleLayer(this.map, "circle-layer", this.tileSource.id, "Circle");
-        this.layers["line-layer"] = new MapboxLineLayer(this.map, "line-layer", this.tileSource.id, "Line");
+        this.layers["circle-layer"] = new CircleLayer(this.map, "circle-layer", this.tileSource.id, "Circle");
+        this.layers["line-layer"] = new LineLayer(this.map, "line-layer", this.tileSource.id, "Line");
         // Local layers
-        this.layers["local-circle-layer"] = new MapboxCircleLayer(this.map, "local-circle-layer", "local-point-layer-source");
-        this.layers["local-line-layer"] = new MapboxLineLayer(this.map, "local-line-layer", "local-line-layer-source");
+        this.layers["local-circle-layer"] = new CircleLayer(this.map, "local-circle-layer", "local-point-layer-source");
+        this.layers["local-line-layer"] = new LineLayer(this.map, "local-line-layer", "local-line-layer-source");
     }
 
     private addSources() {

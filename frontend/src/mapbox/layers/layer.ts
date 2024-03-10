@@ -1,6 +1,6 @@
 import { Map } from "mapbox-gl";
 
-export abstract class MapboxLayer {
+export abstract class Layer {
 
     public readonly map: Map;
 

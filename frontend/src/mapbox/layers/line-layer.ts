@@ -1,7 +1,7 @@
-import { Map, LineLayer } from "mapbox-gl";
-import { MapboxLayer } from "./layer";
+import { Map, LineLayer as MapboxLineLayer } from "mapbox-gl";
+import { Layer } from "./layer";
 
-export class MapboxLineLayer extends MapboxLayer {
+export class LineLayer extends Layer {
 
     constructor(map: Map, id: string, sourceId: string, sourceLayerId?: string) {
         super(map);
@@ -9,7 +9,7 @@ export class MapboxLineLayer extends MapboxLayer {
     }
 
     private createLayer(id: string, sourceId: string, sourceLayerId?: string) {
-        const lineLayer: LineLayer = {
+        const lineLayer: MapboxLineLayer = {
             id,
             type: "line",
             paint: {

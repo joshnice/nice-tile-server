@@ -4,7 +4,7 @@ import { createLineFeature } from "../../geojson-helpers";
 import { Api } from "../api";
 import { GeoJsonSource } from "../sources/geojson-source";
 import { Drawing } from "./drawing";
-import { MapboxLineLayer } from "../layers/line-layer";
+import { LineLayer } from "../layers/line-layer";
 
 export class LineDrawing extends Drawing {
 
@@ -14,7 +14,7 @@ export class LineDrawing extends Drawing {
 
     private isDoubleClick = false;
 
-    public drawingLayer: MapboxLineLayer;
+    public drawingLayer: LineLayer;
 
     public drawingSource: GeoJsonSource;
 
@@ -22,7 +22,7 @@ export class LineDrawing extends Drawing {
         super(map, api, type, localSource);
 
         this.drawingSource = new GeoJsonSource(this.map, "drawing", null);
-        this.drawingLayer = new MapboxLineLayer(this.map, "drawing-layer", "drawing", undefined);
+        this.drawingLayer = new LineLayer(this.map, "drawing-layer", "drawing", undefined);
     }
 
     public addEventListeners(): void {
