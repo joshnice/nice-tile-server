@@ -84,7 +84,7 @@ export class Mapbox {
         // Remote layers
         this.layers["circle-layer"] = new CircleLayer(this.map, "circle-layer", this.tileSource.id, "Circle");
         this.layers["line-layer"] = new LineLayer(this.map, "line-layer", this.tileSource.id, "Line");
-        this.layers["fill-layer"] = new FillLayer(this.map, "fill-layer", this.tileSource.id, "Area");
+        this.layers["fill-layer"] = new FillLayer(this.map, "fill-layer", this.tileSource.id, "Fill");
 
         // Local layers
         this.layers["local-circle-layer"] = new CircleLayer(this.map, "local-circle-layer", "local-point-layer-source");
