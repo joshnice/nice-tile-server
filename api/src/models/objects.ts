@@ -16,7 +16,7 @@ export async function getObjects(x: number, y: number, z: number, mapId: string)
     const SQL = `
     with mvtgeom as ( 
       select 
-        ST_AsMVTGeom( geom, ST_MakeEnvelope(${bbox[0]}, ${bbox[1]}, ${bbox[2]}, ${bbox[3]}, 4326), 4096, 256,true ) geom, layer
+        ST_AsMVTGeom( geom, ST_MakeEnvelope(${bbox[0]}, ${bbox[1]}, ${bbox[2]}, ${bbox[3]}, 4326), 4096, 256,true ) geom, layer_id
       from
         objects
       where 
@@ -24,11 +24,11 @@ export async function getObjects(x: number, y: number, z: number, mapId: string)
     ),   
     tiles as (
       select 
-        ST_AsMVT( mvtgeom.*, layer ) AS mvt
+        ST_AsMVT( mvtgeom.*, layer_id::text ) AS mvt
       from
         mvtgeom
       group by
-        layer
+        layer_id
       ) SELECT string_agg(mvt, '') from tiles;
     `;  
 
@@ -36,13 +36,13 @@ export async function getObjects(x: number, y: number, z: number, mapId: string)
     return response.rows[0].string_agg;
 };
 
-export async function postObject(mapId: string, object: Feature<Point>, layer: string) {
+export async function postObject(mapId: string, object: Feature<Point>, layer_id: string) {
 
   const id = uuid();
 
   const sql = `
-    INSERT INTO objects(id, geom, map_id, layer)
-    VALUES ('${id}', '${JSON.stringify(object.geometry)}', '${mapId}', '${layer}' );
+    INSERT INTO objects(id, geom, map_id, layer_id)
+    VALUES ('${id}', '${JSON.stringify(object.geometry)}', '${mapId}', '${layer_id}' );
   `
 
   return client.query(sql);

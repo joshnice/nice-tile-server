@@ -7,11 +7,26 @@ create table maps (
     name varchar(50)
 );
 
+create type layertype as enum ('Fill', 'Line', 'Point');
+
+--Layers table 
+create table layers (
+    id uuid primary key,
+    name varchar,
+    type layertype,
+    map_id uuid,
+    constraint fk_map_id foreign key (map_id) references maps(id) 
+);
+
 -- Objects table
 create table objects (
     id uuid primary key,
     geom geometry,
     map_id uuid,
-    layer varchar,
-    constraint fk_map_id foreign key(map_id) references maps(id)
+    layer_id uuid,
+    constraint fk_map_id foreign key (map_id) references maps(id),
+    constraint fk_layer_id foreign key (layer_id) references layers(id)
 );
+
+insert into maps (id, name)
+values ('e57ae4ce-f9c8-43ad-ad8a-97c529cdc256', 'First map');
