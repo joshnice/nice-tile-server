@@ -35,16 +35,19 @@ body {
     right: 20px;
 }
 
-.map-control {
+.map-button {
     height: 40px;
-    width: 40px;
     background-color: white;
     border: 2px solid black;
     border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.map-control {
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
     padding: 7px;
 }
 
@@ -54,9 +57,5 @@ body {
 }
 
 .map-selection {
-    font-size: 20px ;
-}
-
-.map-option {
-
+    font-size: 20px;
 }

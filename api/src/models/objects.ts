@@ -32,8 +32,6 @@ export async function getObjects(x: number, y: number, z: number, mapId: string)
       ) SELECT string_agg(mvt, '') from tiles;
     `;  
 
-    console.log(SQL);
-
     const response = await client.query(SQL);
     return response.rows[0].string_agg;
 };

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { v4 as uuid } from "uuid";
 import { Mapbox } from "./mapbox/mapbox";
 import MapControlsComponent, { Control } from "./map-controls";
 import { Api } from "./mapbox/api";
 import useMaps from "./hooks/use-maps";
-
 const baseUrl = "http://localhost:3000"
 
 export default function MapComponent() {
@@ -15,14 +15,16 @@ export default function MapComponent() {
     // Controls
     const [selectedControl, setSelectedControl] = useState<Control | null>(null);
     const [selectedMap, setSelectedMap] = useState<string | null>(null);
+    const selectedMapRef = useRef<string | null>();
+    selectedMapRef.current = selectedMap; 
 
     const onMapsSuccess = (maps: {id: string, name: string}[]) => {
-        if (selectedMap == null && maps[0] != null ) {
+        if (selectedMapRef.current == null && maps[0] != null ) {
             handleMapSelected(maps[0].id);
         }
     }
 
-    const { maps } = useMaps(onMapsSuccess);
+    const { maps, isMapsLoading, createMap, invalidateMaps } = useMaps(onMapsSuccess);
 
     const handleDrawingClicked = (type: Control) => {
         if (selectedControl === type) {
@@ -34,11 +36,19 @@ export default function MapComponent() {
     }
 
     const handleMapSelected = (id: string) => {
+        console.log("handleMapSelected", id);
         map.current?.destory?.();
         if (mapElement.current != null) {
             map.current = new Mapbox({containerElement: mapElement.current, api: new Api(id, baseUrl)});
             setSelectedMap(id);
         }
+    }
+
+    const handleMapCreate = async () => {
+        const mapId = uuid();
+        await createMap(mapId, `New Map ${maps.length}`);
+        invalidateMaps();
+        handleMapSelected(mapId);
     }
 
     useEffect(() => {
@@ -48,10 +58,18 @@ export default function MapComponent() {
         }
     }, []);
 
-  
     return (
         <>
-            {selectedMap && <MapControlsComponent maps={maps} selectedMap={selectedMap} selectedControl={selectedControl} onMapSelected={handleMapSelected} onControlClick={handleDrawingClicked} /> }
+            {selectedMap && !isMapsLoading && 
+                            <MapControlsComponent
+                                maps={maps}
+                                selectedMap={selectedMap}
+                                selectedControl={selectedControl}
+                                onMapCreatedClick={handleMapCreate}
+                                onMapSelected={handleMapSelected}
+                                onControlClick={handleDrawingClicked}
+                            /> 
+            }
             <div className="mapbox-map" ref={mapElement} />
         </>
     )
