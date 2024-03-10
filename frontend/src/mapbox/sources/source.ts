@@ -21,4 +21,7 @@ export abstract class Source<TMapboxCreateSource extends AnySourceData, TMapboxG
 
     public abstract updateSource(options: TUpdateSource): void;
 
+    public remove() {
+        this.map.removeSource(this.id);
+    }
 }

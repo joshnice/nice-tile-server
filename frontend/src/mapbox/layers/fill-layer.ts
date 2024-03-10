@@ -4,7 +4,7 @@ import { Layer } from "./layer";
 export class FillLayer extends Layer {
 
     constructor(map: Map, id: string, sourceId: string, sourceLayerId?: string) {
-        super(map);
+        super(map, id);
         this.createLayer(id, sourceId, sourceLayerId);
     }
 

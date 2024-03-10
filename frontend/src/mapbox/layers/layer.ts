@@ -4,8 +4,14 @@ export abstract class Layer {
 
     public readonly map: Map;
 
-    constructor(map: Map) {
+    public readonly id: string;
+
+    constructor(map: Map, id: string) {
         this.map = map;
+        this.id = id;
     }
-        
+
+    public remove() {
+        this.map.removeLayer(this.id);
+    }
 }

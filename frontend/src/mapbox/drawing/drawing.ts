@@ -39,5 +39,7 @@ export abstract class Drawing {
     public remove() {
         this.map.off("click", this.onClickReference);
         this.map.off("mousemove", this.onMouseMoveReference);
+        this.drawingLayer?.remove();
+        this.drawingSource?.remove();
     }
 }

@@ -15,7 +15,6 @@ export class FillDrawing extends Drawing {
     public drawingSource: GeoJsonSource;
 
     constructor(map: Map, api: Api,  type: "Area", localSource: GeoJsonSource) {
-        console.log("localSource", localSource);
         super(map, api, type, localSource);
 
         this.drawingSource = new GeoJsonSource(this.map, "fill-drawing", null);
