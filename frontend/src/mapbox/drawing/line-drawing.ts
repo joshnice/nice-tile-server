@@ -18,11 +18,11 @@ export class LineDrawing extends Drawing {
 
     public drawingSource: GeoJsonSource;
 
-    constructor(map: Map, api: Api,  type: "Point" | "Line" | "Area", localSource: GeoJsonSource) {
+    constructor(map: Map, api: Api,  type: "Line", localSource: GeoJsonSource) {
         super(map, api, type, localSource);
-
-        this.drawingSource = new GeoJsonSource(this.map, "drawing", null);
-        this.drawingLayer = new LineLayer(this.map, "drawing-layer", "drawing", undefined);
+        
+        this.drawingSource = new GeoJsonSource(this.map, "line-drawing", null);
+        this.drawingLayer = new LineLayer(this.map, "line-drawing-layer", "line-drawing", undefined);
     }
 
     public addEventListeners(): void {

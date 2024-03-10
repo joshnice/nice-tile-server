@@ -33,8 +33,9 @@ const isObjectValid = (feature: Feature<Point | Polygon | LineString>) => {
 
     const isValidPoint = feature.geometry.type === "Point" && typeof feature.geometry.coordinates[0] === "number" && typeof feature.geometry.coordinates[1] === "number";
     const isValidLine = feature.geometry.type === "LineString" && feature.geometry.coordinates.length !== 1 && feature.geometry.coordinates.every((coord) => coord.length === 2 && coord.every(c => typeof c === "number" && isNaN(c) === false));
+    const isValidPolygon = feature.geometry.type === "Polygon" && feature.geometry.coordinates.length === 1 && feature.geometry.coordinates[0].length !== 1 && feature.geometry.coordinates[0].every((coord) => coord.length === 2 && coord.every(c => typeof c === "number" && isNaN(c) === false));
 
-    return isValidPoint || isValidLine;
+    return isValidPoint || isValidLine || isValidPolygon;
 }
 
 objectRoutes.post("", validator("json", (body, c) => {
@@ -60,8 +61,9 @@ const getLayerType = (feature: Feature<Point | LineString | Polygon>) => {
         case "LineString":
             return "Line";
         case "Polygon":
-            "Fill";
+            return "Fill";
         default:
-            throw new Error();
+            // @ts-expect-error
+            throw new Error(`${feature.geometry.type} not handled`);
     }
 }

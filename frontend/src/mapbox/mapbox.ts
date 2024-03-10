@@ -9,6 +9,8 @@ import { VectorSource } from "./sources/vector-source";
 import { LineLayer } from "./layers/line-layer";
 import { LineDrawing } from "./drawing/line-drawing";
 import { GeoJsonSource } from "./sources/geojson-source";
+import { FillDrawing } from "./drawing/fill-drawing";
+import { FillLayer } from "./layers/fill-layer";
 
 export class Mapbox {
 
@@ -64,8 +66,11 @@ export class Mapbox {
             case "Line": 
                 this.drawing = new LineDrawing(this.map, this.api, "Line", this.localSources["local-line-layer-source"]);
                 break;
+            case "Area":
+                this.drawing = new FillDrawing(this.map, this.api, "Area", this.localSources["local-fill-layer-source"]);
+                break;
             default: 
-                throw new Error("not handled");
+                throw new Error(`${type} is not handled`);
         }
 
     }
@@ -79,9 +84,12 @@ export class Mapbox {
         // Remote layers
         this.layers["circle-layer"] = new CircleLayer(this.map, "circle-layer", this.tileSource.id, "Circle");
         this.layers["line-layer"] = new LineLayer(this.map, "line-layer", this.tileSource.id, "Line");
+        this.layers["fill-layer"] = new FillLayer(this.map, "fill-layer", this.tileSource.id, "Area");
+
         // Local layers
         this.layers["local-circle-layer"] = new CircleLayer(this.map, "local-circle-layer", "local-point-layer-source");
         this.layers["local-line-layer"] = new LineLayer(this.map, "local-line-layer", "local-line-layer-source");
+        this.layers["local-fill-layer"] = new FillLayer(this.map, "local-fill-layer", "local-fill-layer-source");
     }
 
     private addSources() {
@@ -90,6 +98,7 @@ export class Mapbox {
         // Local sources
         this.localSources["local-point-layer-source"] = new GeoJsonSource(this.map, "local-point-layer-source", null);
         this.localSources["local-line-layer-source"] = new GeoJsonSource(this.map, "local-line-layer-source", null);
+        this.localSources["local-fill-layer-source"] = new GeoJsonSource(this.map, "local-fill-layer-source", null);
     }
 
     public destory() {

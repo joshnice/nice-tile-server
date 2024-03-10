@@ -1,10 +1,12 @@
 import {  GeoJSONSource as GeoJsonMapboxSource, GeoJSONSourceRaw as GeoJsonRawMapbox } from "mapbox-gl";
-import { Feature, Point, LineString } from "geojson";
+import { Feature, Point, LineString, Polygon } from "geojson";
 import { Source } from "./source";
+
+type AllGeometry = Point | LineString | Polygon;
 
 export class GeoJsonSource extends Source<GeoJsonRawMapbox, GeoJsonMapboxSource, null, Feature> {
 
-    private features: Feature<Point | LineString>[] = [];
+    private features: Feature<AllGeometry>[] = [];
 
     public createSource(): GeoJsonRawMapbox {
         return {
@@ -19,13 +21,13 @@ export class GeoJsonSource extends Source<GeoJsonRawMapbox, GeoJsonMapboxSource,
         source.setData({ type: "FeatureCollection", features: this.features })
     }
 
-    public updateSource(feature: Feature<Point | LineString>): void {
+    public updateSource(feature: Feature<AllGeometry>): void {
         const source = this.getSource();
         this.features.push(feature);
         source.setData({ type: "FeatureCollection", features: this.features });
     }
 
-    public overwriteSource(feature: Feature<Point | LineString>): void {
+    public overwriteSource(feature: Feature<AllGeometry>): void {
         const source = this.getSource();
         this.features = [feature];
         source.setData({ type: "FeatureCollection", features: this.features });
