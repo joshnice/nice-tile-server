@@ -88,12 +88,13 @@ function CreateLayerComponent({ layers = [], selectedLayerId, onCreateLayer }: {
     , document.body);
 
     return (
-        <div>
+        <div className="layers-list">
+            <h2 style={{ margin: "0px" }}>Layers</h2>
             {layers?.map((layer) => {
                 if (layer.id === selectedLayerId) {
-                    return <button>Selected {layer.name}</button>
+                    return <button key={layer.id} className="layer-button selected-layer-button">Selected {layer.name}</button>
                 }
-                return <button>{layer.name}</button>
+                return <button key={layer.id} className="layer-button">{layer.name}</button>
             })}
             <button className="map-button" onClick={() => setCreateLayerModal(true)}>Create Layer</button>
             {createLayerModal && layerDialog}
