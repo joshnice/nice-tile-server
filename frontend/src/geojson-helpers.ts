@@ -1,6 +1,8 @@
 import { Feature, Point, LineString, Polygon } from "geojson";
 
-export function createPointFeature(coordinates: number[]): Feature<Point> {
+type Properties = { layerId: string };
+
+export function createPointFeature(coordinates: number[]): Feature<Point, Properties> {
 
     if (coordinates == null || coordinates.length !== 2 || !coordinates.every(checkCoordinateIsNumber)) {
         throw new Error("Invalid coordinates")
@@ -12,11 +14,13 @@ export function createPointFeature(coordinates: number[]): Feature<Point> {
             type: "Point",
             coordinates: coordinates
         },
-        properties: {},
+        properties: {
+            layerId: "Point"
+        },
     }
 }
 
-export function createLineFeature(coordinates: number[][]): Feature<LineString> {
+export function createLineFeature(coordinates: number[][]): Feature<LineString, Properties> {
 
     if (coordinates == null || coordinates.length < 2 || !coordinates[0].every(checkCoordinateIsNumber)) {
         throw new Error("Invalid coordinates")
@@ -28,11 +32,13 @@ export function createLineFeature(coordinates: number[][]): Feature<LineString> 
             type: "LineString",
             coordinates: coordinates
         },
-        properties: {},
+        properties: {
+            layerId: "Line"
+        },
     }
 }
 
-export function createPolygonFeature(coordinates: number[][][]): Feature<Polygon> {
+export function createPolygonFeature(coordinates: number[][][]): Feature<Polygon, Properties> {
 
     if (coordinates == null || coordinates[0].length < 2 || !coordinates[0][0].every(checkCoordinateIsNumber)) {
         throw new Error("Invalid coordinates")
@@ -44,7 +50,9 @@ export function createPolygonFeature(coordinates: number[][][]): Feature<Polygon
             type: "Polygon",
             coordinates: coordinates
         },
-        properties: {},
+        properties: {
+            layerId: "Fill"
+        },
     }
 }
 

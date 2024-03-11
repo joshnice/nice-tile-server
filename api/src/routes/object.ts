@@ -22,13 +22,17 @@ objectRoutes.get("/:mapId/:z/:x/:y", async (ctx) => {
     return response;
 });
 
-const isObjectValid = (feature: Feature<Point | Polygon | LineString>) => {
+const isObjectValid = (feature: Feature<Point | Polygon | LineString, { layerId: string }>) => {
     if (feature == null) {
         return false;
     }
 
     if (feature.type !== "Feature") {
         return false;
+    }
+
+    if (feature.properties.layerId == null) {
+        return false
     }
 
     const isValidPoint = feature.geometry.type === "Point" && typeof feature.geometry.coordinates[0] === "number" && typeof feature.geometry.coordinates[1] === "number";
@@ -49,21 +53,6 @@ objectRoutes.post("", validator("json", (body, c) => {
     return c.text("Invalid", 400);
 }), async (c) => {
     const {body} = c.req.valid("json")
-    await postObject(body.mapId, body.object, getLayerType(body.object));
+    await postObject(body.mapId, body.object, body.object.properties.layerId);
     return c.text("Success", 200)    
 });
-
-
-const getLayerType = (feature: Feature<Point | LineString | Polygon>) => {
-    switch(feature.geometry.type) {
-        case "Point":
-            return "Circle";
-        case "LineString":
-            return "Line";
-        case "Polygon":
-            return "Fill";
-        default:
-            // @ts-expect-error
-            throw new Error(`${feature.geometry.type} not handled`);
-    }
-}

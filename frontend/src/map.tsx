@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
 import { Mapbox } from "./mapbox/mapbox";
-import MapControlsComponent, { Control } from "./map-controls";
+import MapControlsComponent, { Control, CreateLayer } from "./map-controls";
 import { Api } from "./mapbox/api";
 import useMaps from "./hooks/use-maps";
+import useLayers from "./hooks/use-layers";
 const baseUrl = "http://localhost:3000"
 
 export default function MapComponent() {
@@ -25,6 +26,8 @@ export default function MapComponent() {
     }
 
     const { maps, isMapsLoading, createMap, invalidateMaps } = useMaps(onMapsSuccess);
+
+    const { mapLayers, isMapLayersLoading, createMapLayer, invalidateLayers } = useLayers(selectedMap)
 
     const handleDrawingClicked = (type: Control) => {
         if (selectedControl === type) {
@@ -50,6 +53,19 @@ export default function MapComponent() {
         handleMapSelected(mapId);
     }
 
+    const handleLayerCreate = async (layer: CreateLayer) => {
+
+        console.log("selectedMapRef.current", selectedMapRef.current);
+
+        if (selectedMapRef.current == null) {
+            return;
+        }
+
+        const layerId = uuid();
+        await createMapLayer({ ...layer, id: layerId, mapId: selectedMapRef.current });
+        invalidateLayers();
+    }
+
     useEffect(() => {
         return () => {  
             map.current?.destory?.();
@@ -59,15 +75,17 @@ export default function MapComponent() {
 
     return (
         <>
-            {selectedMap && !isMapsLoading && 
-                            <MapControlsComponent
-                                maps={maps}
-                                selectedMap={selectedMap}
-                                selectedControl={selectedControl}
-                                onMapCreatedClick={handleMapCreate}
-                                onMapSelected={handleMapSelected}
-                                onControlClick={handleDrawingClicked}
-                            /> 
+            {selectedMap && !isMapsLoading && !isMapLayersLoading &&
+                <MapControlsComponent
+                    maps={maps}
+                    selectedMap={selectedMap}
+                    selectedControl={selectedControl}
+                    mapLayers={mapLayers}
+                    onLayerCreated={handleLayerCreate}
+                    onMapCreatedClick={handleMapCreate}
+                    onMapSelected={handleMapSelected}
+                    onControlClick={handleDrawingClicked}
+                /> 
             }
             <div className="mapbox-map" ref={mapElement} />
         </>
