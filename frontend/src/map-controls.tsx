@@ -1,10 +1,10 @@
-import { PropsWithChildren, useState } from "react";
+import { type PropsWithChildren, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquare } from "@fortawesome/free-regular-svg-icons/faSquare";
 import { faCircle } from "@fortawesome/free-regular-svg-icons/faCircle";
 import { faSlash } from "@fortawesome/free-solid-svg-icons/faSlash";
 import { createPortal } from "react-dom";
-import { Layer } from "./types/layer";
+import type { Layer } from "./types/layer";
 
 export type Control = "Point" | "Line" | "Area";
 
@@ -148,10 +148,15 @@ function CreateLayerComponent({
 				</select>
 			</div>
 			<div className="create-layer-buttons">
-				<button className="create-layer-button" onClick={() => handleClose()}>
+				<button
+					type="button"
+					className="create-layer-button"
+					onClick={() => handleClose()}
+				>
 					Close
 				</button>
 				<button
+					type="button"
 					className="create-layer-button"
 					onClick={() => handleCreateLayer()}
 				>
@@ -169,6 +174,7 @@ function CreateLayerComponent({
 				if (layer.id === selectedLayerId) {
 					return (
 						<button
+							type="button"
 							key={layer.id}
 							className="layer-button selected-layer-button"
 						>
@@ -177,12 +183,16 @@ function CreateLayerComponent({
 					);
 				}
 				return (
-					<button key={layer.id} className="layer-button">
+					<button type="button" key={layer.id} className="layer-button">
 						{layer.name}
 					</button>
 				);
 			})}
-			<button className="map-button" onClick={() => setCreateLayerModal(true)}>
+			<button
+				type="button"
+				className="map-button"
+				onClick={() => setCreateLayerModal(true)}
+			>
 				Create Layer
 			</button>
 			{createLayerModal && layerDialog}
