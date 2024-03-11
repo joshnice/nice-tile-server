@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "sudo docker start loving_johnson"
+    "dev": "sudo docker start eager_chaum"
   },
   "author": "joshnice"
 }

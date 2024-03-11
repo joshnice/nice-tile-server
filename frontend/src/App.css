@@ -1,5 +1,6 @@
 body {
     margin: 0px;
+    font-family: Tahoma, sans-serif;
 }
 
 .map-container {
@@ -58,4 +59,52 @@ body {
 
 .map-selection {
     font-size: 20px;
+}
+
+dialog {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 25vh;
+    height: 50vh;
+    max-height: 750px;
+    width: 50vw;
+    max-width: 600px;
+    gap: 30px;
+    border: 1px solid black;
+}
+
+.create-layer-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.create-layer-content {
+    display: flex;
+}
+
+.create-layer-sub-heading {
+    margin-top: 0px;
+    margin-bottom: 15px;
+}
+
+.create-layer-input {
+    margin-bottom: 20px;
+    font-size: 20px;
+    padding: 10px;  
+}
+
+.create-layer-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-end;
+}
+
+.create-layer-button {
+    width: 150px;
+    font-size: 20px;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
 }
