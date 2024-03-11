@@ -3,29 +3,45 @@ import { Layer } from "../types/layer";
 
 const createKey = (mapId: string | null) => ["layers", mapId];
 
-export default function useLayers(mapId: string | null): { mapLayers: Layer[] | undefined, isMapLayersLoading: boolean, invalidateLayers: () => void, createMapLayer: (layer: Layer) => Promise<void> } {
+export default function useLayers(mapId: string | null): {
+	mapLayers: Layer[] | undefined;
+	isMapLayersLoading: boolean;
+	invalidateLayers: () => void;
+	createMapLayer: (layer: Layer) => Promise<void>;
+} {
+	const queryClient = useQueryClient();
 
-    const queryClient = useQueryClient();
+	const invalidateLayers = () => {
+		queryClient.invalidateQueries({ queryKey: createKey(mapId) });
+	};
 
-    const invalidateLayers = () => {
-        queryClient.invalidateQueries({ queryKey: createKey(mapId)});
-    }
+	const { data, isLoading, isFetching } = useQuery({
+		queryKey: createKey(mapId),
+		queryFn: () => getMapLayers(mapId),
+		enabled: mapId != null,
+	});
 
-    const { data, isLoading, isFetching } = useQuery({ queryKey: createKey(mapId), queryFn: () => getMapLayers(mapId), enabled: mapId != null })
-
-    return { mapLayers: data, isMapLayersLoading: isLoading || isFetching, createMapLayer, invalidateLayers }
+	return {
+		mapLayers: data,
+		isMapLayersLoading: isLoading || isFetching,
+		createMapLayer,
+		invalidateLayers,
+	};
 }
 
 async function getMapLayers(mapId: string | null) {
+	if (mapId == null) {
+		return undefined;
+	}
 
-    if (mapId == null) {
-        return undefined;
-    }
-
-    const response = await fetch(`http://localhost:3000/layers/${mapId}`);
-    return response.json();
+	const response = await fetch(`http://localhost:3000/layers/${mapId}`);
+	return response.json();
 }
 
 async function createMapLayer(layer: Layer) {
-    await fetch("http://localhost:3000/layers", { method: "Post", headers: { "Content-Type": "application/json" }, body: JSON.stringify(layer) });
+	await fetch("http://localhost:3000/layers", {
+		method: "Post",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(layer),
+	});
 }
