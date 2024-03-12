@@ -1,19 +1,8 @@
-import { MapMouseEvent, EventData, Map } from "mapbox-gl";
+import type { MapMouseEvent, EventData, Map } from "mapbox-gl";
 import { Drawing } from "./drawing";
 import { createPointFeature } from "../../geojson-helpers";
-import { Api } from "../api";
-import { GeoJsonSource } from "../sources/geojson-source";
 
 export class PointDrawing extends Drawing {
-	constructor(
-		map: Map,
-		api: Api,
-		type: "Point" | "Line" | "Area",
-		localSource: GeoJsonSource,
-	) {
-		super(map, api, type, localSource);
-	}
-
 	public addEventListeners(): void {
 		this.onClick();
 	}

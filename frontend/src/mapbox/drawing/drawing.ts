@@ -1,18 +1,17 @@
-import { Map } from "mapbox-gl";
-import { Api } from "../api";
-import { GeoJsonSource } from "../sources/geojson-source";
-import { Layer } from "../layers/layer";
+import type { Map } from "mapbox-gl";
+import type { Api } from "../api";
+import type { GeoJsonSource } from "../sources/geojson-source";
+import type { Layer } from "../layers/layer";
 
 export abstract class Drawing {
 	public readonly map: Map;
 
 	public readonly api: Api;
 
-	public readonly type: "Point" | "Line" | "Area";
-
 	public readonly localSource: GeoJsonSource;
 
-	// Rename layer class
+	public readonly layerId: string;
+
 	public drawingLayer: Layer | null = null;
 
 	public drawingSource: GeoJsonSource | null = null;
@@ -24,13 +23,13 @@ export abstract class Drawing {
 	constructor(
 		map: Map,
 		api: Api,
-		type: "Point" | "Line" | "Area",
 		localSource: GeoJsonSource,
+		layerId: string
 	) {
 		this.map = map;
 		this.api = api;
-		this.type = type;
 		this.localSource = localSource;
+		this.layerId = layerId;
 		this.addEventListeners();
 	}
 

@@ -1,4 +1,4 @@
-import { Map } from "mapbox-gl";
+import type { Map } from "mapbox-gl";
 
 export abstract class Layer {
 	public readonly map: Map;
