@@ -9,24 +9,25 @@ export class Sources {
 
     private readonly api: Api;
 
-    private tileSourceId: string;
    
     private tileSources: { [sourceId: string]: VectorSource } = {};
 
     private geoJsonSource: { [sourceId: string]: GeoJsonSource } = {};
 
-    constructor(map: Map, api: Api, tileSourceId: string) {
+    constructor(map: Map, api: Api) {
         this.map = map;
         this.api = api;
-        this.tileSourceId = tileSourceId;
-        this.tileSources[this.tileSourceId] = new VectorSource(
+    }
+
+    public addVectorSource(id: string) {
+        this.tileSources[id] = new VectorSource(
 			this.map,
-			this.tileSourceId,
+			id,
 			this.api.createTilesUrl(),
 		);
     }
 
-    public addSource(id: string) {
+    public addGeoJsonSource(id: string) {
         this.geoJsonSource[id] = new GeoJsonSource(
 			this.map,
 			id,

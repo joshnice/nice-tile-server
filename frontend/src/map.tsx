@@ -1,10 +1,15 @@
+import type { Layer } from "./types/layer";
 import { useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
 import { Mapbox } from "./mapbox/mapbox";
-import MapControlsComponent, { Control, CreateLayer } from "./map-controls";
+import MapControlsComponent, {
+	type Control,
+	type CreateLayer,
+} from "./map-controls";
 import { Api } from "./mapbox/api";
 import useMaps from "./hooks/use-maps";
 import useLayers from "./hooks/use-layers";
+
 const baseUrl = "http://localhost:3000";
 
 export default function MapComponent() {
@@ -15,8 +20,11 @@ export default function MapComponent() {
 	// Controls
 	const [selectedControl, setSelectedControl] = useState<Control | null>(null);
 	const [selectedMap, setSelectedMap] = useState<string | null>(null);
+
+	// Map state
 	const selectedMapRef = useRef<string | null>();
 	selectedMapRef.current = selectedMap;
+	const initialLayers = useRef(false);
 
 	const onMapsSuccess = (maps: { id: string; name: string }[]) => {
 		if (selectedMapRef.current == null && maps[0] != null) {
@@ -24,11 +32,21 @@ export default function MapComponent() {
 		}
 	};
 
+	const onLayersSuccess = (layers: Layer[]) => {
+		if (!initialLayers.current) {
+			layers.forEach((layer) => {
+				map.current?.addLayer(layer);
+			});
+		}
+
+		initialLayers.current = true;
+	};
+
 	const { maps, isMapsLoading, createMap, invalidateMaps } =
 		useMaps(onMapsSuccess);
 
 	const { mapLayers, isMapLayersLoading, createMapLayer, invalidateLayers } =
-		useLayers(selectedMap);
+		useLayers(selectedMap, onLayersSuccess);
 
 	const handleDrawingClicked = (type: Control) => {
 		if (selectedControl === type) {
@@ -45,6 +63,7 @@ export default function MapComponent() {
 			map.current = new Mapbox({
 				containerElement: mapElement.current,
 				api: new Api(id, baseUrl),
+				layers: [],
 			});
 			setSelectedMap(id);
 		}
@@ -58,18 +77,20 @@ export default function MapComponent() {
 	};
 
 	const handleLayerCreate = async (layer: CreateLayer) => {
-		console.log("selectedMapRef.current", selectedMapRef.current);
-
 		if (selectedMapRef.current == null) {
 			return;
 		}
 
 		const layerId = uuid();
-		await createMapLayer({
+		const newLayer = {
 			...layer,
 			id: layerId,
 			mapId: selectedMapRef.current,
-		});
+		};
+
+		map.current?.addLayer(newLayer);
+
+		await createMapLayer(newLayer);
 		invalidateLayers();
 	};
 

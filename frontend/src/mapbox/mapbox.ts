@@ -2,6 +2,7 @@ import { Map } from "mapbox-gl";
 import type { Api } from "./api";
 import type { MapboxOptions } from "./mapbox-types";
 import type { Drawing } from "./drawing/drawing";
+import type { Layer } from "../types/layer";
 import { PointDrawing } from "./drawing/point-drawing";
 import { LineDrawing } from "./drawing/line-drawing";
 import { FillDrawing } from "./drawing/fill-drawing";
@@ -37,17 +38,30 @@ export class Mapbox {
 
 		this.api = options.api;
 
-		this.sources = new Sources(this.map, this.api, this.tileSourceId);
+		this.sources = new Sources(this.map, this.api);
 		this.layers = new Layers(this.map, this.tileSourceId);
 
 		this.map.doubleClickZoom.disable();
 
 		this.map.once("load", () => {
+			this.sources.addVectorSource(this.tileSourceId);
 			options.layers.forEach((layer) => {
-				this.sources.addSource(layer.id);
+				this.sources.addGeoJsonSource(layer.id);
 				this.layers.addLayer(layer);
 			})
 		});
+	}
+
+	public addLayer(layer: Layer) {
+		if (this.map.loaded()) {
+			this.sources.addGeoJsonSource(layer.id);
+			this.layers.addLayer(layer);
+		} else {
+			this.map.once("load", () => {
+				this.sources.addGeoJsonSource(layer.id);
+				this.layers.addLayer(layer);
+			});
+		}
 	}
 
 	public onLayerSelected(layerId: string) {

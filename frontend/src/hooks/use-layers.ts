@@ -1,9 +1,9 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Layer } from "../types/layer";
+import type { Layer } from "../types/layer";
 
 const createKey = (mapId: string | null) => ["layers", mapId];
 
-export default function useLayers(mapId: string | null): {
+export default function useLayers(mapId: string | null, onSuccess: (layers: Layer[]) => void): {
 	mapLayers: Layer[] | undefined;
 	isMapLayersLoading: boolean;
 	invalidateLayers: () => void;
@@ -15,9 +15,15 @@ export default function useLayers(mapId: string | null): {
 		queryClient.invalidateQueries({ queryKey: createKey(mapId) });
 	};
 
+	const queryFn = async () => {
+		const response = await getMapLayers(mapId);
+		onSuccess(response);
+		return response;
+	}
+
 	const { data, isLoading, isFetching } = useQuery({
 		queryKey: createKey(mapId),
-		queryFn: () => getMapLayers(mapId),
+		queryFn,
 		enabled: mapId != null,
 	});
 
