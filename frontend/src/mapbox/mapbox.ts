@@ -45,14 +45,11 @@ export class Mapbox {
 
 		this.map.once("load", () => {
 			this.sources.addVectorSource(this.tileSourceId);
-			options.layers.forEach((layer) => {
-				this.sources.addGeoJsonSource(layer.id);
-				this.layers.addLayer(layer);
-			})
 		});
 	}
 
 	public addLayer(layer: Layer) {
+		// Then remove this
 		if (this.map.loaded()) {
 			this.sources.addGeoJsonSource(layer.id);
 			this.layers.addLayer(layer);
@@ -64,7 +61,12 @@ export class Mapbox {
 		}
 	}
 
-	public onLayerSelected(layerId: string) {
+	public onLayerSelected(layerId: string | null) {
+
+		if (layerId == null) {
+			this.drawing?.remove();
+			return;
+		}
 
 		const layer = this.layers.getLayer(layerId);
 

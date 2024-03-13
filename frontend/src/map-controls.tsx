@@ -1,8 +1,4 @@
-import { type PropsWithChildren, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSquare } from "@fortawesome/free-regular-svg-icons/faSquare";
-import { faCircle } from "@fortawesome/free-regular-svg-icons/faCircle";
-import { faSlash } from "@fortawesome/free-solid-svg-icons/faSlash";
+import { useState } from "react";
 import { createPortal } from "react-dom";
 import type { Layer } from "./types/layer";
 
@@ -11,45 +7,33 @@ export type Control = "Point" | "Line" | "Area";
 export type CreateLayer = Omit<Layer, "mapId" | "id">;
 
 export default function MapControlsComponent({
-	selectedControl,
+	selectedLayer,
 	maps,
 	selectedMap,
 	mapLayers = [],
 	onMapSelected,
 	onLayerCreated,
 	onMapCreatedClick,
-	onControlClick,
+	onLayerSelected,
 }: {
-	selectedControl: Control | null;
+	selectedLayer: string | null;
 	maps: { id: string; name: string }[];
 	selectedMap: string;
 	mapLayers?: Layer[] | null;
 	onMapSelected: (id: string) => void;
 	onMapCreatedClick: () => void;
 	onLayerCreated: (layer: CreateLayer) => void;
-	onControlClick: (type: Control) => void;
+	onLayerSelected: (id: string) => void;
 }) {
 	return (
 		<>
 			<div className="map-controls-container map-controls-container-left">
-				<ControlComponent
-					selected={selectedControl === "Area"}
-					onClick={() => onControlClick("Area")}
-				>
-					<FontAwesomeIcon className="map-control-icon" icon={faSquare} />
-				</ControlComponent>
-				<ControlComponent
-					selected={selectedControl === "Line"}
-					onClick={() => onControlClick("Line")}
-				>
-					<FontAwesomeIcon className="map-control-icon" icon={faSlash} />
-				</ControlComponent>
-				<ControlComponent
-					selected={selectedControl === "Point"}
-					onClick={() => onControlClick("Point")}
-				>
-					<FontAwesomeIcon className="map-control-icon" icon={faCircle} />
-				</ControlComponent>
+				<CreateLayerComponent
+					layers={mapLayers}
+					selectedLayerId={selectedLayer}
+					onCreateLayer={onLayerCreated}
+					onLayerSelected={onLayerSelected}
+				/>
 			</div>
 			<div className="map-controls-container map-controls-container-right">
 				<select
@@ -70,30 +54,8 @@ export default function MapControlsComponent({
 				>
 					Create Map
 				</button>
-				<CreateLayerComponent
-					layers={mapLayers}
-					selectedLayerId={null}
-					onCreateLayer={onLayerCreated}
-				/>
 			</div>
 		</>
-	);
-}
-
-function ControlComponent({
-	selected,
-	onClick,
-	children,
-}: PropsWithChildren<{ selected: boolean; onClick: () => void }>) {
-	return (
-		<button
-			type="button"
-			className="map-button map-control"
-			onClick={onClick}
-			style={{ backgroundColor: selected ? "lightblue" : "white" }}
-		>
-			{children}
-		</button>
 	);
 }
 
@@ -101,10 +63,12 @@ function CreateLayerComponent({
 	layers = [],
 	selectedLayerId,
 	onCreateLayer,
+	onLayerSelected,
 }: {
 	layers: Layer[] | null;
 	selectedLayerId: string | null;
 	onCreateLayer: (layer: CreateLayer) => void;
+	onLayerSelected: (id: string) => void;
 }) {
 	const [createLayerModal, setCreateLayerModal] = useState(false);
 	const [layer, setLayer] = useState<CreateLayer>({ name: "", type: "Fill" });
@@ -177,13 +141,19 @@ function CreateLayerComponent({
 							type="button"
 							key={layer.id}
 							className="layer-button selected-layer-button"
+							onClick={() => onLayerSelected(layer.id)}
 						>
-							Selected {layer.name}
+							{layer.name}
 						</button>
 					);
 				}
 				return (
-					<button type="button" key={layer.id} className="layer-button">
+					<button
+						type="button"
+						key={layer.id}
+						className="layer-button"
+						onClick={() => onLayerSelected(layer.id)}
+					>
 						{layer.name}
 					</button>
 				);

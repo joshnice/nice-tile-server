@@ -2,10 +2,7 @@ import type { Layer } from "./types/layer";
 import { useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
 import { Mapbox } from "./mapbox/mapbox";
-import MapControlsComponent, {
-	type Control,
-	type CreateLayer,
-} from "./map-controls";
+import MapControlsComponent, { type CreateLayer } from "./map-controls";
 import { Api } from "./mapbox/api";
 import useMaps from "./hooks/use-maps";
 import useLayers from "./hooks/use-layers";
@@ -18,7 +15,7 @@ export default function MapComponent() {
 	const mapElement = useRef<HTMLDivElement>(null);
 
 	// Controls
-	const [selectedControl, setSelectedControl] = useState<Control | null>(null);
+	const [selectedLayer, setSelectedLayer] = useState<string | null>(null);
 	const [selectedMap, setSelectedMap] = useState<string | null>(null);
 
 	// Map state
@@ -48,13 +45,13 @@ export default function MapComponent() {
 	const { mapLayers, isMapLayersLoading, createMapLayer, invalidateLayers } =
 		useLayers(selectedMap, onLayersSuccess);
 
-	const handleDrawingClicked = (type: Control) => {
-		if (selectedControl === type) {
-			setSelectedControl(null);
+	const handleLayerSelected = (id: string) => {
+		if (selectedLayer === id) {
+			setSelectedLayer(null);
 		} else {
-			setSelectedControl(type);
+			setSelectedLayer(id);
 		}
-		map.current?.onDrawingClicked(type);
+		map.current?.onLayerSelected(id);
 	};
 
 	const handleMapSelected = (id: string) => {
@@ -63,7 +60,6 @@ export default function MapComponent() {
 			map.current = new Mapbox({
 				containerElement: mapElement.current,
 				api: new Api(id, baseUrl),
-				layers: [],
 			});
 			setSelectedMap(id);
 		}
@@ -107,12 +103,12 @@ export default function MapComponent() {
 				<MapControlsComponent
 					maps={maps}
 					selectedMap={selectedMap}
-					selectedControl={selectedControl}
+					selectedLayer={selectedLayer}
 					mapLayers={mapLayers}
 					onLayerCreated={handleLayerCreate}
 					onMapCreatedClick={handleMapCreate}
 					onMapSelected={handleMapSelected}
-					onControlClick={handleDrawingClicked}
+					onLayerSelected={handleLayerSelected}
 				/>
 			)}
 			<div className="mapbox-map" ref={mapElement} />

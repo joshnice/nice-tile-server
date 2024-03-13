@@ -92,7 +92,7 @@ dialog {
 .create-layer-input {
     margin-bottom: 20px;
     font-size: 20px;
-    padding: 10px;  
+    padding: 10px;
 }
 
 .create-layer-buttons {
@@ -118,7 +118,7 @@ dialog {
 }
 
 .selected-layer-button {
-    background-color: aliceblue;
+    background-color: #bde0ff;
 }
 
 .layers-list {
