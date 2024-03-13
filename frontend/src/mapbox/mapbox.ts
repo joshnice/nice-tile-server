@@ -1,6 +1,6 @@
 import { Map } from "mapbox-gl";
 import type { Api } from "./api";
-import type { MapboxOptions } from "./mapbox-types";
+import type { MapEvents, MapboxOptions } from "./mapbox-types";
 import type { Drawing } from "./drawing/drawing";
 import type { Layer } from "../types/layer";
 import { PointDrawing } from "./drawing/point-drawing";
@@ -23,6 +23,8 @@ export class Mapbox {
 
 	public readonly sources: Sources;
 
+	private readonly events: MapEvents;
+
 	private drawing: Drawing | null = null;
 
 	constructor(options: MapboxOptions) {
@@ -37,6 +39,7 @@ export class Mapbox {
 		});
 
 		this.api = options.api;
+		this.events = options.events;
 
 		this.sources = new Sources(this.map, this.api);
 		this.layers = new Layers(this.map, this.tileSourceId);
@@ -45,6 +48,15 @@ export class Mapbox {
 
 		this.map.once("load", () => {
 			this.sources.addVectorSource(this.tileSourceId);
+		});
+
+		this.map.on("click", (event) => {
+			const f = this.map.queryRenderedFeatures(event.point);
+			if (f.length > 0) {
+				this.events.onObjectClicked.next(f[0].properties?.id);
+			} else {
+				this.events.onObjectClicked.next(null)
+			}
 		});
 	}
 

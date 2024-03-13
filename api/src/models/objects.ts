@@ -19,6 +19,7 @@ export async function getObjects(
 	const SQL = `
     with mvtgeom as ( 
       select
+        objects.id,
         objects.properties,
         ST_AsMVTGeom( geom, ST_MakeEnvelope(${bbox[0]}, ${bbox[1]}, ${bbox[2]}, ${bbox[3]}, 4326), 4096, 256,true ) geom, layer_id
       from

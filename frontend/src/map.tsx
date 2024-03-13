@@ -6,6 +6,7 @@ import MapControlsComponent, { type CreateLayer } from "./map-controls";
 import { Api } from "./mapbox/api";
 import useMaps from "./hooks/use-maps";
 import useLayers from "./hooks/use-layers";
+import useObjectSelected from "./hooks/use-object-selected";
 
 const baseUrl = "http://localhost:3000";
 
@@ -39,11 +40,17 @@ export default function MapComponent() {
 		initialLayers.current = true;
 	};
 
+	// Hooks
+
 	const { maps, isMapsLoading, createMap, invalidateMaps } =
 		useMaps(onMapsSuccess);
 
 	const { mapLayers, isMapLayersLoading, createMapLayer, invalidateLayers } =
 		useLayers(selectedMap, onLayersSuccess);
+
+	const { selectedObject, onObjectSelected } = useObjectSelected();
+
+	// External events
 
 	const handleLayerSelected = (id: string) => {
 		if (selectedLayer === id) {
@@ -60,6 +67,9 @@ export default function MapComponent() {
 			map.current = new Mapbox({
 				containerElement: mapElement.current,
 				api: new Api(id, baseUrl),
+				events: {
+					onObjectClicked: onObjectSelected,
+				},
 			});
 			setSelectedMap(id);
 		}
@@ -90,12 +100,16 @@ export default function MapComponent() {
 		invalidateLayers();
 	};
 
+	// Clean up
+
 	useEffect(() => {
 		return () => {
 			map.current?.destory?.();
 			map.current = null;
 		};
 	}, []);
+
+	console.log("selectedMapObject", selectedObject);
 
 	return (
 		<>
