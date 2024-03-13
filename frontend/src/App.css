@@ -152,3 +152,10 @@ dialog {
     outline: inherit;
     font-size: 20px;
 }
+
+.properties-list {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    flex-wrap: wrap;
+}

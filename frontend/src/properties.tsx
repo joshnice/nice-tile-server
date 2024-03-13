@@ -5,8 +5,11 @@ import { createPortal } from "react-dom";
 export default function PropertiesComponent({
 	selectedObjectId,
 }: { selectedObjectId: string }) {
-	const [edit, setEdit] = useState<{ key: string; value: string } | null>(null);
-
+	const [edit, setEdit] = useState<{
+		originalKey: string | null;
+		key: string;
+		value: string;
+	} | null>(null);
 	const queryClient = useQueryClient();
 
 	const { data, isLoading } = useQuery({
@@ -15,10 +18,20 @@ export default function PropertiesComponent({
 	});
 
 	const handleUpdate = async () => {
-		if (edit != null) {
-			await updateObjectProperties(selectedObjectId, {
-				[edit.key]: edit.value,
-			});
+		if (edit != null && data != null) {
+			if (edit.originalKey == null) {
+				await updateObjectProperties(selectedObjectId, {
+					...data.properties,
+					[edit.key]: edit.value,
+				});
+			} else {
+				const copiedProps = { ...data.properties };
+				delete copiedProps[edit.originalKey];
+				await updateObjectProperties(selectedObjectId, {
+					...copiedProps,
+					[edit.key]: edit.value,
+				});
+			}
 			queryClient.invalidateQueries({
 				queryKey: ["object-properties", selectedObjectId],
 			});
@@ -86,11 +99,11 @@ export default function PropertiesComponent({
 				{isLoading ? (
 					<span>Loading</span>
 				) : (
-					<div>
+					<div className="properties-list">
 						{Object.entries(data?.properties ?? {}).map(([key, value]) => (
 							<button
 								key={key}
-								onClick={() => setEdit({ key, value })}
+								onClick={() => setEdit({ key, value, originalKey: key })}
 								className="object-property"
 								type="button"
 							>
@@ -99,6 +112,15 @@ export default function PropertiesComponent({
 								</div>
 							</button>
 						))}
+						<button
+							type="button"
+							className="map-button"
+							onClick={() => {
+								setEdit({ key: "", value: "", originalKey: null });
+							}}
+						>
+							Add Property
+						</button>
 					</div>
 				)}
 			</div>
