@@ -1,4 +1,4 @@
-import type { MapMouseEvent, EventData, Map } from "mapbox-gl";
+import type { MapMouseEvent, EventData } from "mapbox-gl";
 import { Drawing } from "./drawing";
 import { createPointFeature } from "../../geojson-helpers";
 
