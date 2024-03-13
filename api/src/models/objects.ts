@@ -1,4 +1,4 @@
-import { Feature, Point } from "geojson";
+import type { Feature, Point } from "geojson";
 import { v4 as uuid } from "uuid";
 import { client } from "../db/connection";
 const SphericalMercator = require("@mapbox/sphericalmercator");
@@ -18,7 +18,8 @@ export async function getObjects(
 
 	const SQL = `
     with mvtgeom as ( 
-      select 
+      select
+        objects.properties,
         ST_AsMVTGeom( geom, ST_MakeEnvelope(${bbox[0]}, ${bbox[1]}, ${bbox[2]}, ${bbox[3]}, 4326), 4096, 256,true ) geom, layer_id
       from
         objects
@@ -55,3 +56,16 @@ export async function postObject(
 
 	return client.query(sql);
 }
+
+
+// SELECT 
+//             ST_AsMVT(mvtGeometryRow, 'MVTGeometryRow', 4096, 'geom') as result
+//         FROM ( 
+//             SELECT 
+//                 isTreatment,isbuffer,fourCornersRepresentativeToTreatmentAsGeoJSON,fourCornersRepresentativeToBufferAsGeoJSON,distanceFromCenterPointOfTreatmentToNearestEdge,
+//                 distanceFromCenterPointOfBufferToNearestEdge,areasOfCoveragePerWindowForCellsRepresentativeToTreatment,areasOfCoveragePerWindowForCellsRepresentativeToBuffer,averageHeightsPerWindowRepresentativeToTreatment,
+//                 averageHeightsPerWindowRepresentativeToBuffer,geometryOfCellRepresentativeToTreatment,geometryOfCellRepresentativeToBuffer,
+//                 ST_AsMVTGeom(
+//                     geometryOfCellRepresentativeToTreatment,ST_MakeEnvelope(%s,%s,%s,%s,4326),4096,0,false) As geom
+//             FROM grid_cell_data where  geometryOfCellRepresentativeToTreatment <> 'POLYGON EMPTY' and fourCornersRepresentativeToTreatmentAsGeoJSON <> '' and fourCornersRepresentativeToTreatmentAsGeoJSON IS NOT null
+//             ) mvtGeometryRow

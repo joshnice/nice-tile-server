@@ -24,6 +24,7 @@ create table objects (
     geom geometry,
     map_id uuid,
     layer_id uuid,
+    properties jsonb,
     constraint fk_map_id foreign key (map_id) references maps(id),
     constraint fk_layer_id foreign key (layer_id) references layers(id)
 );
