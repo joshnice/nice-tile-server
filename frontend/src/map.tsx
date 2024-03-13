@@ -7,6 +7,7 @@ import { Api } from "./mapbox/api";
 import useMaps from "./hooks/use-maps";
 import useLayers from "./hooks/use-layers";
 import useObjectSelected from "./hooks/use-object-selected";
+import PropertiesComponent from "./properties";
 
 const baseUrl = "http://localhost:3000";
 
@@ -109,8 +110,6 @@ export default function MapComponent() {
 		};
 	}, []);
 
-	console.log("selectedMapObject", selectedObject);
-
 	return (
 		<>
 			{selectedMap && !isMapsLoading && !isMapLayersLoading && (
@@ -126,6 +125,9 @@ export default function MapComponent() {
 				/>
 			)}
 			<div className="mapbox-map" ref={mapElement} />
+			{selectedObject != null && (
+				<PropertiesComponent selectedObjectId={selectedObject} />
+			)}
 		</>
 	);
 }

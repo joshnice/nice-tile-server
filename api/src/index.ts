@@ -13,7 +13,7 @@ app.use("/*", cors());
 app.route("/object", objectRoutes);
 app.route("/maps", mapsRoute);
 app.route("/layers", layersRoutes);
-app.route("objects/properties", objectPropertiesRoute);
+app.route("/object/properties", objectPropertiesRoute);
 
 const port = 3000;
 

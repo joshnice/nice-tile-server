@@ -9,19 +9,13 @@ objectPropertiesRoute.get("/:id", async (ctx) => {
 
     const properties = await getObjectProperties(objectId);
 
-    ctx.json(properties);
+    return ctx.json(properties);
 });
 
-objectPropertiesRoute.patch("", validator("json", (body, ctx) => {
-    const objectId = body.objectId;
-    const properties = body.properties;
-    if (objectId != null && properties != null) {
-        return { body };
-    }
-    ctx.text("Invalid!", 400);
-}),
-async (ctx) => {
-	const { body } = await ctx.req.json();
-    await updateObjectProperties(body.objectId, body.properties);
+objectPropertiesRoute.put("/:id", async (ctx) => {
+    const id = ctx.req.param("id");
+    const body = await ctx.req.json();
+    console.log("body", body);
+    await updateObjectProperties(id, body);
     return ctx.text("Success", 200);
 });

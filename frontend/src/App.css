@@ -129,3 +129,26 @@ dialog {
     flex-direction: column;
     gap: 10px;
 }
+
+.properties-container {
+    z-index: 5;
+    position: absolute;
+    bottom: 10px;
+    left: 20vw;
+    height: 20vh;
+    width: 60vw;
+    background-color: white;
+    border: 2px solid black;
+    padding: 20px;
+}
+
+.object-property {
+    background: none;
+    color: inherit;
+    border: 1px solid gray;
+    padding: 10px;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    font-size: 20px;
+}
