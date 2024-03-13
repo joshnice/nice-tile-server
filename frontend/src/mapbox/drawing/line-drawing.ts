@@ -71,7 +71,7 @@ export class LineDrawing extends Drawing {
 		];
 		if (this.drawingSourceCoordiantes.length > 1) {
 			this.drawingSource.overwriteSource(
-				createLineFeature(this.drawingSourceCoordiantes),
+				createLineFeature(this.drawingSourceCoordiantes, this.layerId),
 			);
 		}
 	}
@@ -80,7 +80,7 @@ export class LineDrawing extends Drawing {
 		const newObject = createLineFeature([
 			...this.drawingSourceCoordiantes,
 			event.lngLat.toArray(),
-		]);
+		], this.layerId);
 		this.localSource.updateSource(newObject);
 		this.drawingSource.resetSource();
 		this.drawingSourceCoordiantes = [];
@@ -93,7 +93,7 @@ export class LineDrawing extends Drawing {
 				createLineFeature([
 					...this.drawingSourceCoordiantes,
 					event.lngLat.toArray(),
-				]),
+				], this.layerId),
 			);
 		}
 	}

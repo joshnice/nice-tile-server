@@ -13,7 +13,7 @@ export class PointDrawing extends Drawing {
 	}
 
 	private async onClickHandler(event: MapMouseEvent & EventData) {
-		const pointObject = createPointFeature(event.lngLat.toArray());
+		const pointObject = createPointFeature(event.lngLat.toArray(), this.layerId);
 		await this.api.createObject(pointObject);
 		this.localSource.updateSource(pointObject);
 	}

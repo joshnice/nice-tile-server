@@ -1,9 +1,10 @@
-import { Feature, Point, LineString, Polygon } from "geojson";
+import type { Feature, Point, LineString, Polygon } from "geojson";
 
 type Properties = { layerId: string };
 
 export function createPointFeature(
 	coordinates: number[],
+	layerId: string,
 ): Feature<Point, Properties> {
 	if (
 		coordinates == null ||
@@ -20,13 +21,14 @@ export function createPointFeature(
 			coordinates: coordinates,
 		},
 		properties: {
-			layerId: "Point",
+			layerId,
 		},
 	};
 }
 
 export function createLineFeature(
 	coordinates: number[][],
+	layerId: string,
 ): Feature<LineString, Properties> {
 	if (
 		coordinates == null ||
@@ -43,13 +45,14 @@ export function createLineFeature(
 			coordinates: coordinates,
 		},
 		properties: {
-			layerId: "Line",
+			layerId,
 		},
 	};
 }
 
 export function createPolygonFeature(
 	coordinates: number[][][],
+	layerId: string,
 ): Feature<Polygon, Properties> {
 	if (
 		coordinates == null ||
@@ -66,11 +69,11 @@ export function createPolygonFeature(
 			coordinates: coordinates,
 		},
 		properties: {
-			layerId: "Fill",
+			layerId,
 		},
 	};
 }
 
 function checkCoordinateIsNumber(coordinate: number) {
-	return typeof coordinate === "number" && isNaN(coordinate) === false;
+	return typeof coordinate === "number" && Number.isNaN(coordinate) === false;
 }

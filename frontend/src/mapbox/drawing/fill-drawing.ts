@@ -72,14 +72,14 @@ export class FillDrawing extends Drawing {
 					[...this.drawingSourceCoordiantes, this.drawingSourceCoordiantes[0]],
 				];
 
-				const newObject = createPolygonFeature(polygonCoordinates);
+				const newObject = createPolygonFeature(polygonCoordinates, this.layerId);
 				this.localSource.updateSource(newObject);
 				this.drawingSourceCoordiantes = [];
 				this.api.createObject(newObject);
 			} else {
 				// Append node
 				this.drawingSource.overwriteSource(
-					createLineFeature(this.drawingSourceCoordiantes),
+					createLineFeature(this.drawingSourceCoordiantes, this.layerId),
 				);
 			}
 		}
@@ -91,7 +91,7 @@ export class FillDrawing extends Drawing {
 				createLineFeature([
 					...this.drawingSourceCoordiantes,
 					event.lngLat.toArray(),
-				]),
+				], this.layerId),
 			);
 		}
 	}

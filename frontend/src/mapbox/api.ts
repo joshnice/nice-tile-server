@@ -1,4 +1,4 @@
-import { Feature, Polygon, LineString, Point } from "geojson";
+import type { Feature, Polygon, LineString, Point } from "geojson";
 
 export class Api {
 	private readonly mapId: string;
