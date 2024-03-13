@@ -4,6 +4,7 @@ import { cors } from "hono/cors";
 import { objectRoutes } from "./routes/object";
 import { mapsRoute } from "./routes/maps";
 import { layersRoutes } from "./routes/layers";
+import { objectPropertiesRoute } from "./routes/object-properties";
 
 const app = new Hono();
 
@@ -12,6 +13,7 @@ app.use("/*", cors());
 app.route("/object", objectRoutes);
 app.route("/maps", mapsRoute);
 app.route("/layers", layersRoutes);
+app.route("objects/properties", objectPropertiesRoute);
 
 const port = 3000;
 
