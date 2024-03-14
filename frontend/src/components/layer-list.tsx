@@ -55,7 +55,7 @@ export default function LayerListComponent({
 							key={layer.id}
 							className={
 								layer.id === selectedLayerId
-									? "layer-button selected-layer-button"
+									? "layer-button selected-button"
 									: "layer-button"
 							}
 							onClick={() => onLayerSelected(layer.id)}
@@ -69,7 +69,7 @@ export default function LayerListComponent({
 							<button
 								type="button"
 								key={selectedLayer?.id}
-								className="layer-button selected-layer-button"
+								className="layer-button selected-button"
 								onClick={() => onLayerSelected(selectedLayer?.id)}
 							>
 								{selectedLayer.name}

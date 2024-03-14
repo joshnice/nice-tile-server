@@ -8,6 +8,7 @@ import useMaps from "../hooks/use-maps";
 import useLayers from "../hooks/use-layers";
 import useObjectSelected from "../hooks/use-object-selected";
 import PropertiesComponent from "./properties";
+import RandomPointsComponent from "./random-points";
 
 const baseUrl = "http://localhost:3000";
 
@@ -19,6 +20,7 @@ export default function MapComponent() {
 	// Controls
 	const [selectedLayer, setSelectedLayer] = useState<string | null>(null);
 	const [selectedMap, setSelectedMap] = useState<string | null>(null);
+	const [randomPoints, setRandomPoints] = useState<boolean>(false);
 
 	// Map state
 	const selectedMapRef = useRef<string | null>();
@@ -102,6 +104,14 @@ export default function MapComponent() {
 		handleLayerSelected(newLayer.id);
 	};
 
+	const handleRandomPointsSelected = () => {
+		setRandomPoints(true);
+	};
+
+	const handleRandomPointsNext = (layerId: string, amount: number) => {
+		map.current?.onRandomPointsSelected(layerId, amount);
+	};
+
 	// Clean up
 
 	useEffect(() => {
@@ -119,15 +129,24 @@ export default function MapComponent() {
 					selectedMap={selectedMap}
 					selectedLayer={selectedLayer}
 					mapLayers={mapLayers}
+					randomPointsSelected={randomPoints}
 					onLayerCreated={handleLayerCreate}
 					onMapCreatedClick={handleMapCreate}
 					onMapSelected={handleMapSelected}
 					onLayerSelected={handleLayerSelected}
+					onRandomPointsSelected={handleRandomPointsSelected}
 				/>
 			)}
 			<div className="mapbox-map" ref={mapElement} />
 			{selectedObject != null && (
 				<PropertiesComponent selectedObjectId={selectedObject} />
+			)}
+			{randomPoints && (
+				<RandomPointsComponent
+					layers={mapLayers ?? []}
+					onSubmit={handleRandomPointsNext}
+					onClose={() => setRandomPoints(false)}
+				/>
 			)}
 		</>
 	);

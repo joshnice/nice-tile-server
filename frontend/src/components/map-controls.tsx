@@ -1,5 +1,6 @@
 import type { Layer, CreateLayer } from "../types/layer";
 import LayerListComponent from "./layer-list";
+import ControlComponent from "./map-control-button";
 import MapListComponent from "./map-list";
 
 export type Control = "Point" | "Line" | "Area";
@@ -9,19 +10,23 @@ export default function MapControlsComponent({
 	maps,
 	selectedMap,
 	mapLayers = [],
+	randomPointsSelected,
 	onMapSelected,
 	onLayerCreated,
 	onMapCreatedClick,
 	onLayerSelected,
+	onRandomPointsSelected,
 }: {
 	selectedLayer: string | null;
 	maps: { id: string; name: string }[];
 	selectedMap: string;
 	mapLayers?: Layer[] | null;
+	randomPointsSelected: boolean;
 	onMapSelected: (id: string) => void;
 	onMapCreatedClick: () => void;
 	onLayerCreated: (layer: CreateLayer) => void;
 	onLayerSelected: (id: string) => void;
+	onRandomPointsSelected: () => void;
 }) {
 	return (
 		<>
@@ -32,6 +37,12 @@ export default function MapControlsComponent({
 					onCreateLayer={onLayerCreated}
 					onLayerSelected={onLayerSelected}
 				/>
+				<ControlComponent
+					selected={randomPointsSelected}
+					onClick={onRandomPointsSelected}
+				>
+					RP
+				</ControlComponent>
 			</div>
 			<div className="map-controls-container map-controls-container-right">
 				<MapListComponent

@@ -125,6 +125,10 @@ export class Mapbox {
 
 	}
 
+	public onRandomPointsSelected(layerId: string, amount: number) {
+
+	}
+
 	public destory() {
 		this.map.remove();
 	}
