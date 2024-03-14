@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import type { CreateLayer, Layer } from "../types/layer";
+import MinMaxComponent from "./min-max";
 
 export default function LayerListComponent({
 	layers = [],
@@ -15,6 +16,8 @@ export default function LayerListComponent({
 }) {
 	const [createLayerModal, setCreateLayerModal] = useState(false);
 	const [layer, setLayer] = useState<CreateLayer>({ name: "", type: "Fill" });
+
+	const [expand, setExpand] = useState(true);
 
 	const handleCreateLayer = () => {
 		setCreateLayerModal(false);
@@ -74,33 +77,46 @@ export default function LayerListComponent({
 		document.body,
 	);
 
+	const selectedLayer = useMemo(
+		() => layers?.find((l) => l.id === selectedLayerId),
+		[layers, selectedLayerId],
+	);
+
 	return (
 		<div className="layers-list">
+			<MinMaxComponent value={expand} onClick={() => setExpand(!expand)} />
 			<h2 style={{ margin: "0px" }}>Layers</h2>
-			{layers?.map((layer) => {
-				if (layer.id === selectedLayerId) {
-					return (
+			<div className="layers-list-layers">
+				{expand ? (
+					layers?.map((layer) => (
 						<button
 							type="button"
 							key={layer.id}
-							className="layer-button selected-layer-button"
+							className={
+								layer.id === selectedLayerId
+									? "layer-button selected-layer-button"
+									: "layer-button"
+							}
 							onClick={() => onLayerSelected(layer.id)}
 						>
 							{layer.name}
 						</button>
-					);
-				}
-				return (
-					<button
-						type="button"
-						key={layer.id}
-						className="layer-button"
-						onClick={() => onLayerSelected(layer.id)}
-					>
-						{layer.name}
-					</button>
-				);
-			})}
+					))
+				) : (
+					<>
+						{selectedLayer && (
+							<button
+								type="button"
+								key={selectedLayer?.id}
+								className="layer-button selected-layer-button"
+								onClick={() => onLayerSelected(selectedLayer?.id)}
+							>
+								{selectedLayer.name}
+							</button>
+						)}
+					</>
+				)}
+			</div>
 			<button
 				type="button"
 				className="map-button"

@@ -59,6 +59,7 @@ body {
 
 .map-selection {
     font-size: 20px;
+    width: 200px;
 }
 
 dialog {
@@ -115,6 +116,7 @@ dialog {
     background-color: white;
     border: 1px solid black;
     padding: 5px;
+    width: 100%;
 }
 
 .selected-layer-button {
@@ -122,12 +124,22 @@ dialog {
 }
 
 .layers-list {
+    width: 300px;
     border: 2px solid black;
     background-color: white;
     padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    max-height: 40vh;
+}
+
+.layers-list-layers {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    overflow-y: auto;
 }
 
 .properties-container {
@@ -158,4 +170,27 @@ dialog {
     gap: 10px;
     flex-direction: column;
     flex-wrap: wrap;
+}
+
+.min-max-button {
+    color: black;
+    cursor: pointer;
+    font-size: 20px;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    background-color: white;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+
+    :hover {
+        background-color: #e6e6e6;
+    }
+}
+
+.min-max-icon {
+    padding: 8px;
 }
