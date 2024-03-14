@@ -99,6 +99,7 @@ export default function MapComponent() {
 
 		await createMapLayer(newLayer);
 		invalidateLayers();
+		handleLayerSelected(newLayer.id);
 	};
 
 	// Clean up
