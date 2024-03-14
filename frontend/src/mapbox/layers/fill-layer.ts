@@ -1,15 +1,26 @@
-import { FillLayer as MapboxFillLayer, Map } from "mapbox-gl";
+import type { FillLayer as MapboxFillLayer, Map } from "mapbox-gl";
+import type { FillStyle } from "./styles";
 import { Layer } from "./layer";
 
-export class FillLayer extends Layer {
-	constructor(map: Map, id: string, sourceId: string, sourceLayerId?: string) {
-		super(map, id);
-		this.createLayer(id, sourceId, sourceLayerId);
+
+const defaultStyle: FillStyle = {
+	colour: "#6b71e3",
+	opacity: 0.6
+}
+
+export class FillLayer extends Layer<FillStyle> {
+	constructor(map: Map, id: string, sourceId: string, sourceLayerId?: string, styleOverrides?: Partial<FillStyle>) {
+		// Create a complete style
+		const style = {...defaultStyle, ...styleOverrides};
+		super(map, id, style);
+
+		this.createLayer(id, sourceId, style, sourceLayerId);
 	}
 
 	private createLayer(
 		id: string,
 		sourceId: string,
+		style: FillStyle,
 		sourceLayerId?: string,
 	): void {
 		const fillLayer: MapboxFillLayer = {
@@ -17,8 +28,8 @@ export class FillLayer extends Layer {
 			source: sourceId,
 			type: "fill",
 			paint: {
-				"fill-color": "blue",
-				"fill-opacity": 0.6,
+				"fill-color": style.colour,
+				"fill-opacity": style.opacity,
 			},
 		};
 
