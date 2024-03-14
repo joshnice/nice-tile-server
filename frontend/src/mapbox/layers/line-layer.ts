@@ -5,7 +5,9 @@ import { Layer } from "./layer";
 const defaultStyle: LineStyle = {
 	colour: "#0ba17e",
 	opacity: 0.7,
-	width: 10
+	width: 10,
+	cap: "round",
+	join: "round"
 }
 
 export class LineLayer extends Layer<LineStyle> {
@@ -25,6 +27,10 @@ export class LineLayer extends Layer<LineStyle> {
 				"line-color": style.colour,
 				"line-width": style.width,
 				"line-opacity": style.opacity
+			},
+			layout: {
+				"line-join": style.join,
+				"line-cap": style.cap
 			},
 			source: sourceId,
 		};
