@@ -7,7 +7,6 @@ export default function useObjectSelected() {
 
     useEffect(() => {
         const subscription = subject.current.subscribe((selectedObjectId) => {
-            console.log("selectedObjectId", selectedObjectId);
             setSelectedObject(selectedObjectId);
         });
 

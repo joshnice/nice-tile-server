@@ -75,8 +75,9 @@ export class Mapbox {
 
 	public onLayerSelected(layerId: string | null) {
 
-		if (layerId == null) {
+		if (layerId == null || this.drawing?.layerId === layerId) {
 			this.drawing?.remove();
+			this.drawing = null;
 			return;
 		}
 

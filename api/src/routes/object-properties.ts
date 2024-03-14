@@ -15,7 +15,6 @@ objectPropertiesRoute.get("/:id", async (ctx) => {
 objectPropertiesRoute.put("/:id", async (ctx) => {
     const id = ctx.req.param("id");
     const body = await ctx.req.json();
-    console.log("body", body);
     await updateObjectProperties(id, body);
     return ctx.text("Success", 200);
 });
