@@ -1,6 +1,6 @@
 import type { MapMouseEvent, EventData } from "mapbox-gl";
 import { Drawing } from "./drawing";
-import { createPointFeature } from "../../geojson-helpers";
+import { createPointFeature } from "../../helpers/geojson-helpers";
 
 export class PointDrawing extends Drawing {
 	public addEventListeners(): void {

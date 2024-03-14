@@ -1,4 +1,4 @@
-import MapComponent from "./map";
+import MapComponent from "./components/map";
 import "./App.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 

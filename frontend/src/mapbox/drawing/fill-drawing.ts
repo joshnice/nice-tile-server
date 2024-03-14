@@ -1,7 +1,7 @@
 import type { MapMouseEvent, EventData, Map } from "mapbox-gl";
 import type { LineString } from "geojson";
 import type { Api } from "../api";
-import { createLineFeature, createPolygonFeature } from "../../geojson-helpers";
+import { createLineFeature, createPolygonFeature } from "../../helpers/geojson-helpers";
 import { GeoJsonSource } from "../sources/geojson-source";
 import { Drawing } from "./drawing";
 import { LineLayer } from "../layers/line-layer";
