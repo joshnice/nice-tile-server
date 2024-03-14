@@ -2,7 +2,9 @@ import type { Layer } from "./types/layer";
 import { useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
 import { Mapbox } from "./mapbox/mapbox";
-import MapControlsComponent, { type CreateLayer } from "./map-controls";
+import MapControlsComponent, {
+	type CreateLayer,
+} from "./functionality/map-controls";
 import { Api } from "./mapbox/api";
 import useMaps from "./hooks/use-maps";
 import useLayers from "./hooks/use-layers";

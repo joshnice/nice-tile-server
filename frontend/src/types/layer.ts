@@ -6,3 +6,5 @@ export interface Layer {
 }
 
 export type LayerType = "Fill" | "Line" | "Point";
+
+export type CreateLayer = Omit<Layer, "mapId" | "id">;

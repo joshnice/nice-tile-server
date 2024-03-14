@@ -1,65 +1,8 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import type { Layer } from "./types/layer";
+import type { CreateLayer, Layer } from "../types/layer";
 
-export type Control = "Point" | "Line" | "Area";
-
-export type CreateLayer = Omit<Layer, "mapId" | "id">;
-
-export default function MapControlsComponent({
-	selectedLayer,
-	maps,
-	selectedMap,
-	mapLayers = [],
-	onMapSelected,
-	onLayerCreated,
-	onMapCreatedClick,
-	onLayerSelected,
-}: {
-	selectedLayer: string | null;
-	maps: { id: string; name: string }[];
-	selectedMap: string;
-	mapLayers?: Layer[] | null;
-	onMapSelected: (id: string) => void;
-	onMapCreatedClick: () => void;
-	onLayerCreated: (layer: CreateLayer) => void;
-	onLayerSelected: (id: string) => void;
-}) {
-	return (
-		<>
-			<div className="map-controls-container map-controls-container-left">
-				<CreateLayerComponent
-					layers={mapLayers}
-					selectedLayerId={selectedLayer}
-					onCreateLayer={onLayerCreated}
-					onLayerSelected={onLayerSelected}
-				/>
-			</div>
-			<div className="map-controls-container map-controls-container-right">
-				<select
-					className="map-selection"
-					value={selectedMap}
-					onChange={(event) => onMapSelected(event.target.value)}
-				>
-					{maps.map((map) => (
-						<option key={map.id} className="map-option" value={map.id}>
-							{map.name}
-						</option>
-					))}
-				</select>
-				<button
-					type="button"
-					onClick={onMapCreatedClick}
-					className="map-button"
-				>
-					Create Map
-				</button>
-			</div>
-		</>
-	);
-}
-
-function CreateLayerComponent({
+export default function LayerListComponent({
 	layers = [],
 	selectedLayerId,
 	onCreateLayer,
