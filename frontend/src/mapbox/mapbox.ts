@@ -51,9 +51,13 @@ export class Mapbox {
 		});
 
 		this.map.on("click", (event) => {
-			const f = this.map.queryRenderedFeatures(event.point);
-			if (f.length > 0) {
-				this.events.onObjectClicked.next(f[0].properties?.id);
+
+			// Only allow selection when not drawing
+			if (this.drawing != null) return;
+
+			const features = this.map.queryRenderedFeatures(event.point);
+			if (features.length > 0) {
+				this.events.onObjectClicked.next(features[0].properties?.id);
 			} else {
 				this.events.onObjectClicked.next(null)
 			}
@@ -74,7 +78,6 @@ export class Mapbox {
 	}
 
 	public onLayerSelected(layerId: string | null) {
-
 		if (layerId == null || this.drawing?.layerId === layerId) {
 			this.drawing?.remove();
 			this.drawing = null;

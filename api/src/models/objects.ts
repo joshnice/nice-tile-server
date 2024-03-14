@@ -43,30 +43,15 @@ export async function getObjects(
 
 export async function postObject(
 	mapId: string,
-	object: Feature<Point>,
+	object: Feature<Point, {id: string}>,
 	layer_id: string,
 ) {
-	const id = uuid();
-
 	const sql = `
     INSERT INTO objects(id, geom, map_id, layer_id)
-    VALUES ('${id}', '${JSON.stringify(
+    VALUES ('${object.properties.id}', '${JSON.stringify(
 			object.geometry,
 		)}', '${mapId}', '${layer_id}' );
   `;
 
 	return client.query(sql);
 }
-
-
-// SELECT 
-//             ST_AsMVT(mvtGeometryRow, 'MVTGeometryRow', 4096, 'geom') as result
-//         FROM ( 
-//             SELECT 
-//                 isTreatment,isbuffer,fourCornersRepresentativeToTreatmentAsGeoJSON,fourCornersRepresentativeToBufferAsGeoJSON,distanceFromCenterPointOfTreatmentToNearestEdge,
-//                 distanceFromCenterPointOfBufferToNearestEdge,areasOfCoveragePerWindowForCellsRepresentativeToTreatment,areasOfCoveragePerWindowForCellsRepresentativeToBuffer,averageHeightsPerWindowRepresentativeToTreatment,
-//                 averageHeightsPerWindowRepresentativeToBuffer,geometryOfCellRepresentativeToTreatment,geometryOfCellRepresentativeToBuffer,
-//                 ST_AsMVTGeom(
-//                     geometryOfCellRepresentativeToTreatment,ST_MakeEnvelope(%s,%s,%s,%s,4326),4096,0,false) As geom
-//             FROM grid_cell_data where  geometryOfCellRepresentativeToTreatment <> 'POLYGON EMPTY' and fourCornersRepresentativeToTreatmentAsGeoJSON <> '' and fourCornersRepresentativeToTreatmentAsGeoJSON IS NOT null
-//             ) mvtGeometryRow

@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { validator } from "hono/validator";
-import { Feature, Point, LineString, Polygon } from "geojson";
+import type { Feature, Point, LineString, Polygon } from "geojson";
 import { getObjects, postObject } from "../models/objects";
 
 export const objectRoutes = new Hono();
@@ -11,9 +11,9 @@ objectRoutes.get("/:mapId/:z/:x/:y", async (ctx) => {
 	const y = ctx.req.param("y");
 	const z = ctx.req.param("z");
 
-	const numX = parseInt(x, 10);
-	const numY = parseInt(y, 10);
-	const numZ = parseInt(z, 10);
+	const numX = Number.parseInt(x, 10);
+	const numY = Number.parseInt(y, 10);
+	const numZ = Number.parseInt(z, 10);
 
 	const objectTile = await getObjects(numX, numY, numZ, mapId);
 	// @ts-ignore
@@ -23,7 +23,7 @@ objectRoutes.get("/:mapId/:z/:x/:y", async (ctx) => {
 });
 
 const isObjectValid = (
-	feature: Feature<Point | Polygon | LineString, { layerId: string }>,
+	feature: Feature<Point | Polygon | LineString, { layerId: string, id: string }>,
 ) => {
 	if (feature == null) {
 		return false;
@@ -37,6 +37,10 @@ const isObjectValid = (
 		return false;
 	}
 
+	if (feature.properties.id == null) {
+		return false;
+	}
+
 	const isValidPoint =
 		feature.geometry.type === "Point" &&
 		typeof feature.geometry.coordinates[0] === "number" &&
@@ -47,7 +51,7 @@ const isObjectValid = (
 		feature.geometry.coordinates.every(
 			(coord) =>
 				coord.length === 2 &&
-				coord.every((c) => typeof c === "number" && isNaN(c) === false),
+				coord.every((c) => typeof c === "number" && Number.isNaN(c) === false),
 		);
 	const isValidPolygon =
 		feature.geometry.type === "Polygon" &&
@@ -56,7 +60,7 @@ const isObjectValid = (
 		feature.geometry.coordinates[0].every(
 			(coord) =>
 				coord.length === 2 &&
-				coord.every((c) => typeof c === "number" && isNaN(c) === false),
+				coord.every((c) => typeof c === "number" && Number.isNaN(c) === false),
 		);
 
 	return isValidPoint || isValidLine || isValidPolygon;

@@ -37,7 +37,6 @@ export default function MapComponent() {
 				map.current?.addLayer(layer);
 			});
 		}
-
 		initialLayers.current = true;
 	};
 
@@ -72,6 +71,7 @@ export default function MapComponent() {
 					onObjectClicked: onObjectSelected,
 				},
 			});
+			initialLayers.current = false;
 			setSelectedMap(id);
 		}
 	};

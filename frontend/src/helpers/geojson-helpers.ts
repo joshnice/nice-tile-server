@@ -1,6 +1,7 @@
 import type { Feature, Point, LineString, Polygon } from "geojson";
+import { v4 as uuid } from "uuid";
 
-type Properties = { layerId: string };
+type Properties = { layerId: string, id: string };
 
 export function createPointFeature(
 	coordinates: number[],
@@ -22,6 +23,7 @@ export function createPointFeature(
 		},
 		properties: {
 			layerId,
+			id: uuid(),
 		},
 	};
 }
@@ -46,6 +48,7 @@ export function createLineFeature(
 		},
 		properties: {
 			layerId,
+			id: uuid()
 		},
 	};
 }
@@ -70,6 +73,7 @@ export function createPolygonFeature(
 		},
 		properties: {
 			layerId,
+			id: uuid()
 		},
 	};
 }
