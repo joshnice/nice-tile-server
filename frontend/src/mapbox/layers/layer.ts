@@ -1,7 +1,7 @@
 import type { Map } from "mapbox-gl";
 import type { BaseStyle } from "./styles";
 
-export abstract class Layer<TStyle extends BaseStyle> {
+export abstract class Layer<TStyle extends BaseStyle = BaseStyle> {
 	public readonly map: Map;
 
 	public readonly id: string;

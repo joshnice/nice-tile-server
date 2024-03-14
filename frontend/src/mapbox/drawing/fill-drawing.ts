@@ -1,6 +1,7 @@
 import type { MapMouseEvent, EventData, Map } from "mapbox-gl";
 import type { LineString } from "geojson";
 import type { Api } from "../api";
+import type { FillLayer } from "../layers/fill-layer";
 import { createLineFeature, createPolygonFeature } from "../../helpers/geojson-helpers";
 import { GeoJsonSource } from "../sources/geojson-source";
 import { Drawing } from "./drawing";
@@ -13,8 +14,8 @@ export class FillDrawing extends Drawing {
 
 	public drawingSource: GeoJsonSource;
 
-	constructor(map: Map, api: Api, localSource: GeoJsonSource, layerId: string) {
-		super(map, api, localSource, layerId);
+	constructor(map: Map, api: Api, localSource: GeoJsonSource, layer: FillLayer) {
+		super(map, api, localSource, layer);
 
 		this.drawingSource = new GeoJsonSource(this.map, "fill-drawing", null);
 		this.drawingLayer = new LineLayer(
@@ -22,6 +23,7 @@ export class FillDrawing extends Drawing {
 			"fill-drawing-layer",
 			"fill-drawing",
 			undefined,
+			{ colour: this.baseLayer.getStyle().colour, width: 5, opacity: 0.6 }
 		);
 	}
 
@@ -72,14 +74,14 @@ export class FillDrawing extends Drawing {
 					[...this.drawingSourceCoordiantes, this.drawingSourceCoordiantes[0]],
 				];
 
-				const newObject = createPolygonFeature(polygonCoordinates, this.layerId);
+				const newObject = createPolygonFeature(polygonCoordinates, this.baseLayer.id);
 				this.localSource.updateSource(newObject);
 				this.drawingSourceCoordiantes = [];
 				this.api.createObject(newObject);
 			} else {
 				// Append node
 				this.drawingSource.overwriteSource(
-					createLineFeature(this.drawingSourceCoordiantes, this.layerId),
+					createLineFeature(this.drawingSourceCoordiantes, this.baseLayer.id),
 				);
 			}
 		}
@@ -91,7 +93,7 @@ export class FillDrawing extends Drawing {
 				createLineFeature([
 					...this.drawingSourceCoordiantes,
 					event.lngLat.toArray(),
-				], this.layerId),
+				], this.baseLayer.id),
 			);
 		}
 	}

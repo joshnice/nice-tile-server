@@ -78,7 +78,7 @@ export class Mapbox {
 	}
 
 	public onLayerSelected(layerId: string | null) {
-		if (layerId == null || this.drawing?.layerId === layerId) {
+		if (layerId == null || this.drawing?.baseLayer?.id === layerId) {
 			this.drawing?.remove();
 			this.drawing = null;
 			return;
@@ -90,7 +90,7 @@ export class Mapbox {
 			return;
 		}
 
-		if (this.drawing != null && this.drawing.layerId !== layerId) {
+		if (this.drawing != null && this.drawing.baseLayer.id !== layerId) {
 			this.drawing.remove();
 		}
 
@@ -100,7 +100,7 @@ export class Mapbox {
 					this.map,
 					this.api,
 					this.sources.getSource(layer.id),
-					layer.id
+					layer
 				);
 				break;
 			case layer instanceof LineLayer:
@@ -108,7 +108,7 @@ export class Mapbox {
 					this.map,
 					this.api,
 					this.sources.getSource(layer.id),
-					layer.id
+					layer
 				);
 				break;
 			case layer instanceof FillLayer:
@@ -116,7 +116,7 @@ export class Mapbox {
 					this.map,
 					this.api,
 					this.sources.getSource(layer.id),
-					layer.id
+					layer
 				);
 				break;
 			default:

@@ -10,26 +10,28 @@ export abstract class Drawing {
 
 	public readonly localSource: GeoJsonSource;
 
-	public readonly layerId: string;
+	public readonly baseLayer: Layer;
 
 	public drawingLayer: Layer | null = null;
 
 	public drawingSource: GeoJsonSource | null = null;
 
+	// Todo: fix any type
 	public onClickReference: any;
 
+	// Todo: fix any type
 	public onMouseMoveReference: any;
 
 	constructor(
 		map: Map,
 		api: Api,
 		localSource: GeoJsonSource,
-		layerId: string
+		layer: Layer
 	) {
 		this.map = map;
 		this.api = api;
 		this.localSource = localSource;
-		this.layerId = layerId;
+		this.baseLayer = layer;
 		this.addEventListeners();
 	}
 

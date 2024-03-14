@@ -17,8 +17,8 @@ export class LineDrawing extends Drawing {
 
 	public drawingSource: GeoJsonSource;
 
-	constructor(map: Map, api: Api, localSource: GeoJsonSource, layerId: string) {
-		super(map, api, localSource, layerId);
+	constructor(map: Map, api: Api, localSource: GeoJsonSource, layer: LineLayer) {
+		super(map, api, localSource, layer);
 
 		this.drawingSource = new GeoJsonSource(this.map, "line-drawing", null);
 		this.drawingLayer = new LineLayer(
@@ -26,6 +26,7 @@ export class LineDrawing extends Drawing {
 			"line-drawing-layer",
 			"line-drawing",
 			undefined,
+			{ ...this.baseLayer.getStyle() }
 		);
 	}
 
@@ -71,7 +72,7 @@ export class LineDrawing extends Drawing {
 		];
 		if (this.drawingSourceCoordiantes.length > 1) {
 			this.drawingSource.overwriteSource(
-				createLineFeature(this.drawingSourceCoordiantes, this.layerId),
+				createLineFeature(this.drawingSourceCoordiantes, this.baseLayer.id),
 			);
 		}
 	}
@@ -80,7 +81,7 @@ export class LineDrawing extends Drawing {
 		const newObject = createLineFeature([
 			...this.drawingSourceCoordiantes,
 			event.lngLat.toArray(),
-		], this.layerId);
+		], this.baseLayer.id);
 		this.localSource.updateSource(newObject);
 		this.drawingSource.resetSource();
 		this.drawingSourceCoordiantes = [];
@@ -93,7 +94,7 @@ export class LineDrawing extends Drawing {
 				createLineFeature([
 					...this.drawingSourceCoordiantes,
 					event.lngLat.toArray(),
-				], this.layerId),
+				], this.baseLayer.id),
 			);
 		}
 	}
