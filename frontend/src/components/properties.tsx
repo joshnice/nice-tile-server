@@ -70,17 +70,17 @@ export default function PropertiesComponent({
 								}
 							/>
 						</div>
-						<div className="create-layer-buttons">
+						<div className="modal-submit-button">
 							<button
 								type="button"
-								className="create-layer-button"
+								className="modal-button"
 								onClick={() => handleClose()}
 							>
 								Close
 							</button>
 							<button
 								type="button"
-								className="create-layer-button"
+								className="modal-button"
 								onClick={() => handleUpdate()}
 							>
 								Update
