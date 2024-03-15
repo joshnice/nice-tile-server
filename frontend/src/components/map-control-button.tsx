@@ -10,7 +10,7 @@ export default function ControlComponent({
 			type="button"
 			className={
 				selected
-					? "map-button map-contol selected-button"
+					? "map-button map-control selected-button"
 					: "map-button map-control"
 			}
 			onClick={onClick}
