@@ -3,6 +3,7 @@ import type { Api } from "./api";
 import type { MapEvents, MapboxOptions } from "./mapbox-types";
 import type { Drawing } from "./drawing/drawing";
 import type { Layer } from "../types/layer";
+import type { Feature, Polygon } from "geojson"
 import { PointDrawing } from "./drawing/point-drawing";
 import { LineDrawing } from "./drawing/line-drawing";
 import { FillDrawing } from "./drawing/fill-drawing";
@@ -26,6 +27,7 @@ export class Mapbox {
 
 	private readonly events: MapEvents;
 
+	// Todo: Fix type errors
 	private drawing: Drawing | null = null;
 
 	constructor(options: MapboxOptions) {
@@ -127,17 +129,26 @@ export class Mapbox {
 	}
 
 	public onRandomPointsSelected(layerId: string, amount: number) {
+		// Create layer and source for drawing
 		const drawingSource = new GeoJsonSource(this.map, "random-points", null);
 		const drawingLayer = new FillLayer(this.map, "random-points", drawingSource.id);
-		this.drawing = new FillDrawing(this.map, (object, drawing) => {
-			console.log("object", object);
+
+		const onDrawingFinish = (object: Feature<Polygon>) => {
+			// Todo: separate the create random points implementation and posting
+			// Create random points
 			const features = this.api.createRandomPoints(object, amount, layerId);
-			drawing.remove();
-			drawingLayer.remove();
-			drawingSource.remove();
 			const source = this.sources.getSource(layerId);
 			source.updateSourceWithArray(features);
-		}, drawingSource, drawingLayer);
+			
+			// Remove all drawing layers and sources
+			this.drawing?.remove();
+			this.drawing = null;
+			drawingLayer.remove();
+			drawingSource.remove();
+		}
+
+		// Create drawing object
+		this.drawing = new FillDrawing(this.map, onDrawingFinish, drawingSource, drawingLayer);
 	}
 
 	public destory() {
