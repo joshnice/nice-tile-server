@@ -1,8 +1,9 @@
 import type { MapMouseEvent, EventData } from "mapbox-gl";
+import type { Point } from "geojson";
 import { Drawing } from "./drawing";
 import { createPointFeature } from "../../helpers/geojson-helpers";
 
-export class PointDrawing extends Drawing {
+export class PointDrawing extends Drawing<Point> {
 	public addEventListeners(): void {
 		this.onClick();
 	}
@@ -13,8 +14,8 @@ export class PointDrawing extends Drawing {
 	}
 
 	private async onClickHandler(event: MapMouseEvent & EventData) {
-		const pointObject = createPointFeature(event.lngLat.toArray(), this.layerId);
-		await this.api.createObject(pointObject);
+		const pointObject = createPointFeature(event.lngLat.toArray(), this.baseLayer.id);
+		await this.onCreate(pointObject, this);
 		this.localSource.updateSource(pointObject);
 	}
 

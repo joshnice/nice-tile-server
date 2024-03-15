@@ -11,6 +11,7 @@ import { Sources } from "./sources";
 import { FillLayer } from "./layers/fill-layer";
 import { CircleLayer } from "./layers/circle-layer";
 import { LineLayer } from "./layers/line-layer";
+import { GeoJsonSource } from "./sources/geojson-source";
 
 export class Mapbox {
 	private readonly map: Map;
@@ -98,7 +99,7 @@ export class Mapbox {
 			case layer instanceof CircleLayer:
 				this.drawing = new PointDrawing(
 					this.map,
-					this.api,
+					(object) => this.api.createObject(object),
 					this.sources.getSource(layer.id),
 					layer
 				);
@@ -106,7 +107,7 @@ export class Mapbox {
 			case layer instanceof LineLayer:
 				this.drawing = new LineDrawing(
 					this.map,
-					this.api,
+					(object) => this.api.createObject(object),
 					this.sources.getSource(layer.id),
 					layer
 				);
@@ -114,7 +115,7 @@ export class Mapbox {
 			case layer instanceof FillLayer:
 				this.drawing = new FillDrawing(
 					this.map,
-					this.api,
+					(object) => this.api.createObject(object),
 					this.sources.getSource(layer.id),
 					layer
 				);
@@ -126,7 +127,17 @@ export class Mapbox {
 	}
 
 	public onRandomPointsSelected(layerId: string, amount: number) {
-
+		const drawingSource = new GeoJsonSource(this.map, "random-points", null);
+		const drawingLayer = new FillLayer(this.map, "random-points", drawingSource.id);
+		this.drawing = new FillDrawing(this.map, (object, drawing) => {
+			console.log("object", object);
+			const features = this.api.createRandomPoints(object, amount, layerId);
+			drawing.remove();
+			drawingLayer.remove();
+			drawingSource.remove();
+			const source = this.sources.getSource(layerId);
+			source.updateSourceWithArray(features);
+		}, drawingSource, drawingLayer);
 	}
 
 	public destory() {

@@ -1,4 +1,4 @@
-import { Map, AnySourceData, AnySourceImpl } from "mapbox-gl";
+import type { Map, AnySourceData, AnySourceImpl } from "mapbox-gl";
 
 export abstract class Source<
 	TMapboxCreateSource extends AnySourceData,
@@ -24,6 +24,8 @@ export abstract class Source<
 	public abstract createSource(options: TCreateSource): TMapboxCreateSource;
 
 	public abstract updateSource(options: TUpdateSource): void;
+	
+	public abstract updateSourceWithArray(options: TUpdateSource[]): void;
 
 	public remove() {
 		this.map.removeSource(this.id);

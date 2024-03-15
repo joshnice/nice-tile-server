@@ -1,12 +1,14 @@
 import type { Map } from "mapbox-gl";
-import type { Api } from "../api";
+import type { Feature, Point, LineString, Polygon } from "geojson";
 import type { GeoJsonSource } from "../sources/geojson-source";
 import type { Layer } from "../layers/layer";
 
-export abstract class Drawing {
+type SupportedGeometry = Polygon | LineString | Point;
+
+export abstract class Drawing<TGeometry extends Polygon | LineString | Point = SupportedGeometry> {
 	public readonly map: Map;
 
-	public readonly api: Api;
+	public readonly onCreate: (object: Feature<TGeometry>, drawing: Drawing<TGeometry>) => void;
 
 	public readonly localSource: GeoJsonSource;
 
@@ -17,19 +19,21 @@ export abstract class Drawing {
 	public drawingSource: GeoJsonSource | null = null;
 
 	// Todo: fix any type
-	public onClickReference: any;
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		public onClickReference: any;
 
 	// Todo: fix any type
-	public onMouseMoveReference: any;
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		public onMouseMoveReference: any;
 
 	constructor(
 		map: Map,
-		api: Api,
+		onCreate: (object: Feature<TGeometry>, drawing: Drawing<TGeometry>) => void,
 		localSource: GeoJsonSource,
 		layer: Layer
 	) {
 		this.map = map;
-		this.api = api;
+		this.onCreate = onCreate;
 		this.localSource = localSource;
 		this.baseLayer = layer;
 		this.addEventListeners();

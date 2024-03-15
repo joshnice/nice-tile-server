@@ -1,12 +1,11 @@
 import type { MapMouseEvent, EventData, Map } from "mapbox-gl";
-import type { LineString } from "geojson";
-import type { Api } from "../api";
+import type { Feature, LineString } from "geojson";
 import { createLineFeature } from "../../helpers/geojson-helpers";
 import { GeoJsonSource } from "../sources/geojson-source";
 import { Drawing } from "./drawing";
 import { LineLayer } from "../layers/line-layer";
 
-export class LineDrawing extends Drawing {
+export class LineDrawing extends Drawing<LineString> {
 	private drawingSourceCoordiantes: LineString["coordinates"] = [];
 
 	private clickedRecently = false;
@@ -17,8 +16,8 @@ export class LineDrawing extends Drawing {
 
 	public drawingSource: GeoJsonSource;
 
-	constructor(map: Map, api: Api, localSource: GeoJsonSource, layer: LineLayer) {
-		super(map, api, localSource, layer);
+	constructor(map: Map, onCreate: (feature: Feature<LineString>, drawing: Drawing<LineString>) => void, localSource: GeoJsonSource, layer: LineLayer) {
+		super(map, onCreate, localSource, layer);
 
 		this.drawingSource = new GeoJsonSource(this.map, "line-drawing", null);
 		this.drawingLayer = new LineLayer(
@@ -85,7 +84,7 @@ export class LineDrawing extends Drawing {
 		this.localSource.updateSource(newObject);
 		this.drawingSource.resetSource();
 		this.drawingSourceCoordiantes = [];
-		this.api.createObject(newObject);
+		this.onCreate(newObject, this);
 	}
 
 	private onMouseMoveHandler(event: MapMouseEvent & EventData) {

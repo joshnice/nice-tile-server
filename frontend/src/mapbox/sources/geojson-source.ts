@@ -1,8 +1,8 @@
-import {
+import type {
 	GeoJSONSource as GeoJsonMapboxSource,
 	GeoJSONSourceRaw as GeoJsonRawMapbox,
 } from "mapbox-gl";
-import { Feature, Point, LineString, Polygon } from "geojson";
+import type { Feature, Point, LineString, Polygon } from "geojson";
 import { Source } from "./source";
 
 type AllGeometry = Point | LineString | Polygon;
@@ -31,6 +31,12 @@ export class GeoJsonSource extends Source<
 	public updateSource(feature: Feature<AllGeometry>): void {
 		const source = this.getSource();
 		this.features.push(feature);
+		source.setData({ type: "FeatureCollection", features: this.features });
+	}
+
+	public updateSourceWithArray(features: Feature<AllGeometry>[]): void {
+		const source = this.getSource();
+		this.features.push(...features);
 		source.setData({ type: "FeatureCollection", features: this.features });
 	}
 

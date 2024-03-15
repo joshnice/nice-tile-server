@@ -110,6 +110,7 @@ export default function MapComponent() {
 
 	const handleRandomPointsNext = (layerId: string, amount: number) => {
 		map.current?.onRandomPointsSelected(layerId, amount);
+		setRandomPoints(false);
 	};
 
 	// Clean up

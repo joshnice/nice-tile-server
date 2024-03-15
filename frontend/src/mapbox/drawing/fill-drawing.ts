@@ -1,21 +1,20 @@
 import type { MapMouseEvent, EventData, Map } from "mapbox-gl";
-import type { LineString } from "geojson";
-import type { Api } from "../api";
+import type { Feature, LineString, Polygon } from "geojson";
 import type { FillLayer } from "../layers/fill-layer";
 import { createLineFeature, createPolygonFeature } from "../../helpers/geojson-helpers";
 import { GeoJsonSource } from "../sources/geojson-source";
 import { Drawing } from "./drawing";
 import { LineLayer } from "../layers/line-layer";
 
-export class FillDrawing extends Drawing {
+export class FillDrawing extends Drawing<Polygon> {
 	private drawingSourceCoordiantes: LineString["coordinates"] = [];
 
 	public drawingLayer: LineLayer;
 
 	public drawingSource: GeoJsonSource;
 
-	constructor(map: Map, api: Api, localSource: GeoJsonSource, layer: FillLayer) {
-		super(map, api, localSource, layer);
+constructor(map: Map, onCreate: (feature: Feature<Polygon>, drawing: Drawing<Polygon>) => void, localSource: GeoJsonSource, layer: FillLayer) {
+		super(map, onCreate, localSource, layer);
 
 		this.drawingSource = new GeoJsonSource(this.map, "fill-drawing", null);
 		this.drawingLayer = new LineLayer(
@@ -77,7 +76,7 @@ export class FillDrawing extends Drawing {
 				const newObject = createPolygonFeature(polygonCoordinates, this.baseLayer.id);
 				this.localSource.updateSource(newObject);
 				this.drawingSourceCoordiantes = [];
-				this.api.createObject(newObject);
+				this.onCreate(newObject, this);
 			} else {
 				// Append node
 				this.drawingSource.overwriteSource(
