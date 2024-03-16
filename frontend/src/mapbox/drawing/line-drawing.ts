@@ -16,7 +16,7 @@ export class LineDrawing extends Drawing<LineString> {
 
 	public drawingSource: GeoJsonSource;
 
-	constructor(map: Map, onCreate: (feature: Feature<LineString>, drawing: Drawing<LineString>) => void, localSource: GeoJsonSource, layer: LineLayer) {
+	constructor(map: Map, onCreate: (feature: Feature<LineString>) => void, localSource: GeoJsonSource, layer: LineLayer) {
 		super(map, onCreate, localSource, layer);
 
 		this.drawingSource = new GeoJsonSource(this.map, "line-drawing", null);
@@ -84,7 +84,7 @@ export class LineDrawing extends Drawing<LineString> {
 		this.localSource.updateSource(newObject);
 		this.drawingSource.resetSource();
 		this.drawingSourceCoordiantes = [];
-		this.onCreate(newObject, this);
+		this.onCreate(newObject);
 	}
 
 	private onMouseMoveHandler(event: MapMouseEvent & EventData) {

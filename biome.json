@@ -11,7 +11,8 @@
 				"noShadowRestrictedNames": "off"
 			},
 			"complexity": {
-				"noForEach": "off"
+				"noForEach": "off",
+				"noUselessConstructor": "off"	
 			}
 		}
 	}

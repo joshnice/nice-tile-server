@@ -1,14 +1,15 @@
 import type { Map } from "mapbox-gl";
-import type { Feature, Point, LineString, Polygon } from "geojson";
+import type { Feature, Polygon, LineString, Point } from "geojson";
 import type { GeoJsonSource } from "../sources/geojson-source";
 import type { Layer } from "../layers/layer";
 
-type SupportedGeometry = Polygon | LineString | Point;
+export type SupportedGeometry = Polygon | LineString | Point;
 
-export abstract class Drawing<TGeometry extends Polygon | LineString | Point = SupportedGeometry> {
+export abstract class Drawing<TGeometry extends SupportedGeometry = SupportedGeometry> {
+	
 	public readonly map: Map;
 
-	public readonly onCreate: (object: Feature<TGeometry>, drawing: Drawing<TGeometry>) => void;
+	public readonly onCreate: (object: Feature<TGeometry>) => void;
 
 	public readonly localSource: GeoJsonSource;
 
@@ -20,15 +21,15 @@ export abstract class Drawing<TGeometry extends Polygon | LineString | Point = S
 
 	// Todo: fix any type
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		public onClickReference: any;
+	public onClickReference: any;
 
 	// Todo: fix any type
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		public onMouseMoveReference: any;
+	public onMouseMoveReference: any;
 
 	constructor(
 		map: Map,
-		onCreate: (object: Feature<TGeometry>, drawing: Drawing<TGeometry>) => void,
+		onCreate: (object: Feature<TGeometry>) => void,
 		localSource: GeoJsonSource,
 		layer: Layer
 	) {

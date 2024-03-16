@@ -13,7 +13,7 @@ export class FillDrawing extends Drawing<Polygon> {
 
 	public drawingSource: GeoJsonSource;
 
-constructor(map: Map, onCreate: (feature: Feature<Polygon>, drawing: Drawing<Polygon>) => void, localSource: GeoJsonSource, layer: FillLayer) {
+	constructor(map: Map, onCreate: (feature: Feature<Polygon>) => void, localSource: GeoJsonSource, layer: FillLayer) {
 		super(map, onCreate, localSource, layer);
 
 		this.drawingSource = new GeoJsonSource(this.map, "fill-drawing", null);
@@ -76,7 +76,7 @@ constructor(map: Map, onCreate: (feature: Feature<Polygon>, drawing: Drawing<Pol
 				const newObject = createPolygonFeature(polygonCoordinates, this.baseLayer.id);
 				this.localSource.updateSource(newObject);
 				this.drawingSourceCoordiantes = [];
-				this.onCreate(newObject, this);
+				this.onCreate(newObject);
 			} else {
 				// Append node
 				this.drawingSource.overwriteSource(

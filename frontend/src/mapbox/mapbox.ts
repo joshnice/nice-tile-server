@@ -1,9 +1,9 @@
 import { Map } from "mapbox-gl";
 import type { Api } from "./api";
 import type { MapEvents, MapboxOptions } from "./mapbox-types";
-import type { Drawing } from "./drawing/drawing";
 import type { Layer } from "../types/layer";
 import type { Feature, Polygon } from "geojson"
+import type { Drawing, SupportedGeometry } from "./drawing/drawing";
 import { PointDrawing } from "./drawing/point-drawing";
 import { LineDrawing } from "./drawing/line-drawing";
 import { FillDrawing } from "./drawing/fill-drawing";
@@ -28,7 +28,6 @@ export class Mapbox {
 
 	private readonly events: MapEvents;
 
-	// Todo: Fix type errors
 	private drawing: Drawing | null = null;
 
 	constructor(options: MapboxOptions) {
@@ -105,7 +104,7 @@ export class Mapbox {
 					(object) => this.api.createObject(object),
 					this.sources.getSource(layer.id),
 					layer
-				);
+				) as Drawing;
 				break;
 			case layer instanceof LineLayer:
 				this.drawing = new LineDrawing(
@@ -113,7 +112,7 @@ export class Mapbox {
 					(object) => this.api.createObject(object),
 					this.sources.getSource(layer.id),
 					layer
-				);
+				) as Drawing<SupportedGeometry>;
 				break;
 			case layer instanceof FillLayer:
 				this.drawing = new FillDrawing(
@@ -121,7 +120,7 @@ export class Mapbox {
 					(object) => this.api.createObject(object),
 					this.sources.getSource(layer.id),
 					layer
-				);
+				) as Drawing;
 				break;
 			default:
 				throw new Error("Layer type not handled");
@@ -150,7 +149,7 @@ export class Mapbox {
 		}
 
 		// Create drawing object
-		this.drawing = new FillDrawing(this.map, onDrawingFinish, drawingSource, drawingLayer);
+		this.drawing = new FillDrawing(this.map, onDrawingFinish, drawingSource, drawingLayer) as Drawing;
 	}
 
 	public destory() {
