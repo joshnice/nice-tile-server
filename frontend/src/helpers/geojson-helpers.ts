@@ -89,13 +89,13 @@ export function generateRandomObjects(layer: Layer, amount: number, area: Featur
 	let featureCollection: FeatureCollection<Polygon | LineString | Point>; 
 	switch (true) {
 		case layer instanceof FillLayer:
-			featureCollection = randomPolygon(amount, { bbox: bounds, max_radial_length: 0.001, num_vertices: 4 }) as FeatureCollection<Point>;
+			featureCollection = randomPolygon(amount, { bbox: bounds, max_radial_length: 0.001, num_vertices: 4 });
 			break;
 		case layer instanceof LineLayer:
-			featureCollection = randomLineString(amount, { bbox: bounds, num_vertices: 5 }) as FeatureCollection<Point>;
+			featureCollection = randomLineString(amount, { bbox: bounds, num_vertices: 5 });
 			break;
 		case layer instanceof CircleLayer:
-			featureCollection = randomPoint(amount, { bbox: bounds }) as FeatureCollection<Point>;
+			featureCollection = randomPoint(amount, { bbox: bounds });
 			break;
 		default:
 			throw new Error("Type not supported");
