@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { createPortal } from "react-dom";
 import type { CreateLayer, Layer } from "../types/layer";
 import MinMaxComponent from "./min-max";
 import ModalComponent from "./modal";
@@ -41,33 +40,23 @@ export default function LayerListComponent({
 		<div className="layers-list">
 			<MinMaxComponent value={expand} onClick={() => setExpand(!expand)} />
 			<HeaderText title="Layers" />
-			<div className="layers-list-layers">
+			<div className="flex flex-col gap-3 max-h-[30vh] overflow-y-auto">
 				{expand ? (
 					layers?.map((layer) => (
-						<button
-							type="button"
-							key={layer.id}
-							className={
-								layer.id === selectedLayerId
-									? "layer-button selected-button"
-									: "layer-button"
-							}
-							onClick={() => onLayerSelected(layer.id)}
-						>
-							{layer.name}
-						</button>
+						<LayerComponent
+							layer={layer}
+							selected={layer.id === selectedLayerId}
+							onLayerSelected={onLayerSelected}
+						/>
 					))
 				) : (
 					<>
 						{selectedLayer && (
-							<button
-								type="button"
-								key={selectedLayer?.id}
-								className="layer-button selected-button"
-								onClick={() => onLayerSelected(selectedLayer?.id)}
-							>
-								{selectedLayer.name}
-							</button>
+							<LayerComponent
+								layer={selectedLayer}
+								onLayerSelected={onLayerSelected}
+								selected
+							/>
 						)}
 					</>
 				)}
@@ -115,5 +104,24 @@ export default function LayerListComponent({
 				</ModalComponent>
 			)}
 		</div>
+	);
+}
+
+function LayerComponent({
+	layer,
+	selected,
+	onLayerSelected,
+}: { layer: Layer; selected: boolean; onLayerSelected: (id: string) => void }) {
+	return (
+		<button
+			type="button"
+			key={layer.id}
+			className={`h-12 p-2 w-full border-solid border-slate-600 border-2 rounded-sm ${
+				selected ? "bg-sky-300" : "bg-white"
+			}`}
+			onClick={() => onLayerSelected(layer.id)}
+		>
+			{layer.name}
+		</button>
 	);
 }
