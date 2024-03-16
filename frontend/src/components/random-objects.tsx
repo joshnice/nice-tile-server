@@ -1,6 +1,7 @@
 import type { Layer } from "../types/layer";
 import { useState } from "react";
 import ModalComponent from "./modal";
+import { SubHeaderText } from "./basic/headers";
 
 export default function RandomObjectsComponent({
 	layers,
@@ -29,7 +30,7 @@ export default function RandomObjectsComponent({
 			submitButtonText={"Next"}
 		>
 			<div className="create-layer-content">
-				<h2 className="create-layer-sub-heading">Amount</h2>
+				<SubHeaderText title="Amount" />
 				<input
 					className="create-layer-input"
 					type="number"
@@ -38,7 +39,7 @@ export default function RandomObjectsComponent({
 						setAmount(Number.parseInt(event.target.value, 10))
 					}
 				/>
-				<h2 className="create-layer-sub-heading">Layer</h2>
+				<SubHeaderText title="Layer" />
 				<select
 					className="create-layer-input"
 					value={layerSelected}

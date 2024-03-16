@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import type { CreateLayer, Layer } from "../types/layer";
 import MinMaxComponent from "./min-max";
 import ModalComponent from "./modal";
+import { HeaderText, SubHeaderText } from "./basic/headers";
 
 export default function LayerListComponent({
 	layers = [],
@@ -31,13 +32,6 @@ export default function LayerListComponent({
 		setLayer({ name: "", type: "Fill" });
 	};
 
-	const layerDialog = createPortal(
-		<dialog>
-			<h1>Create Layer</h1>
-		</dialog>,
-		document.body,
-	);
-
 	const selectedLayer = useMemo(
 		() => layers?.find((l) => l.id === selectedLayerId),
 		[layers, selectedLayerId],
@@ -46,7 +40,7 @@ export default function LayerListComponent({
 	return (
 		<div className="layers-list">
 			<MinMaxComponent value={expand} onClick={() => setExpand(!expand)} />
-			<h2 style={{ margin: "0px" }}>Layers</h2>
+			<HeaderText title="Layers" />
 			<div className="layers-list-layers">
 				{expand ? (
 					layers?.map((layer) => (
@@ -93,7 +87,7 @@ export default function LayerListComponent({
 					onClose={handleClose}
 				>
 					<div className="create-layer-content">
-						<h2 className="create-layer-sub-heading">Name</h2>
+						<SubHeaderText title="Name" />
 						<input
 							className="create-layer-input"
 							type="text"
@@ -102,7 +96,7 @@ export default function LayerListComponent({
 								setLayer({ ...layer, name: event.target.value })
 							}
 						/>
-						<h2 className="create-layer-sub-heading">Type</h2>
+						<SubHeaderText title="Type" />
 						<select
 							className="create-layer-input"
 							value={layer.type}

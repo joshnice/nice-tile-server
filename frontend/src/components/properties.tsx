@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { createPortal } from "react-dom";
+import { HeaderText, SubHeaderText } from "./basic/headers";
 
 export default function PropertiesComponent({
 	selectedObjectId,
@@ -50,9 +51,9 @@ export default function PropertiesComponent({
 					<div>loading...</div>
 				) : (
 					<>
-						<h1>Edit Property</h1>
+						<HeaderText title={"Edit Property"} />
 						<div className="create-layer-content">
-							<h2 className="create-layer-sub-heading">Name</h2>
+							<SubHeaderText title="Name" />
 							<input
 								className="create-layer-input"
 								type="text"
@@ -61,7 +62,7 @@ export default function PropertiesComponent({
 									setEdit({ ...edit, key: event.target.value })
 								}
 							/>
-							<h2 className="create-layer-sub-heading">Value</h2>
+							<SubHeaderText title="Value" />
 							<input
 								className="create-layer-input"
 								value={edit?.value}
