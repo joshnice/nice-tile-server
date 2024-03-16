@@ -9,9 +9,9 @@ const defaultStyle: CircleStyle = {
 }
 
 export class CircleLayer extends Layer<CircleStyle> {
-	constructor(map: Map, id: string, sourceId: string, sourceLayerId?: string, styleOverrides?: Partial<CircleStyle>) {
+	constructor(map: Map, id: string, sourceId: string, isDrawing: () => boolean, sourceLayerId?: string, styleOverrides?: Partial<CircleStyle>) {
 		const style = {...defaultStyle, styleOverrides};
-		super(map, id, style);
+		super(map, id, isDrawing, style);
 		this.createLayer(id, sourceId, style, sourceLayerId);
 	}
 

@@ -45,7 +45,7 @@ export class Mapbox {
 		this.events = options.events;
 
 		this.sources = new Sources(this.map, this.api);
-		this.layers = new Layers(this.map, this.tileSourceId);
+		this.layers = new Layers(this.map, this.tileSourceId, this.isDrawing.bind(this));
 
 		this.map.doubleClickZoom.disable();
 
@@ -137,7 +137,7 @@ export class Mapbox {
 		const layer = this.layers.getLayer(layerId);
 		// Create layer and source for drawing
 		const drawingSource = new GeoJsonSource(this.map, "random-points", null);
-		const drawingLayer = new FillLayer(this.map, "random-points", drawingSource.id);
+		const drawingLayer = new FillLayer(this.map, "random-points", drawingSource.id, this.isDrawing.bind(this));
 
 		const onDrawingFinish = (object: Feature<Polygon>) => {
 			// Create random points
@@ -155,6 +155,10 @@ export class Mapbox {
 
 		// Create drawing object
 		this.drawing = new FillDrawing(this.map, onDrawingFinish, drawingSource, drawingLayer) as Drawing;
+	}
+
+	private isDrawing() {
+		return this.drawing != null;
 	}
 
 	public destory() {

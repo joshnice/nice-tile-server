@@ -11,10 +11,10 @@ const defaultStyle: LineStyle = {
 }
 
 export class LineLayer extends Layer<LineStyle> {
-	constructor(map: Map, id: string, sourceId: string, sourceLayerId?: string, styleOverrides?: Partial<LineStyle>) {
+	constructor(map: Map, id: string, sourceId: string, isDrawing: () => boolean, sourceLayerId?: string, styleOverrides?: Partial<LineStyle>) {
 		// Create a complete style
 		const style = {...defaultStyle, ...styleOverrides}
-		super(map, id, style);
+		super(map, id, isDrawing, style);
 
 		this.createLayer(id, sourceId, style, sourceLayerId);
 	}

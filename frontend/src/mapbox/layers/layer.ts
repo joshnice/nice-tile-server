@@ -8,11 +8,14 @@ export abstract class Layer<TStyle extends BaseStyle = BaseStyle> {
 
 	public readonly style: TStyle;
 
-	constructor(map: Map, id: string, style: TStyle) {
+	private readonly isDrawing: () => boolean;
+
+	constructor(map: Map, id: string, isDrawing: () => boolean, style: TStyle) {
 		this.map = map;
 		this.id = id;
 		this.style = style;
 		this.mouseMoveEventListeners();
+		this.isDrawing = isDrawing;
 	}
 
 	public getStyle() {
@@ -20,14 +23,18 @@ export abstract class Layer<TStyle extends BaseStyle = BaseStyle> {
 	}
 
 	private mouseMoveEventListeners() {
-		this.map.on("mouseenter", this.id, () => {
-			this.map.getCanvas().style.cursor = "pointer";
+		this.map.on("mouseover", this.id, () => {
+			if (!this.isDrawing()) {
+				this.map.getCanvas().style.cursor = "pointer";
+			}
 		});
 
 		this.map.on("mouseleave", this.id, (e) => {
-			const [feature] = this.map.queryRenderedFeatures(e.point);
-			if (feature == null || feature?.properties?.id == null) {
-				this.map.getCanvas().style.cursor = "";
+			if(!this.isDrawing()) {
+				const [feature] = this.map.queryRenderedFeatures(e.point);
+				if (feature == null || feature?.properties?.id == null) {
+					this.map.getCanvas().style.cursor = "";
+				}
 			}
 		});
 	}

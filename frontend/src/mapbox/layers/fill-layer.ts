@@ -9,10 +9,10 @@ const defaultStyle: FillStyle = {
 }
 
 export class FillLayer extends Layer<FillStyle> {
-	constructor(map: Map, id: string, sourceId: string, sourceLayerId?: string, styleOverrides?: Partial<FillStyle>) {
+	constructor(map: Map, id: string, sourceId: string, isDrawing: () => boolean, sourceLayerId?: string, styleOverrides?: Partial<FillStyle>) {
 		// Create a complete style
 		const style = {...defaultStyle, ...styleOverrides};
-		super(map, id, style);
+		super(map, id, isDrawing, style);
 
 		this.createLayer(id, sourceId, style, sourceLayerId);
 	}

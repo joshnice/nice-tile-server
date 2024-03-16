@@ -21,6 +21,7 @@ export class FillDrawing extends Drawing<Polygon> {
 			this.map,
 			"fill-drawing-layer",
 			"fill-drawing",
+			() => true,
 			undefined,
 			{ colour: this.baseLayer.getStyle().colour, width: 5, opacity: 0.6 }
 		);

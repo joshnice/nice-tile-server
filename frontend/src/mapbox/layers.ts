@@ -18,25 +18,28 @@ export class Layers {
 
     private layers: { [layerId: string]: Layer } = {};
 
-    constructor(map: Map, tileSourceId: string) {
+	private readonly isDrawing: () => boolean;
+
+    constructor(map: Map, tileSourceId: string, isDrawing: () => boolean) {
         this.map = map;
         this.tileSourceId = tileSourceId;
+        this.isDrawing = isDrawing;
     }
 
     public addLayer(layer: CreateLayer) {
         const colour = createRandomColour();
         switch (layer.type) {
             case "Fill":
-                this.layers[layer.id] = new FillLayer(this.map, layer.id, this.tileSourceId, layer.id, { colour });
-                this.layers[createLocalId(layer.id)] = new FillLayer(this.map, createLocalId(layer.id), layer.id, undefined, { colour });
+                this.layers[layer.id] = new FillLayer(this.map, layer.id, this.tileSourceId, this.isDrawing, layer.id, { colour });
+                this.layers[createLocalId(layer.id)] = new FillLayer(this.map, createLocalId(layer.id), layer.id, this.isDrawing, undefined, { colour });
                 break;
             case "Line":
-                this.layers[layer.id] = new LineLayer(this.map, layer.id, this.tileSourceId, layer.id, { colour });
-                this.layers[createLocalId(layer.id)] = new LineLayer(this.map, createLocalId(layer.id), layer.id, undefined, { colour });
+                this.layers[layer.id] = new LineLayer(this.map, layer.id, this.tileSourceId, this.isDrawing, layer.id, { colour });
+                this.layers[createLocalId(layer.id)] = new LineLayer(this.map, createLocalId(layer.id), layer.id, this.isDrawing, undefined, { colour });
                 break;
             case "Point":
-                this.layers[layer.id] = new CircleLayer(this.map, layer.id, this.tileSourceId, layer.id, { colour });
-                this.layers[createLocalId(layer.id)] = new CircleLayer(this.map, createLocalId(layer.id), layer.id, undefined, { colour });
+                this.layers[layer.id] = new CircleLayer(this.map, layer.id, this.tileSourceId, this.isDrawing, layer.id, { colour });
+                this.layers[createLocalId(layer.id)] = new CircleLayer(this.map, createLocalId(layer.id), layer.id, this.isDrawing, undefined, { colour });
                 break;
             default: 
                 throw new Error(`Layer type ${layer.type} not handled`);

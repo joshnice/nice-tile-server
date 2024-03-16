@@ -24,6 +24,7 @@ export class LineDrawing extends Drawing<LineString> {
 			this.map,
 			"line-drawing-layer",
 			"line-drawing",
+			() => true,
 			undefined,
 			{ ...this.baseLayer.getStyle() }
 		);
