@@ -129,6 +129,12 @@ export class Mapbox {
 	}
 
 	public onRandomObjectsSelected(layerId: string, amount: number) {
+
+		if (this.drawing != null) {
+			this.drawing.remove();
+			this.drawing = null;
+		}
+
 		const layer = this.layers.getLayer(layerId);
 		// Create layer and source for drawing
 		const drawingSource = new GeoJsonSource(this.map, "random-points", null);
