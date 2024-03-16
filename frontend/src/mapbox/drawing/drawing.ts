@@ -38,6 +38,7 @@ export abstract class Drawing<TGeometry extends SupportedGeometry = SupportedGeo
 		this.localSource = localSource;
 		this.baseLayer = layer;
 		this.addEventListeners();
+		this.map.getCanvas().style.cursor = "crosshair";
 	}
 
 	public abstract addEventListeners(): void;
@@ -51,5 +52,7 @@ export abstract class Drawing<TGeometry extends SupportedGeometry = SupportedGeo
 		this.map.off("mousemove", this.onMouseMoveReference);
 		this.drawingLayer?.remove();
 		this.drawingSource?.remove();
+		// Reset the cursor
+		this.map.getCanvas().style.cursor = "";
 	}
 }

@@ -54,13 +54,12 @@ export class Mapbox {
 		});
 
 		this.map.on("click", (event) => {
-
 			// Only allow selection when not drawing
 			if (this.drawing != null) return;
 
-			const features = this.map.queryRenderedFeatures(event.point);
-			if (features.length > 0) {
-				this.events.onObjectClicked.next(features[0].properties?.id);
+			const [feature] = this.map.queryRenderedFeatures(event.point);
+			if (feature != null) {
+				this.events.onObjectClicked.next(feature.properties?.id);
 			} else {
 				this.events.onObjectClicked.next(null)
 			}
