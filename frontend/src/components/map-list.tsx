@@ -22,7 +22,11 @@ export default function MapListComponent({
 					</option>
 				))}
 			</select>
-			<button type="button" onClick={onMapCreatedClick} className="map-button">
+			<button
+				type="button"
+				onClick={onMapCreatedClick}
+				className="map-button bg-white"
+			>
 				Create Map
 			</button>
 		</>

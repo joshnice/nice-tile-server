@@ -41,6 +41,6 @@ export abstract class Layer<TStyle extends BaseStyle = BaseStyle> {
 
 	public remove() {
 		this.map.removeLayer(this.id);
-		// Remove the mouse events
+		// Todo: Remove the mouse events
 	}
 }
