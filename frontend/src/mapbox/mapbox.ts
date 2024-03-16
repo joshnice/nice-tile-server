@@ -13,6 +13,7 @@ import { FillLayer } from "./layers/fill-layer";
 import { CircleLayer } from "./layers/circle-layer";
 import { LineLayer } from "./layers/line-layer";
 import { GeoJsonSource } from "./sources/geojson-source";
+import { generateRandomObjects } from "../helpers/geojson-helpers";
 
 export class Mapbox {
 	private readonly map: Map;
@@ -128,17 +129,18 @@ export class Mapbox {
 
 	}
 
-	public onRandomPointsSelected(layerId: string, amount: number) {
+	public onRandomObjectsSelected(layerId: string, amount: number) {
+		const layer = this.layers.getLayer(layerId);
 		// Create layer and source for drawing
 		const drawingSource = new GeoJsonSource(this.map, "random-points", null);
 		const drawingLayer = new FillLayer(this.map, "random-points", drawingSource.id);
 
 		const onDrawingFinish = (object: Feature<Polygon>) => {
-			// Todo: separate the create random points implementation and posting
 			// Create random points
-			const features = this.api.createRandomPoints(object, amount, layerId);
+			const features = generateRandomObjects(layer, amount, object);
 			const source = this.sources.getSource(layerId);
 			source.updateSourceWithArray(features);
+			features.forEach((feature) => this.api.createObject(feature));
 			
 			// Remove all drawing layers and sources
 			this.drawing?.remove();

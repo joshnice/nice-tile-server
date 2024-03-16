@@ -1,8 +1,8 @@
 import type { Layer } from "../types/layer";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import ModalComponent from "./modal";
 
-export default function RandomPointsComponent({
+export default function RandomObjectsComponent({
 	layers,
 	onSubmit,
 	onClose,
@@ -12,14 +12,7 @@ export default function RandomPointsComponent({
 	onClose: () => void;
 }) {
 	const [amount, setAmount] = useState(0);
-	const [layerSelected, setSelectedLayer] = useState(
-		layers.find((l) => l.type === "Point")?.id,
-	);
-
-	const pointLayers = useMemo(
-		() => layers.filter((l) => l.type === "Point"),
-		[layers],
-	);
+	const [layerSelected, setSelectedLayer] = useState(layers[0]?.id);
 
 	const handleSubmit = () => {
 		if (layerSelected == null) {
@@ -30,7 +23,7 @@ export default function RandomPointsComponent({
 
 	return (
 		<ModalComponent
-			header="Generate Random Points"
+			header="Generate Random Objects"
 			onSubmit={handleSubmit}
 			onClose={onClose}
 			submitButtonText={"Next"}
@@ -51,7 +44,7 @@ export default function RandomPointsComponent({
 					value={layerSelected}
 					onChange={(event) => setSelectedLayer(event.target.value)}
 				>
-					{pointLayers.map((layer) => (
+					{layers.map((layer) => (
 						<option key={layer.id} value={layer.id}>
 							{layer.name}
 						</option>

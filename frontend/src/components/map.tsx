@@ -8,7 +8,7 @@ import useMaps from "../hooks/use-maps";
 import useLayers from "../hooks/use-layers";
 import useObjectSelected from "../hooks/use-object-selected";
 import PropertiesComponent from "./properties";
-import RandomPointsComponent from "./random-points";
+import RandomObjectsComponent from "./random-objects";
 
 const baseUrl = "http://localhost:3000";
 
@@ -108,8 +108,8 @@ export default function MapComponent() {
 		setRandomPoints(true);
 	};
 
-	const handleRandomPointsNext = (layerId: string, amount: number) => {
-		map.current?.onRandomPointsSelected(layerId, amount);
+	const handleRandomObjects = (layerId: string, amount: number) => {
+		map.current?.onRandomObjectsSelected(layerId, amount);
 		setRandomPoints(false);
 	};
 
@@ -143,9 +143,9 @@ export default function MapComponent() {
 				<PropertiesComponent selectedObjectId={selectedObject} />
 			)}
 			{randomPoints && (
-				<RandomPointsComponent
+				<RandomObjectsComponent
 					layers={mapLayers ?? []}
-					onSubmit={handleRandomPointsNext}
+					onSubmit={handleRandomObjects}
 					onClose={() => setRandomPoints(false)}
 				/>
 			)}
