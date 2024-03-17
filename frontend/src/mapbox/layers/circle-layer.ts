@@ -5,12 +5,13 @@ import { Layer } from "./layer";
 const defaultStyle: CircleStyle = {
 	colour: "#b3685b",
 	opacity: 0.9,
-	radius: 10
+	radius: 10,
+	outlineWidth: 0
 }
 
 export class CircleLayer extends Layer<CircleStyle> {
 	constructor(map: Map, id: string, sourceId: string, isDrawing: () => boolean, sourceLayerId?: string, styleOverrides?: Partial<CircleStyle>) {
-		const style = {...defaultStyle, styleOverrides};
+		const style = {...defaultStyle, ...styleOverrides};
 		super(map, id, isDrawing, style);
 		this.createLayer(id, sourceId, style, sourceLayerId);
 	}
@@ -29,6 +30,8 @@ export class CircleLayer extends Layer<CircleStyle> {
 				"circle-color": style.colour,
 				"circle-radius": style.radius,
 				"circle-opacity": style.opacity,
+				"circle-stroke-width": style.outlineWidth,
+				"circle-stroke-color": style.colour
 			},
 		};
 

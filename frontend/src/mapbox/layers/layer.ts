@@ -22,6 +22,10 @@ export abstract class Layer<TStyle extends BaseStyle = BaseStyle> {
 		return this.style;
 	}
 
+	public setVisibility(value: boolean) {
+		this.map.setLayoutProperty(this.id, "visibility", value ? "visible" : "none")
+	}
+
 	private mouseMoveEventListeners() {
 		this.map.on("mouseover", this.id, () => {
 			if (!this.isDrawing()) {

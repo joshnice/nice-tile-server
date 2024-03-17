@@ -15,4 +15,5 @@ export interface LineStyle extends BaseStyle {
 
 export interface CircleStyle extends BaseStyle {
     radius: CirclePaint["circle-radius"];
+    outlineWidth: CirclePaint["circle-stroke-width"];
 }

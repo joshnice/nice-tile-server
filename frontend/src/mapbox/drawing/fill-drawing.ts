@@ -1,10 +1,13 @@
 import type { MapMouseEvent, EventData, Map } from "mapbox-gl";
 import type { Feature, LineString, Polygon } from "geojson";
 import type { FillLayer } from "../layers/fill-layer";
-import { createLineFeature, createPolygonFeature } from "../../helpers/geojson-helpers";
+import { createLineFeature, createPointFeature, createPolygonFeature } from "../../helpers/geojson-helpers";
 import { GeoJsonSource } from "../sources/geojson-source";
 import { Drawing } from "./drawing";
 import { LineLayer } from "../layers/line-layer";
+import { CircleLayer } from "../layers/circle-layer";
+
+const COMPLETE_DRAWING_RADIUS = 50;
 
 export class FillDrawing extends Drawing<Polygon> {
 	private drawingSourceCoordiantes: LineString["coordinates"] = [];
@@ -12,6 +15,10 @@ export class FillDrawing extends Drawing<Polygon> {
 	public drawingLayer: LineLayer;
 
 	public drawingSource: GeoJsonSource;
+
+	public firstPointSource: GeoJsonSource;
+
+	public firstPointLayer: CircleLayer;
 
 	constructor(map: Map, onCreate: (feature: Feature<Polygon>) => void, localSource: GeoJsonSource, layer: FillLayer) {
 		super(map, onCreate, localSource, layer);
@@ -25,6 +32,10 @@ export class FillDrawing extends Drawing<Polygon> {
 			undefined,
 			{ colour: this.baseLayer.getStyle().colour, width: 5, opacity: 0.6 }
 		);
+
+		this.firstPointSource = new GeoJsonSource(this.map, "first-point", null);
+		this.firstPointLayer = new CircleLayer(this.map, "first-point-layer", "first-point", () => true, undefined, { radius: COMPLETE_DRAWING_RADIUS, colour: this.baseLayer.getStyle().colour, opacity: 0.2, outlineWidth: 2 }) 
+		this.firstPointLayer.setVisibility(false);
 	}
 
 	public addEventListeners(): void {
@@ -48,23 +59,20 @@ export class FillDrawing extends Drawing<Polygon> {
 			event.lngLat.toArray(),
 		];
 
-		if (this.drawingSourceCoordiantes.length > 1) {
-			// Check if the latest click is the same location as the first, if so stop drawing
-			const firstCoordinateCanvasPos = this.map.project(
-				this.drawingSourceCoordiantes[0] as [number, number],
-			);
-			const latestClickCanvasPos = this.map.project([
-				event.lngLat.lng,
-				event.lngLat.lat,
-			]);
-			const distance = Math.hypot(
-				firstCoordinateCanvasPos.x - firstCoordinateCanvasPos.x,
-				firstCoordinateCanvasPos.y - latestClickCanvasPos.y,
-			);
+		if (this.drawingSourceCoordiantes.length === 3) {
+			const pointObject = createPointFeature(this.drawingSourceCoordiantes[0], "first-point-layer");
+			this.firstPointSource.updateSource(pointObject);
+		}
 
-			if (this.drawingSourceCoordiantes.length > 2 && distance < 10) {
+		if (this.drawingSourceCoordiantes.length > 1) {
+			
+			const completeDrawing = this.isUserCursorWithinDistanceOfFirstCoordinate(event.lngLat.lng, event.lngLat.lat, COMPLETE_DRAWING_RADIUS);
+			
+			if (this.drawingSourceCoordiantes.length > 2 && completeDrawing) {
 				// Complete drawing
 				this.drawingSource.resetSource();
+				this.firstPointSource.resetSource();
+				this.firstPointLayer.setVisibility(false);
 
 				// Remove the last element of drawing array with the first element to make a polygon
 				this.drawingSourceCoordiantes.splice(
@@ -96,5 +104,26 @@ export class FillDrawing extends Drawing<Polygon> {
 				], this.baseLayer.id),
 			);
 		}
+
+		if (this.drawingSourceCoordiantes.length > 2) {
+			const showCompleteCircle = this.isUserCursorWithinDistanceOfFirstCoordinate(event.lngLat.lng, event.lngLat.lat, COMPLETE_DRAWING_RADIUS * 2);
+			this.firstPointLayer.setVisibility(showCompleteCircle);	
+		}
+	}
+
+	private isUserCursorWithinDistanceOfFirstCoordinate(lng: number, lat: number, distance: number) {
+		// Check if the latest click is the same location as the first, if so stop drawing
+		const firstCoordinateCanvasPos = this.map.project(
+			this.drawingSourceCoordiantes[0] as [number, number],
+		);
+		const latestClickCanvasPos = this.map.project([
+			lng,
+			lat,
+		]);
+		const calculatedDistance = Math.hypot(
+			firstCoordinateCanvasPos.x - firstCoordinateCanvasPos.x,
+			firstCoordinateCanvasPos.y - latestClickCanvasPos.y,
+		);
+		return calculatedDistance <= distance;
 	}
 }
