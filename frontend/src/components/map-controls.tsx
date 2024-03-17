@@ -2,8 +2,8 @@ import type { Layer, CreateLayer } from "../types/layer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons/faCircle";
 import LayerListComponent from "./layer-list";
-import ControlComponent from "./map-control-button";
 import MapListComponent from "./map-list";
+import { IconButtonComponent } from "./basic/buttons";
 
 export type Control = "Point" | "Line" | "Area";
 
@@ -12,7 +12,6 @@ export default function MapControlsComponent({
 	maps,
 	selectedMap,
 	mapLayers = [],
-	randomPointsSelected,
 	onMapSelected,
 	onLayerCreated,
 	onMapCreatedClick,
@@ -23,7 +22,6 @@ export default function MapControlsComponent({
 	maps: { id: string; name: string }[];
 	selectedMap: { id: string; name: string };
 	mapLayers?: Layer[] | null;
-	randomPointsSelected: boolean;
 	onMapSelected: (map: { id: string; name: string }) => void;
 	onMapCreatedClick: () => void;
 	onLayerCreated: (layer: CreateLayer) => void;
@@ -39,14 +37,11 @@ export default function MapControlsComponent({
 					onCreateLayer={onLayerCreated}
 					onLayerSelected={onLayerSelected}
 				/>
-				<ControlComponent
-					selected={randomPointsSelected}
-					onClick={onRandomPointsSelected}
-				>
+				<IconButtonComponent onClick={onRandomPointsSelected}>
 					<FontAwesomeIcon icon={faCircle} size="2xs" transform="up-12 " />
 					<FontAwesomeIcon icon={faCircle} size="2xs" transform="down-15 " />
 					<FontAwesomeIcon icon={faCircle} size="2xs" transform="up-4" />
-				</ControlComponent>
+				</IconButtonComponent>
 			</div>
 			<div className="map-controls-container map-controls-container-right">
 				<MapListComponent

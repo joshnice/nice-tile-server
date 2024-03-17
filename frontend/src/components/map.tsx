@@ -134,7 +134,6 @@ export default function MapComponent() {
 					selectedMap={selectedMap}
 					selectedLayer={selectedLayer}
 					mapLayers={mapLayers}
-					randomPointsSelected={randomObjects}
 					onLayerCreated={handleLayerCreate}
 					onMapCreatedClick={handleMapCreate}
 					onMapSelected={handleMapSelected}

@@ -1,3 +1,5 @@
+import type { PropsWithChildren } from "react";
+
 export function ButtonComponent({
 	text,
 	onClick,
@@ -10,6 +12,22 @@ export function ButtonComponent({
 			onClick={onClick}
 		>
 			{text}
+		</button>
+	);
+}
+
+export function IconButtonComponent({
+	children,
+	className = "",
+	onClick,
+}: PropsWithChildren<{ onClick: () => void; className?: string }>) {
+	return (
+		<button
+			type="button"
+			className={`flex justify-center items-center p-2 w-12 h-12 bg-white border-[3px] border-black rounded-md hover:bg-slate-300 ${className}`}
+			onClick={onClick}
+		>
+			{children}
 		</button>
 	);
 }

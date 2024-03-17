@@ -3,6 +3,7 @@ import type { CreateLayer, Layer } from "../types/layer";
 import MinMaxComponent from "./min-max";
 import { HeaderText } from "./basic/headers";
 import CreateLayerLayerFormComponent from "./create-layer-form";
+import { ButtonComponent } from "./basic/buttons";
 
 export default function LayerListComponent({
 	layers = [],
@@ -59,13 +60,11 @@ export default function LayerListComponent({
 					</>
 				)}
 			</div>
-			<button
-				type="button"
-				className="map-button"
+			<ButtonComponent
+				text="Create Layer"
 				onClick={() => setCreateLayerModal(true)}
-			>
-				Create Layer
-			</button>
+				className="!w-full"
+			/>
 			<CreateLayerLayerFormComponent
 				open={createLayerModal}
 				handleCreateLayer={handleCreateLayer}
