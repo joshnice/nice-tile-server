@@ -84,7 +84,7 @@ function LayerComponent({
 			type="button"
 			key={layer.id}
 			className={`h-12 p-2 w-full border-solid border-slate-600 border-2 rounded-sm ${
-				selected ? "bg-sky-300" : "bg-white"
+				selected ? "bg-slate-300" : "bg-white"
 			}`}
 			onClick={() => onLayerSelected(layer.id)}
 		>
