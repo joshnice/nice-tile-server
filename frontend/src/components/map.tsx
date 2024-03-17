@@ -23,7 +23,7 @@ export default function MapComponent() {
 		id: string;
 		name: string;
 	} | null>(null);
-	const [randomPoints, setRandomPoints] = useState<boolean>(false);
+	const [randomObjects, setRandomObjects] = useState<boolean>(false);
 
 	// Map state
 	const selectedMapRef = useRef<string | null>();
@@ -108,13 +108,13 @@ export default function MapComponent() {
 	};
 
 	const handleRandomPointsSelected = () => {
-		setRandomPoints(true);
+		setRandomObjects(true);
 	};
 
 	const handleRandomObjects = (layerId: string, amount: number) => {
 		setSelectedLayer(null);
 		map.current?.onRandomObjectsSelected(layerId, amount);
-		setRandomPoints(false);
+		setRandomObjects(false);
 	};
 
 	// Clean up
@@ -134,7 +134,7 @@ export default function MapComponent() {
 					selectedMap={selectedMap}
 					selectedLayer={selectedLayer}
 					mapLayers={mapLayers}
-					randomPointsSelected={randomPoints}
+					randomPointsSelected={randomObjects}
 					onLayerCreated={handleLayerCreate}
 					onMapCreatedClick={handleMapCreate}
 					onMapSelected={handleMapSelected}
@@ -146,11 +146,12 @@ export default function MapComponent() {
 			{selectedObject != null && (
 				<PropertiesComponent selectedObjectId={selectedObject} />
 			)}
-			{randomPoints && (
+			{randomObjects && (
 				<RandomObjectsComponent
+					open={randomObjects}
 					layers={mapLayers ?? []}
 					onSubmit={handleRandomObjects}
-					onClose={() => setRandomPoints(false)}
+					onClose={() => setRandomObjects(false)}
 				/>
 			)}
 		</>

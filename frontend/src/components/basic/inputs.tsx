@@ -11,3 +11,17 @@ export function TextInputComponent<TValue extends string>({
 		/>
 	);
 }
+
+export function NumberInputComponent({
+	value,
+	onChange,
+}: { value: number; onChange: (value: number) => void }) {
+	return (
+		<input
+			type="number"
+			value={value}
+			onChange={(event) => onChange(Number.parseInt(event.target.value, 10))}
+			className="h-12 border-2 border-slate-600 p-3 text-lg w-full rounded-sm"
+		/>
+	);
+}
