@@ -21,10 +21,10 @@ export default function MapControlsComponent({
 }: {
 	selectedLayer: string | null;
 	maps: { id: string; name: string }[];
-	selectedMap: string;
+	selectedMap: { id: string; name: string };
 	mapLayers?: Layer[] | null;
 	randomPointsSelected: boolean;
-	onMapSelected: (id: string) => void;
+	onMapSelected: (map: { id: string; name: string }) => void;
 	onMapCreatedClick: () => void;
 	onLayerCreated: (layer: CreateLayer) => void;
 	onLayerSelected: (id: string) => void;

@@ -1,3 +1,6 @@
+import { ButtonComponent } from "./basic/buttons";
+import { SelectObjectComponent } from "./basic/selects";
+
 export default function MapListComponent({
 	maps,
 	selectedMap,
@@ -5,30 +8,22 @@ export default function MapListComponent({
 	onMapCreatedClick,
 }: {
 	maps: { id: string; name: string }[];
-	selectedMap: string;
-	onMapSelected: (id: string) => void;
+	selectedMap: { id: string; name: string };
+	onMapSelected: (map: { id: string; name: string }) => void;
 	onMapCreatedClick: () => void;
 }) {
 	return (
 		<>
-			<select
-				className="map-selection"
+			<SelectObjectComponent
 				value={selectedMap}
-				onChange={(event) => onMapSelected(event.target.value)}
-			>
-				{maps.map((map) => (
-					<option key={map.id} className="map-option" value={map.id}>
-						{map.name}
-					</option>
-				))}
-			</select>
-			<button
-				type="button"
+				options={maps}
+				onChange={onMapSelected}
+			/>
+			<ButtonComponent
 				onClick={onMapCreatedClick}
-				className="map-button bg-white"
-			>
-				Create Map
-			</button>
+				text="Create Map"
+				className="!w-full"
+			/>
 		</>
 	);
 }

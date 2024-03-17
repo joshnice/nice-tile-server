@@ -19,17 +19,20 @@ export default function MapComponent() {
 
 	// Controls
 	const [selectedLayer, setSelectedLayer] = useState<string | null>(null);
-	const [selectedMap, setSelectedMap] = useState<string | null>(null);
+	const [selectedMap, setSelectedMap] = useState<{
+		id: string;
+		name: string;
+	} | null>(null);
 	const [randomPoints, setRandomPoints] = useState<boolean>(false);
 
 	// Map state
 	const selectedMapRef = useRef<string | null>();
-	selectedMapRef.current = selectedMap;
+	selectedMapRef.current = selectedMap?.id;
 	const initialLayers = useRef(false);
 
 	const onMapsSuccess = (maps: { id: string; name: string }[]) => {
 		if (selectedMapRef.current == null && maps[0] != null) {
-			handleMapSelected(maps[0].id);
+			handleMapSelected(maps[0]);
 		}
 	};
 
@@ -48,7 +51,7 @@ export default function MapComponent() {
 		useMaps(onMapsSuccess);
 
 	const { mapLayers, isMapLayersLoading, createMapLayer, invalidateLayers } =
-		useLayers(selectedMap, onLayersSuccess);
+		useLayers(selectedMap?.id ?? null, onLayersSuccess);
 
 	const { selectedObject, onObjectSelected } = useObjectSelected();
 
@@ -63,26 +66,26 @@ export default function MapComponent() {
 		map.current?.onLayerSelected(id);
 	};
 
-	const handleMapSelected = (id: string) => {
+	const handleMapSelected = (selectedMap: { id: string; name: string }) => {
 		map.current?.destory?.();
 		if (mapElement.current != null) {
 			map.current = new Mapbox({
 				containerElement: mapElement.current,
-				api: new Api(id, baseUrl),
+				api: new Api(selectedMap.id, baseUrl),
 				events: {
 					onObjectClicked: onObjectSelected,
 				},
 			});
 			initialLayers.current = false;
-			setSelectedMap(id);
+			setSelectedMap(selectedMap);
 		}
 	};
 
 	const handleMapCreate = async () => {
-		const mapId = uuid();
-		await createMap(mapId, `New Map ${maps.length}`);
+		const map = { id: uuid(), name: `New Map ${maps.length}` };
+		await createMap(map.id, map.name);
 		invalidateMaps();
-		handleMapSelected(mapId);
+		handleMapSelected(map);
 	};
 
 	const handleLayerCreate = async (layer: CreateLayer) => {

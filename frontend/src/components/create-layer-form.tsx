@@ -3,7 +3,7 @@ import { useState } from "react";
 import { SubHeaderText } from "./basic/headers";
 import ModalComponent from "./modal";
 import { TextInputComponent } from "./basic/inputs";
-import { SelectComponent } from "./basic/selects";
+import { SelectStringComponent } from "./basic/selects";
 
 export default function CreateLayerLayerFormComponent({
 	open,
@@ -34,7 +34,7 @@ export default function CreateLayerLayerFormComponent({
 				</div>
 				<div className="flex flex-col gap-3">
 					<SubHeaderText title="Type" />
-					<SelectComponent
+					<SelectStringComponent
 						value={layer.type}
 						options={["Fill", "Point", "Line"]}
 						onChange={(value) => setLayer({ ...layer, type: value })}
