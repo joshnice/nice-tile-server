@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from "react";
 import { createPortal } from "react-dom";
 import { HeaderText } from "./basic/headers";
+import { ButtonComponent } from "./basic/buttons";
 
 interface ModalProps {
 	header: string;
@@ -26,12 +27,8 @@ export default function ModalComponent({
 			<HeaderText title={header} />
 			{children}
 			<div className="modal-submit-button">
-				<button type="button" className="modal-button" onClick={onClose}>
-					Close
-				</button>
-				<button type="button" className="modal-button" onClick={onSubmit}>
-					{submitButtonText}
-				</button>
+				<ButtonComponent text="Close" onClick={onClose} />
+				<ButtonComponent text={submitButtonText} onClick={onSubmit} />
 			</div>
 		</dialog>,
 		document.body,
