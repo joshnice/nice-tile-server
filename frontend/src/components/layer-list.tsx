@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import type { CreateLayer, Layer } from "../types/layer";
 import MinMaxComponent from "./min-max";
-import ModalComponent from "./modal";
-import { HeaderText, SubHeaderText } from "./basic/headers";
+import { HeaderText } from "./basic/headers";
+import CreateLayerLayerFormComponent from "./create-layer-form";
 
 export default function LayerListComponent({
 	layers = [],
@@ -16,19 +16,16 @@ export default function LayerListComponent({
 	onLayerSelected: (id: string) => void;
 }) {
 	const [createLayerModal, setCreateLayerModal] = useState(false);
-	const [layer, setLayer] = useState<CreateLayer>({ name: "", type: "Fill" });
 
 	const [expand, setExpand] = useState(true);
 
-	const handleCreateLayer = () => {
+	const handleCreateLayer = (layer: CreateLayer) => {
 		setCreateLayerModal(false);
 		onCreateLayer(layer);
-		setLayer({ name: "", type: "Fill" });
 	};
 
 	const handleClose = () => {
 		setCreateLayerModal(false);
-		setLayer({ name: "", type: "Fill" });
 	};
 
 	const selectedLayer = useMemo(
@@ -44,6 +41,7 @@ export default function LayerListComponent({
 				{expand ? (
 					layers?.map((layer) => (
 						<LayerComponent
+							key={layer.id}
 							layer={layer}
 							selected={layer.id === selectedLayerId}
 							onLayerSelected={onLayerSelected}
@@ -68,41 +66,11 @@ export default function LayerListComponent({
 			>
 				Create Layer
 			</button>
-			{createLayerModal && (
-				<ModalComponent
-					header="Create Layer"
-					submitButtonText="Add"
-					onSubmit={handleCreateLayer}
-					onClose={handleClose}
-				>
-					<div className="create-layer-content">
-						<SubHeaderText title="Name" />
-						<input
-							className="create-layer-input"
-							type="text"
-							value={layer.name}
-							onChange={(event) =>
-								setLayer({ ...layer, name: event.target.value })
-							}
-						/>
-						<SubHeaderText title="Type" />
-						<select
-							className="create-layer-input"
-							value={layer.type}
-							onChange={(event) =>
-								setLayer({
-									...layer,
-									type: event.target.value as "Line" | "Point" | "Fill",
-								})
-							}
-						>
-							<option value="Fill">Fill</option>
-							<option value="Line">Line</option>
-							<option value="Point">Point</option>
-						</select>
-					</div>
-				</ModalComponent>
-			)}
+			<CreateLayerLayerFormComponent
+				open={createLayerModal}
+				handleCreateLayer={handleCreateLayer}
+				handleClose={handleClose}
+			/>
 		</div>
 	);
 }

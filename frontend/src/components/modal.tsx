@@ -5,6 +5,7 @@ import { HeaderText } from "./basic/headers";
 interface ModalProps {
 	header: string;
 	submitButtonText: string;
+	open: boolean;
 	onSubmit: () => void;
 	onClose: () => void;
 }
@@ -12,12 +13,16 @@ interface ModalProps {
 export default function ModalComponent({
 	header,
 	submitButtonText,
+	open,
 	onClose,
 	onSubmit,
 	children,
 }: PropsWithChildren<ModalProps>) {
 	const portal = createPortal(
-		<dialog className="modal">
+		<dialog
+			className="flex flex-col gap-8 absolute top-[25vh] max-h-[750px] w-[50vw] max-w-[600px] border-2 border-black z-50 p-5"
+			open={open}
+		>
 			<HeaderText title={header} />
 			{children}
 			<div className="modal-submit-button">
@@ -33,14 +38,18 @@ export default function ModalComponent({
 	);
 
 	const background = createPortal(
-		<div className="modal-background" />,
+		<div className="absolute top-0 left-0 bg-black opacity-80 w-full h-full z-40" />,
 		document.body,
 	);
 
 	return (
 		<>
-			{portal}
-			{background}
+			{open && (
+				<>
+					{portal}
+					{background}
+				</>
+			)}
 		</>
 	);
 }
