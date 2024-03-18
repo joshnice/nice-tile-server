@@ -1,98 +1,59 @@
+import { type Column, TableComponent } from "./basic/table";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { createPortal } from "react-dom";
-import { HeaderText, SubHeaderText } from "./basic/headers";
+import { useMemo, useState } from "react";
 
 export default function PropertiesComponent({
 	selectedObjectId,
 }: { selectedObjectId: string }) {
-	const [edit, setEdit] = useState<{
-		originalKey: string | null;
-		key: string;
-		value: string;
-	} | null>(null);
+	// Todo: Make into hook
 	const queryClient = useQueryClient();
 
-	const { data, isLoading } = useQuery({
+	const { data: objectProperties, isLoading } = useQuery({
 		queryKey: ["object-properties", selectedObjectId],
 		queryFn: () => getObjectProperties(selectedObjectId),
 	});
 
-	const handleUpdate = async () => {
-		if (edit != null && data != null) {
-			if (edit.originalKey == null) {
-				await updateObjectProperties(selectedObjectId, {
-					...data.properties,
-					[edit.key]: edit.value,
-				});
-			} else {
-				const copiedProps = { ...data.properties };
-				delete copiedProps[edit.originalKey];
-				await updateObjectProperties(selectedObjectId, {
-					...copiedProps,
-					[edit.key]: edit.value,
-				});
-			}
-			queryClient.invalidateQueries({
-				queryKey: ["object-properties", selectedObjectId],
-			});
-		}
-		setEdit(null);
-	};
+	const data = useMemo(() => {
+		return Object.entries(objectProperties?.properties ?? {}).map(
+			([key, value]) => ({ key, value }),
+		);
+	}, [objectProperties]);
 
-	const handleClose = () => {
-		setEdit(null);
-	};
-
-	const layerDialog = createPortal(
-		<dialog>
-			<>
-				{edit == null ? (
-					<div>loading...</div>
-				) : (
-					<>
-						<HeaderText title={"Edit Property"} />
-						<div className="create-layer-content">
-							<SubHeaderText title="Name" />
-							<input
-								className="create-layer-input"
-								type="text"
-								value={edit?.key ?? ""}
-								onChange={(event) =>
-									setEdit({ ...edit, key: event.target.value })
-								}
-							/>
-							<SubHeaderText title="Value" />
-							<input
-								className="create-layer-input"
-								value={edit?.value}
-								onChange={(event) =>
-									setEdit({ ...edit, value: event.target.value })
-								}
-							/>
-						</div>
-						<div className="modal-submit-button">
-							<button
-								type="button"
-								className="modal-button"
-								onClick={() => handleClose()}
-							>
-								Close
-							</button>
-							<button
-								type="button"
-								className="modal-button"
-								onClick={() => handleUpdate()}
-							>
-								Update
-							</button>
-						</div>
-					</>
-				)}
-			</>
-		</dialog>,
-		document.body,
+	const columns: Column[] = useMemo(
+		() => [
+			{ id: "key", heading: "key" },
+			{ id: "value", heading: "value" },
+		],
+		[],
 	);
+
+	const handleUpdate = async (
+		columnId: string,
+		index: number,
+		value: string,
+	) => {
+		const dataRow = data[index];
+
+		const propertiesCopy = { ...objectProperties?.properties };
+
+		switch (columnId) {
+			case "key":
+				delete propertiesCopy[dataRow.key];
+				propertiesCopy[value] = dataRow.value;
+				break;
+			case "value":
+				propertiesCopy[dataRow.key] = value;
+				break;
+			default:
+				throw new Error("Column id not handled");
+		}
+
+		await updateObjectProperties(selectedObjectId, propertiesCopy);
+
+		queryClient.invalidateQueries({
+			queryKey: ["object-properties", selectedObjectId],
+		});
+	};
 
 	return (
 		<>
@@ -101,31 +62,14 @@ export default function PropertiesComponent({
 					<span>Loading</span>
 				) : (
 					<div className="properties-list">
-						{Object.entries(data?.properties ?? {}).map(([key, value]) => (
-							<button
-								key={key}
-								onClick={() => setEdit({ key, value, originalKey: key })}
-								className="object-property"
-								type="button"
-							>
-								<div>
-									{key}: {value}
-								</div>
-							</button>
-						))}
-						<button
-							type="button"
-							className="map-button"
-							onClick={() => {
-								setEdit({ key: "", value: "", originalKey: null });
-							}}
-						>
-							Add Property
-						</button>
+						<TableComponent
+							columns={columns}
+							data={data}
+							onValueChange={handleUpdate}
+						/>
 					</div>
 				)}
 			</div>
-			{edit && layerDialog}
 		</>
 	);
 }

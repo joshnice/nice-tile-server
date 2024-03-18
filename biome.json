@@ -8,11 +8,15 @@
 		"rules": {
 			"recommended": true,
 			"suspicious": {
-				"noShadowRestrictedNames": "off"
+				"noShadowRestrictedNames": "off",
+				"noArrayIndexKey": "off"
 			},
 			"complexity": {
 				"noForEach": "off",
-				"noUselessConstructor": "off"	
+				"noUselessConstructor": "off"
+			},
+			"correctness": {
+				"useExhaustiveDependencies": "off"
 			}
 		}
 	}
