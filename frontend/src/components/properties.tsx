@@ -55,19 +55,29 @@ export default function PropertiesComponent({
 		});
 	};
 
+	const handleAdd = async (value: Record<string, string>) => {
+		await updateObjectProperties(selectedObjectId, {
+			...objectProperties?.properties,
+			...value,
+		});
+
+		queryClient.invalidateQueries({
+			queryKey: ["object-properties", selectedObjectId],
+		});
+	};
+
 	return (
 		<>
 			<div className="properties-container">
 				{isLoading ? (
 					<span>Loading</span>
 				) : (
-					<div className="properties-list">
-						<TableComponent
-							columns={columns}
-							data={data}
-							onValueChange={handleUpdate}
-						/>
-					</div>
+					<TableComponent
+						columns={columns}
+						data={data}
+						onValueChange={handleUpdate}
+						onAdd={handleAdd}
+					/>
 				)}
 			</div>
 		</>

@@ -12,11 +12,17 @@ interface TableProps {
 	columns: Column[];
 	data: Record<string, string>[];
 	onValueChange: (column: string, index: number, value: string) => void;
+	onAdd: (value: Record<string, string>) => void;
 }
 
-export function TableComponent({ columns, data, onValueChange }: TableProps) {
+export function TableComponent({
+	columns,
+	data,
+	onValueChange,
+	onAdd,
+}: TableProps) {
 	return (
-		<div className="w-full h-ful l border-2 border-black overflow-y-auto">
+		<div className="w-full h-full max-h-full border-2 border-black overflow-y-auto">
 			<div className="w-full h-16 flex justify-evenly">
 				{columns.map((column) => (
 					<ColumnHeaderComponent key={column.id} heading={column.heading} />
@@ -33,6 +39,7 @@ export function TableComponent({ columns, data, onValueChange }: TableProps) {
 					))}
 				</div>
 			))}
+			<EmptyTextCellComponent addValue={onAdd} />
 		</div>
 	);
 }
@@ -73,6 +80,7 @@ function TextCellComponent({ value, onChange }: TextCellProps) {
 		setEdit(true);
 		setEditingValue(value);
 	};
+
 	return (
 		<CellComponent>
 			{edit ? (
@@ -101,5 +109,48 @@ function TextCellComponent({ value, onChange }: TextCellProps) {
 				</button>
 			)}
 		</CellComponent>
+	);
+}
+
+function EmptyTextCellComponent({
+	addValue,
+}: { addValue: (value: Record<string, string>) => void }) {
+	const [key, setKey] = useState("");
+	const [value, setValue] = useState("");
+
+	const handleSaveClicked = () => {
+		addValue({ [key]: value });
+		setKey("");
+		setValue("");
+	};
+
+	return (
+		<div className="w-full h-16 flex justify-evenly">
+			<CellComponent>
+				<div className="w-full h-full relative">
+					<TextInputComponent
+						value={key ?? ""}
+						onChange={(value) => setKey(value)}
+						className="!h-full !border-0"
+					/>
+				</div>
+			</CellComponent>
+			<CellComponent>
+				<div className="w-full h-full relative">
+					<TextInputComponent
+						value={value ?? ""}
+						onChange={(value) => setValue(value)}
+						className="!h-full !border-0"
+					/>
+					<button
+						className="absolute right-3 top-1/4"
+						type="button"
+						onClick={handleSaveClicked}
+					>
+						<FontAwesomeIcon size="2x" icon={faSave} />
+					</button>
+				</div>
+			</CellComponent>
+		</div>
 	);
 }
