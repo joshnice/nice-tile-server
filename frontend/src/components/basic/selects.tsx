@@ -2,17 +2,20 @@ export function SelectStringComponent<TValue extends string>({
 	value,
 	options,
 	onChange,
+	startBlank = false,
 }: {
-	value: TValue;
+	value: TValue | undefined;
 	options: TValue[];
 	onChange: (value: TValue) => void;
+	startBlank?: boolean;
 }) {
 	return (
 		<select
 			className="h-12 border-2 border-slate-600 p-3 text-lg full bg-white rounded-sm"
-			value={value}
 			onChange={(event) => onChange(event.target.value as TValue)}
+			defaultValue={startBlank ? "" : value}
 		>
+			{startBlank && <option className="hidden" disabled value="" />}
 			{options.map((option) => (
 				<option value={option} key={option}>
 					{option}
