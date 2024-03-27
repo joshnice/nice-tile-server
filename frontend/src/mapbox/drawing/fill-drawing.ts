@@ -126,4 +126,10 @@ export class FillDrawing extends Drawing<Polygon> {
 		);
 		return calculatedDistance <= distance;
 	}
+
+	public remove(): void {
+		super.remove();
+		this.firstPointLayer.remove();
+		this.firstPointSource.remove();
+	}
 }
