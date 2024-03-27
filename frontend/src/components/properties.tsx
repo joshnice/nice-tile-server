@@ -1,6 +1,6 @@
 import { type Column, TableComponent } from "./basic/table";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 export default function PropertiesComponent({
 	selectedObjectId,
