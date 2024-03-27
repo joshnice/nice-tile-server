@@ -44,14 +44,14 @@ export async function getObjects(
 export async function postObject(
 	mapId: string,
 	object: Feature<Point, {id: string}>,
-	layer_id: string,
+	layerId: string,
+  properties: Record<string, string | number>
 ) {
-	const sql = `
-    INSERT INTO objects(id, geom, map_id, layer_id)
-    VALUES ('${object.properties.id}', '${JSON.stringify(
-			object.geometry,
-		)}', '${mapId}', '${layer_id}' );
+
+  const SQL = `
+    INSERT INTO objects(id, geom, map_id, layer_id, properties)
+    VALUES ($1, $2, $3, $4, $5);
   `;
 
-	return client.query(sql);
+	return client.query(SQL, [object.properties.id, object.geometry, mapId, layerId, properties]);
 }

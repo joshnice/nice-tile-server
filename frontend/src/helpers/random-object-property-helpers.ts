@@ -4,11 +4,11 @@ import { v4 as uuid } from "uuid";
 export function createRandomObjectProperty(type: PropertyType) {
     switch (type) {
         case "randomNumber":
-            return createDefaultStaticValue();
+            return createDefaultRandomNumber();
         case "setValue":
-            return createDefaultandomNumber();
-        case "staticValue":
             return createDefaultSetValue();
+        case "staticValue":
+            return createDefaultStaticValue();
         default:
             throw new Error("Type not handled");
     }
@@ -23,7 +23,7 @@ function createDefaultStaticValue(): RandomObjectStaticValue {
     }
 }
 
-function createDefaultandomNumber(): RandomObjectRandomNumber {
+function createDefaultRandomNumber(): RandomObjectRandomNumber {
     return {
         id: uuid(),
         name: "",

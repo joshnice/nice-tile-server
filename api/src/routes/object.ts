@@ -80,7 +80,13 @@ objectRoutes.post(
 	}),
 	async (c) => {
 		const { body } = c.req.valid("json");
-		await postObject(body.mapId, body.object, body.object.properties.layerId);
+		const validProps: Record<string, string | number> = {};
+		Object.entries(body.object.properties).forEach(([key, value]) => {
+			if (key !== "layerId" && key !== "id" && typeof value === "string" || typeof value === "number" ) {
+				validProps[key] = value;
+			}
+		});
+		await postObject(body.mapId, body.object, body.object.properties.layerId, validProps);
 		return c.text("Success", 200);
 	},
 );

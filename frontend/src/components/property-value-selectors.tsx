@@ -46,7 +46,7 @@ export function RandomNumberProperty({
 }) {
 	return (
 		<div>
-			<SubHeaderText title="Static Value" />
+			<SubHeaderText title="Random Number" />
 			<div className="flex flex-col">
 				<MinorHeaderText title="Name" />
 				<TextInputComponent
