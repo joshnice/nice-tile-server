@@ -13,7 +13,7 @@ export function SelectStringComponent<TValue extends string>({
 		<select
 			className="h-12 border-2 border-slate-600 p-3 text-lg full bg-white rounded-sm"
 			onChange={(event) => onChange(event.target.value as TValue)}
-			defaultValue={startBlank ? "" : value}
+			value={value ?? ""}
 		>
 			{startBlank && <option className="hidden" disabled value="" />}
 			{options.map((option) => (
