@@ -19,7 +19,11 @@ export default function RandomObjectsComponent({
 }: {
 	open: boolean;
 	layers: Layer[];
-	onSubmit: (layerId: string, amount: number) => void;
+	onSubmit: (
+		layerId: string,
+		amount: number,
+		properties: RandomObjectProperty[],
+	) => void;
 	onClose: () => void;
 }) {
 	const [amount, setAmount] = useState(0);
@@ -46,7 +50,7 @@ export default function RandomObjectsComponent({
 		if (layerSelected == null) {
 			throw new Error();
 		}
-		onSubmit(layerSelected.id, amount);
+		onSubmit(layerSelected.id, amount, properties);
 	};
 
 	return (

@@ -1,11 +1,13 @@
 import type { Feature, Point, LineString, Polygon, FeatureCollection } from "geojson";
 import type { Layer } from "../mapbox/layers/layer";
+import type { RandomObjectProperty } from "../types/properties";
 import { v4 as uuid } from "uuid";
 import { randomPoint, randomLineString, randomPolygon } from "@turf/random";
 import bbox from "@turf/bbox";
 import { FillLayer } from "../mapbox/layers/fill-layer";
 import { LineLayer } from "../mapbox/layers/line-layer";
 import { CircleLayer } from "../mapbox/layers/circle-layer";
+import { createRandomProperties } from "./random-object-property-helpers";
 
 type Properties = { layerId: string, id: string };
 
@@ -84,7 +86,7 @@ export function createPolygonFeature(
 	};
 }
 
-export function generateRandomObjects(layer: Layer, amount: number, area: Feature<Polygon>) {
+export function generateRandomObjects(layer: Layer, amount: number, area: Feature<Polygon>, properties: RandomObjectProperty[]) {
 	const bounds = bbox(area);
 	let featureCollection: FeatureCollection<Polygon | LineString | Point>; 
 	switch (true) {
@@ -101,7 +103,7 @@ export function generateRandomObjects(layer: Layer, amount: number, area: Featur
 			throw new Error("Type not supported");
 	}
 
-	return featureCollection.features.map((feature) => ({...feature, properties: { layerId: layer.id, id: uuid() }}));
+	return featureCollection.features.map((feature, index) => ({...feature, properties: { layerId: layer.id, id: uuid(), ...createRandomProperties(amount, index, properties) }}));
 }
 
 function checkCoordinateIsNumber(coordinate: number) {

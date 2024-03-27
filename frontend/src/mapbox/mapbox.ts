@@ -1,9 +1,10 @@
-import { Map } from "mapbox-gl";
 import type { Api } from "./api";
 import type { MapEvents, MapboxOptions } from "./mapbox-types";
 import type { Layer } from "../types/layer";
 import type { Feature, Polygon } from "geojson"
 import type { Drawing, SupportedGeometry } from "./drawing/drawing";
+import type { RandomObjectProperty } from "../types/properties";
+import { Map } from "mapbox-gl";
 import { PointDrawing } from "./drawing/point-drawing";
 import { LineDrawing } from "./drawing/line-drawing";
 import { FillDrawing } from "./drawing/fill-drawing";
@@ -127,7 +128,7 @@ export class Mapbox {
 
 	}
 
-	public onRandomObjectsSelected(layerId: string, amount: number) {
+	public onRandomObjectsSelected(layerId: string, amount: number, properties: RandomObjectProperty[]) {
 
 		if (this.drawing != null) {
 			this.drawing.remove();
@@ -141,7 +142,7 @@ export class Mapbox {
 
 		const onDrawingFinish = (object: Feature<Polygon>) => {
 			// Create random points
-			const features = generateRandomObjects(layer, amount, object);
+			const features = generateRandomObjects(layer, amount, object, properties);
 			const source = this.sources.getSource(layerId);
 			source.updateSourceWithArray(features);
 			features.forEach((feature) => this.api.createObject(feature));

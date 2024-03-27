@@ -1,4 +1,5 @@
 import type { CreateLayer, Layer } from "../types/layer";
+import type { RandomObjectProperty } from "../types/properties";
 import { useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
 import { Mapbox } from "../mapbox/mapbox";
@@ -111,9 +112,13 @@ export default function MapComponent() {
 		setRandomObjects(true);
 	};
 
-	const handleRandomObjects = (layerId: string, amount: number) => {
+	const handleRandomObjects = (
+		layerId: string,
+		amount: number,
+		properties: RandomObjectProperty[],
+	) => {
 		setSelectedLayer(null);
-		map.current?.onRandomObjectsSelected(layerId, amount);
+		map.current?.onRandomObjectsSelected(layerId, amount, properties);
 		setRandomObjects(false);
 	};
 
