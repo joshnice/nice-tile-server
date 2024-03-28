@@ -19,14 +19,14 @@ export function StaticValueProperty({
 		<div>
 			<SubHeaderText title="Static Value" />
 			<div className="flex gap-5 justify-between">
-				<div className="flex flex-col">
+				<div className="flex flex-col w-full">
 					<MinorHeaderText title="Name" />
 					<TextInputComponent
 						value={value.name}
 						onChange={(name) => onChange({ ...value, name })}
 					/>
 				</div>
-				<div className="flex flex-col">
+				<div className="flex flex-col w-full">
 					<MinorHeaderText title="Value" />
 					<TextInputComponent
 						value={value.value}
@@ -58,14 +58,14 @@ export function RandomNumberProperty({
 				/>
 			</div>
 			<div className="flex gap-5 justify-between">
-				<div className="flex flex-col">
+				<div className="flex flex-col  w-full">
 					<MinorHeaderText title="Lower Value" />
 					<NumberInputComponent
 						value={value.lower}
 						onChange={(lowerValue) => onChange({ ...value, lower: lowerValue })}
 					/>
 				</div>
-				<div className="flex flex-col">
+				<div className="flex flex-col w-full">
 					<MinorHeaderText title="Upper Value" />
 					<NumberInputComponent
 						value={value.upper}

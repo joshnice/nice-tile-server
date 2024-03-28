@@ -61,6 +61,7 @@ export default function RandomObjectsComponent({
 			onClose={onClose}
 			submitButtonText={"Next"}
 			open={open}
+			size="large"
 		>
 			<div className="flex flex-col h-full gap-5 overflow-y-auto">
 				<div className="flex flex-col gap-3">
