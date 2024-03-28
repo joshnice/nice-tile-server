@@ -35,8 +35,6 @@ export function TableComponent({
 		setNewValue({});
 	};
 
-	console.log("newValue", newValue);
-
 	return (
 		<div className="w-full h-full max-h-full border-2 border-black overflow-y-auto">
 			<div className="w-full h-16 flex justify-evenly">
