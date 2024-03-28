@@ -42,20 +42,20 @@ function createDefaultSetValue(): RandomObjectSetValue {
     }
 }
 
-export function createRandomProperties(index: number, amount: number,  properties: RandomObjectProperty[]): Record<string, string | number> {
+export function createRandomProperties(index: number,  properties: RandomObjectProperty[]): Record<string, string | number> {
     const value: Record<string, string | number> = {};
     properties.forEach((property) => {
-        value[property.name] = createRandomObjectPropertyValue(property, index, amount);
+        value[property.name] = createRandomObjectPropertyValue(property, index);
     });
     return value;
 }
 
-function createRandomObjectPropertyValue(property: RandomObjectProperty, index: number, amount: number): string | number {
+function createRandomObjectPropertyValue(property: RandomObjectProperty, valueNumber: number): string | number {
     switch (property.type) {
         case "randomNumber":
             return createRandomNumber(property.lower, property.upper);
         case "setValue":
-            return createSetValue(property.values, index, amount);
+            return createSetValue(property.values, valueNumber);
         case "staticValue":
             return property.value;
         default:
@@ -67,6 +67,7 @@ export function createRandomNumber(upper: number, lower: number): number {
     return Math.floor(Math.random() * (upper - lower) ) + lower;
 }
 
-export function createSetValue(values: string[], index: number, amount: number): string {
-    return "";
+export function createSetValue(values: string[], valueNumber: number): string {
+    const valueIndex = valueNumber % values.length;
+    return values[valueIndex]; 
 }

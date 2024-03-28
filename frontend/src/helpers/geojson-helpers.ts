@@ -103,7 +103,7 @@ export function generateRandomObjects(layer: Layer, amount: number, area: Featur
 			throw new Error("Type not supported");
 	}
 
-	return featureCollection.features.map((feature, index) => ({...feature, properties: { layerId: layer.id, id: uuid(), ...createRandomProperties(amount, index, properties) }}));
+	return featureCollection.features.map((feature, index) => ({...feature, properties: { layerId: layer.id, id: uuid(), ...createRandomProperties(index, properties) }}));
 }
 
 function checkCoordinateIsNumber(coordinate: number) {
