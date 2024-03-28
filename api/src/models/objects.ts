@@ -1,13 +1,15 @@
 import type { Feature, Point } from "geojson";
-import { v4 as uuid } from "uuid";
+import * as pg from "pg-promise";
 import { client } from "../db/connection";
 const SphericalMercator = require("@mapbox/sphericalmercator");
+
 const mercator = new SphericalMercator({ size: 256 });
 
 // Todo: improve sql
 // 1 - Remove sql inject
 // 2 - improve union
 // 3 - remove mercator bbox
+// 4 - remove pgpromise
 export async function getObjects(
 	x: number,
 	y: number,
@@ -54,4 +56,24 @@ export async function postObject(
   `;
 
 	return client.query(SQL, [object.properties.id, object.geometry, mapId, layerId, properties]);
+}
+
+export async function postObjects(
+	mapId: string,
+	objects: Feature<Point, {id: string}>[],
+	layerId: string,
+  properties: Record<string, string | number>[]
+) {
+
+  const SQL = `
+    INSERT INTO objects (id, geom, map_id, layer_id, properties)
+    SELECT
+        unnest($1::uuid[]),
+        unnest($2::public.geometry[]),
+        $3,               
+        $4,
+        unnest($5::jsonb[]) 
+  `;
+
+	return client.query(pg.as.format(SQL, [objects.map((object) => object.properties.id), objects.map((object) => object.geometry), mapId, layerId, properties]));
 }

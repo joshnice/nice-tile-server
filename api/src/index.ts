@@ -5,12 +5,14 @@ import { objectRoutes } from "./routes/object";
 import { mapsRoute } from "./routes/maps";
 import { layersRoutes } from "./routes/layers";
 import { objectPropertiesRoute } from "./routes/object-properties";
+import { objectsRoutes } from "./routes/objects";
 
 const app = new Hono();
 
 app.use("/*", cors());
 
 app.route("/object", objectRoutes);
+app.route("/objects", objectsRoutes)
 app.route("/maps", mapsRoute);
 app.route("/layers", layersRoutes);
 app.route("/object/properties", objectPropertiesRoute);

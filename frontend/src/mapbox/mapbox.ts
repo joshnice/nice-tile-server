@@ -145,7 +145,7 @@ export class Mapbox {
 			const features = generateRandomObjects(layer, amount, object, properties);
 			const source = this.sources.getSource(layerId);
 			source.updateSourceWithArray(features);
-			features.forEach((feature) => this.api.createObject(feature));
+			this.api.createObjects(features);
 			
 			// Remove all drawing layers and sources
 			this.drawing?.remove();

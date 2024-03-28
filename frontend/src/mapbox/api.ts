@@ -21,6 +21,17 @@ export class Api {
 		});
 	}
 
+	public async createObjects(objects: Feature<Point | LineString | Polygon>[]) {
+		return fetch(`${this.baseUrl}/objects`, {
+			method: "post",
+			headers: this.getHeaders(),
+			body: JSON.stringify({
+				mapId: this.mapId,
+				objects,
+			}),
+		});
+	}
+
 	public createTilesUrl() {
 		return `http://localhost:3000/object/${this.mapId}/{z}/{x}/{y}`;
 	}
