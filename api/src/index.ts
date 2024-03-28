@@ -6,11 +6,13 @@ import { mapsRoute } from "./routes/maps";
 import { layersRoutes } from "./routes/layers";
 import { objectPropertiesRoute } from "./routes/object-properties";
 import { objectsRoutes } from "./routes/objects";
+import { healthCheckRoutes } from "./routes/health-check";
 
 const app = new Hono();
 
 app.use("/*", cors());
 
+app.route("/health-check", healthCheckRoutes);
 app.route("/object", objectRoutes);
 app.route("/objects", objectsRoutes)
 app.route("/maps", mapsRoute);
