@@ -58,7 +58,7 @@ export default function PropertiesComponent({
 	const handleAdd = async (value: Record<string, string>) => {
 		await updateObjectProperties(selectedObjectId, {
 			...objectProperties?.properties,
-			...value,
+			[value.key]: value.value,
 		});
 
 		queryClient.invalidateQueries({

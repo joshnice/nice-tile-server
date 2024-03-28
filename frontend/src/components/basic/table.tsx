@@ -21,6 +21,22 @@ export function TableComponent({
 	onValueChange,
 	onAdd,
 }: TableProps) {
+	const [newValue, setNewValue] = useState<Record<string, string>>({});
+
+	// Handlers
+	const onNewValueChange = (value: string, key: string) => {
+		const updatedValue = { ...newValue };
+		updatedValue[key] = value;
+		setNewValue(updatedValue);
+	};
+
+	const onNewValueSaved = () => {
+		onAdd(newValue);
+		setNewValue({});
+	};
+
+	console.log("newValue", newValue);
+
 	return (
 		<div className="w-full h-full max-h-full border-2 border-black overflow-y-auto">
 			<div className="w-full h-16 flex justify-evenly">
@@ -39,7 +55,17 @@ export function TableComponent({
 					))}
 				</div>
 			))}
-			<EmptyTextCellComponent addValue={onAdd} />
+			<div className="w-full h-16 flex justify-evenly">
+				{columns.map((column, index) => (
+					<EmptyTextCellComponent
+						key={index}
+						value={newValue[column.id]}
+						lastColumn={index === columns.length - 1}
+						onSaveClicked={onNewValueSaved}
+						onValueChange={(value) => onNewValueChange(value, column.id)}
+					/>
+				))}
+			</div>
 		</div>
 	);
 }
@@ -113,44 +139,34 @@ function TextCellComponent({ value, onChange }: TextCellProps) {
 }
 
 function EmptyTextCellComponent({
-	addValue,
-}: { addValue: (value: Record<string, string>) => void }) {
-	const [key, setKey] = useState("");
-	const [value, setValue] = useState("");
-
-	const handleSaveClicked = () => {
-		addValue({ [key]: value });
-		setKey("");
-		setValue("");
-	};
-
+	value,
+	lastColumn,
+	onValueChange,
+	onSaveClicked,
+}: {
+	value: string;
+	lastColumn: boolean;
+	onValueChange: (value: string) => void;
+	onSaveClicked: () => void;
+}) {
 	return (
-		<div className="w-full h-16 flex justify-evenly">
-			<CellComponent>
-				<div className="w-full h-full relative">
-					<TextInputComponent
-						value={key ?? ""}
-						onChange={(value) => setKey(value)}
-						className="!h-full !border-0"
-					/>
-				</div>
-			</CellComponent>
-			<CellComponent>
-				<div className="w-full h-full relative">
-					<TextInputComponent
-						value={value ?? ""}
-						onChange={(value) => setValue(value)}
-						className="!h-full !border-0"
-					/>
+		<CellComponent>
+			<div className="w-full h-full relative">
+				<TextInputComponent
+					value={value ?? ""}
+					onChange={(value) => onValueChange(value)}
+					className="!h-full !border-0"
+				/>
+				{lastColumn && (
 					<button
 						className="absolute right-3 top-1/4"
 						type="button"
-						onClick={handleSaveClicked}
+						onClick={onSaveClicked}
 					>
 						<FontAwesomeIcon size="2x" icon={faSave} />
 					</button>
-				</div>
-			</CellComponent>
-		</div>
+				)}
+			</div>
+		</CellComponent>
 	);
 }
