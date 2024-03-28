@@ -88,8 +88,6 @@ export function SetValueProperty({
 		return value.values.map((val) => ({ value: val }));
 	}, [value.values]);
 
-	console.log("valuesAsKV", valuesAsKV);
-
 	// Handlers
 	const onValueChange = (_: string, index: number, updateValue: string) => {
 		const updatedValues = [...value.values];
@@ -103,7 +101,7 @@ export function SetValueProperty({
 	};
 
 	return (
-		<div>
+		<div className="flex flex-col gap-3">
 			<SubHeaderText title="Random Number" />
 			<div className="flex flex-col">
 				<MinorHeaderText title="Name" />
@@ -113,7 +111,7 @@ export function SetValueProperty({
 				/>
 			</div>
 			<TableComponent
-				columns={[{ id: "value", heading: "Value" }]}
+				columns={[{ id: "value", heading: "Values" }]}
 				data={valuesAsKV}
 				onValueChange={onValueChange}
 				onAdd={onAdd}

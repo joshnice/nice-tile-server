@@ -62,7 +62,7 @@ export default function RandomObjectsComponent({
 			submitButtonText={"Next"}
 			open={open}
 		>
-			<div className="flex flex-col h-full gap-5">
+			<div className="flex flex-col h-full gap-5 overflow-y-auto">
 				<div className="flex flex-col gap-3">
 					<SubHeaderText title="Amount" />
 					<NumberInputComponent value={amount} onChange={setAmount} />
@@ -100,34 +100,38 @@ function PropertiesComponent({
 	properties: RandomObjectProperty[];
 	handlePropertyChange: (change: RandomObjectProperty) => void;
 }) {
-	return properties.map((property) => {
-		switch (property.type) {
-			case "staticValue":
-				return (
-					<StaticValueProperty
-						key={property.id}
-						value={property}
-						onChange={handlePropertyChange}
-					/>
-				);
-			case "randomNumber":
-				return (
-					<RandomNumberProperty
-						key={property.id}
-						value={property}
-						onChange={handlePropertyChange}
-					/>
-				);
-			case "setValue":
-				return (
-					<SetValueProperty
-						key={property.id}
-						value={property}
-						onChange={handlePropertyChange}
-					/>
-				);
-			default:
-				throw new Error("Type not handled");
-		}
-	});
+	return (
+		<div className="flex flex-col gap-6">
+			{properties.map((property) => {
+				switch (property.type) {
+					case "staticValue":
+						return (
+							<StaticValueProperty
+								key={property.id}
+								value={property}
+								onChange={handlePropertyChange}
+							/>
+						);
+					case "randomNumber":
+						return (
+							<RandomNumberProperty
+								key={property.id}
+								value={property}
+								onChange={handlePropertyChange}
+							/>
+						);
+					case "setValue":
+						return (
+							<SetValueProperty
+								key={property.id}
+								value={property}
+								onChange={handlePropertyChange}
+							/>
+						);
+					default:
+						throw new Error("Type not handled");
+				}
+			})}
+		</div>
+	);
 }
