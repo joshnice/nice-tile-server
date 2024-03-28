@@ -9,6 +9,7 @@ import { createRandomObjectProperty } from "../helpers/random-object-property-he
 import {
 	StaticValueProperty,
 	RandomNumberProperty,
+	SetValueProperty,
 } from "./property-value-selectors";
 
 export default function RandomObjectsComponent({
@@ -118,7 +119,13 @@ function PropertiesComponent({
 					/>
 				);
 			case "setValue":
-				return <div key={property.id}>set value</div>;
+				return (
+					<SetValueProperty
+						key={property.id}
+						value={property}
+						onChange={handlePropertyChange}
+					/>
+				);
 			default:
 				throw new Error("Type not handled");
 		}
