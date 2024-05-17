@@ -32,8 +32,12 @@ export class Api {
 		});
 	}
 
-	public createTilesUrl() {
+	public createMapObjectTilesUrl() {
 		return `http://localhost:3000/object/${this.mapId}/{z}/{x}/{y}`;
+	}
+
+	public createMapTilesUrl() {
+		return "http://localhost:3000/map-tiles/{z}/{x}/{y}.pbf";
 	}
 
 	private getHeaders() {
