@@ -19,11 +19,11 @@ export class Sources {
         this.api = api;
     }
 
-    public addVectorSource(id: string) {
+    public addVectorSource(id: string, url: string) {
         this.tileSources[id] = new VectorSource(
             this.map,
             id,
-            this.api.createMapObjectTilesUrl(),
+            url,
         );
     }
 
