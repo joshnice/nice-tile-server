@@ -11,14 +11,14 @@ const mercator = new SphericalMercator({ size: 256 });
 // 3 - remove mercator bbox
 // 4 - remove pgpromise
 export async function getObjects(
-	x: number,
-	y: number,
-	z: number,
-	mapId: string,
+  x: number,
+  y: number,
+  z: number,
+  mapId: string,
 ) {
-	const bbox = mercator.bbox(x, y, z, false);
+  const bbox = mercator.bbox(x, y, z, false);
 
-	const SQL = `
+  const SQL = `
     with mvtgeom as ( 
       select
         objects.id,
@@ -39,14 +39,14 @@ export async function getObjects(
       ) SELECT string_agg(mvt, '') from tiles;
     `;
 
-	const response = await client.query(SQL);
-	return response.rows[0].string_agg;
+  const response = await client.query(SQL);
+  return response.rows[0].string_agg;
 }
 
 export async function postObject(
-	mapId: string,
-	object: Feature<Point, {id: string}>,
-	layerId: string,
+  mapId: string,
+  object: Feature<Point, { id: string }>,
+  layerId: string,
   properties: Record<string, string | number>
 ) {
 
@@ -55,13 +55,13 @@ export async function postObject(
     VALUES ($1, $2, $3, $4, $5);
   `;
 
-	return client.query(SQL, [object.properties.id, object.geometry, mapId, layerId, properties]);
+  return client.query(SQL, [object.properties.id, object.geometry, mapId, layerId, properties]);
 }
 
 export async function postObjects(
-	mapId: string,
-	objects: Feature<Point, {id: string}>[],
-	layerId: string,
+  mapId: string,
+  objects: Feature<Point, { id: string }>[],
+  layerId: string,
   properties: Record<string, string | number>[]
 ) {
 
@@ -75,5 +75,15 @@ export async function postObjects(
         unnest($5::jsonb[]) 
   `;
 
-	return client.query(pg.as.format(SQL, [objects.map((object) => object.properties.id), objects.map((object) => object.geometry), mapId, layerId, properties]));
+  return client.query(pg.as.format(SQL, [objects.map((object) => object.properties.id), objects.map((object) => object.geometry), mapId, layerId, properties]));
+}
+
+export async function listObjectsByLayerId(layerId: string) {
+  const SQL = `
+    select ST_AsGeoJSON(geom) as geom, properties  from objects o where o.layer_id = $1   
+  `;
+
+  const response = await client.query(SQL, [layerId]);
+
+  return response.rows;
 }

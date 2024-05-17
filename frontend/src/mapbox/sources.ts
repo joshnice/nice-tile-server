@@ -9,7 +9,7 @@ export class Sources {
 
     private readonly api: Api;
 
-   
+
     private tileSources: { [sourceId: string]: VectorSource } = {};
 
     private geoJsonSource: { [sourceId: string]: GeoJsonSource } = {};
@@ -21,18 +21,18 @@ export class Sources {
 
     public addVectorSource(id: string) {
         this.tileSources[id] = new VectorSource(
-			this.map,
-			id,
-			this.api.createTilesUrl(),
-		);
+            this.map,
+            id,
+            this.api.createMapObjectTilesUrl(),
+        );
     }
 
     public addGeoJsonSource(id: string) {
         this.geoJsonSource[id] = new GeoJsonSource(
-			this.map,
-			id,
-			null,
-		);
+            this.map,
+            id,
+            null,
+        );
     }
 
     public getSource(id: string) {
