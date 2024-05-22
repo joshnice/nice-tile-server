@@ -17,10 +17,9 @@ mapTilesRoute.get("/:z/:x/:y", async (ctx) => {
 
         if (objectTile) {
             ctx.status(200);
-            ctx.header("Content-Type", "application/octet-stream");
+            ctx.header("Content-Type", "binary/octet-stream");
             ctx.header("Content-Encoding", "gzip");
             ctx.header("Content-Length", objectTile.length.toString());
-            ctx.header("Accept-Encoding", "gzip");
             return ctx.body(objectTile);
         }
         ctx.status(404);
