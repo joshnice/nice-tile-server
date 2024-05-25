@@ -41,12 +41,12 @@ export default function MapControlsComponent({
 					onLayerSelected={onLayerSelected}
 				/>
 				<div className="flex gap-2">
-					<IconButtonComponent onClick={onRandomPointsSelected}>
+					<IconButtonComponent disabled={selectedLayer == null} onClick={onRandomPointsSelected}>
 						<FontAwesomeIcon icon={faCircle} size="2xs" transform="up-12 " />
 						<FontAwesomeIcon icon={faCircle} size="2xs" transform="down-15 " />
 						<FontAwesomeIcon icon={faCircle} size="2xs" transform="up-4" />
 					</IconButtonComponent>
-					<IconButtonComponent onClick={() => donwloadLayer(selectedLayer)}>
+					<IconButtonComponent disabled={selectedLayer == null} onClick={() => donwloadLayer(selectedLayer)}>
 						<FontAwesomeIcon icon={faDownload} size="2x" />
 					</IconButtonComponent>
 				</div>
