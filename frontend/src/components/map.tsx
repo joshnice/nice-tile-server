@@ -10,6 +10,7 @@ import useLayers from "../hooks/use-layers";
 import useObjectSelected from "../hooks/use-object-selected";
 import PropertiesComponent from "./properties";
 import RandomObjectsComponent from "./random-objects";
+import useGeoJSON from "../hooks/use-geojson";
 
 const baseUrl = "http://localhost:3000";
 
@@ -55,6 +56,8 @@ export default function MapComponent() {
 		useLayers(selectedMap?.id ?? null, onLayersSuccess);
 
 	const { selectedObject, onObjectSelected } = useObjectSelected();
+
+	const { downloadLayer } = useGeoJSON();
 
 	// External events
 
@@ -122,6 +125,12 @@ export default function MapComponent() {
 		setRandomObjects(false);
 	};
 
+	const handleDownloadLayer = (layerId: string | null) => {
+		if (layerId) {
+			downloadLayer(layerId);
+		}
+	}
+
 	// Clean up
 
 	useEffect(() => {
@@ -144,6 +153,7 @@ export default function MapComponent() {
 					onMapSelected={handleMapSelected}
 					onLayerSelected={handleLayerSelected}
 					onRandomPointsSelected={handleRandomPointsSelected}
+					donwloadLayer={handleDownloadLayer}
 				/>
 			)}
 			<div className="mapbox-map" ref={mapElement} />

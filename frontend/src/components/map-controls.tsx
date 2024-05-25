@@ -1,6 +1,7 @@
 import type { Layer, CreateLayer } from "../types/layer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons/faCircle";
+import { faDownload } from "@fortawesome/free-solid-svg-icons/faDownload";
 import LayerListComponent from "./layer-list";
 import MapListComponent from "./map-list";
 import { IconButtonComponent } from "./basic/buttons";
@@ -17,6 +18,7 @@ export default function MapControlsComponent({
 	onMapCreatedClick,
 	onLayerSelected,
 	onRandomPointsSelected,
+	donwloadLayer
 }: {
 	selectedLayer: string | null;
 	maps: { id: string; name: string }[];
@@ -27,6 +29,7 @@ export default function MapControlsComponent({
 	onLayerCreated: (layer: CreateLayer) => void;
 	onLayerSelected: (id: string) => void;
 	onRandomPointsSelected: () => void;
+	donwloadLayer: (id: string | null) => void;
 }) {
 	return (
 		<>
@@ -37,11 +40,16 @@ export default function MapControlsComponent({
 					onCreateLayer={onLayerCreated}
 					onLayerSelected={onLayerSelected}
 				/>
-				<IconButtonComponent onClick={onRandomPointsSelected}>
-					<FontAwesomeIcon icon={faCircle} size="2xs" transform="up-12 " />
-					<FontAwesomeIcon icon={faCircle} size="2xs" transform="down-15 " />
-					<FontAwesomeIcon icon={faCircle} size="2xs" transform="up-4" />
-				</IconButtonComponent>
+				<div className="flex gap-2">
+					<IconButtonComponent onClick={onRandomPointsSelected}>
+						<FontAwesomeIcon icon={faCircle} size="2xs" transform="up-12 " />
+						<FontAwesomeIcon icon={faCircle} size="2xs" transform="down-15 " />
+						<FontAwesomeIcon icon={faCircle} size="2xs" transform="up-4" />
+					</IconButtonComponent>
+					<IconButtonComponent onClick={() => donwloadLayer(selectedLayer)}>
+						<FontAwesomeIcon icon={faDownload} size="2x" />
+					</IconButtonComponent>
+				</div>
 			</div>
 			<div className="map-controls-container map-controls-container-right">
 				<MapListComponent
