@@ -1,7 +1,6 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { compress } from "hono/compress";
 import { objectRoutes } from "./routes/object";
 import { mapsRoute } from "./routes/maps";
 import { layersRoutes } from "./routes/layers";
@@ -14,7 +13,6 @@ import { geoJsonRoute } from "./routes/geojson";
 const app = new Hono();
 
 app.use("/*", cors());
-app.use(compress({ encoding: "gzip" }));
 
 app.route("/health-check", healthCheckRoutes);
 app.route("/object", objectRoutes);

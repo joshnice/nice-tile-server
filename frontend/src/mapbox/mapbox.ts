@@ -39,7 +39,7 @@ export class Mapbox {
 			zoom: 15,
 			accessToken:
 				"pk.eyJ1Ijoiam9zaG5pY2U5OCIsImEiOiJja2VtcnFwNGQwbXdnMndvODNzYm9wNzE3In0.hNLvS8f4FVGbgnwF7Xepow",
-			hash: true,
+			hash: true
 		});
 
 		this.api = options.api;
@@ -51,7 +51,12 @@ export class Mapbox {
 		this.map.doubleClickZoom.disable();
 
 		this.map.once("load", () => {
-			this.sources.addVectorSource(this.tileSourceId);
+			this.sources.addVectorSource(this.tileSourceId, this.api.createMapObjectTilesUrl());
+			this.sources.addVectorSource("nice-tile-server", this.api.createMapTilesUrl());
+		});
+
+		this.map.once("idle", () => {
+			new LineLayer(this.map, "nice-tile-server", "nice-tile-server", () => false, "nice-tile-server");
 		});
 
 		this.map.on("click", (event) => {
@@ -146,7 +151,7 @@ export class Mapbox {
 			const source = this.sources.getSource(layerId);
 			source.updateSourceWithArray(features);
 			this.api.createObjects(features);
-			
+
 			// Remove all drawing layers and sources
 			this.drawing?.remove();
 			this.drawing = null;
