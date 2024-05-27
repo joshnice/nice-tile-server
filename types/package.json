@@ -1,0 +1,11 @@
+{
+  "name": "@nice-tile-server/types",
+  "version": "1.0.0",
+  "description": "Types for nice map tiles",
+  "main": "index.js",
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  },
+  "author": "joshnice",
+  "license": "ISC"
+}
