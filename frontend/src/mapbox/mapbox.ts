@@ -52,12 +52,12 @@ export class Mapbox {
 
 		this.map.once("load", () => {
 			this.sources.addVectorSource(this.tileSourceId, this.api.createMapObjectTilesUrl());
-			this.sources.addVectorSource("nice-tile-server", this.api.createMapTilesUrl());
+			// this.sources.addVectorSource("nice-tile-server", this.api.createMapTilesUrl());
 		});
 
-		this.map.once("idle", () => {
-			new LineLayer(this.map, "nice-tile-server", "nice-tile-server", () => false, "nice-tile-server");
-		});
+		// this.map.once("idle", () => {
+		// 	new LineLayer(this.map, "nice-tile-server", "nice-tile-server", () => false, "nice-tile-server");
+		// });
 
 		this.map.on("click", (event) => {
 			// Only allow selection when not drawing

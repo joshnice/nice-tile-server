@@ -1,3 +1,4 @@
+import type { Layer } from "@nice-tile-server/types";
 import { client } from "../db/connection";
 
 export async function getMapLayers(mapId: string) {
@@ -5,7 +6,7 @@ export async function getMapLayers(mapId: string) {
         select * from layers where map_id = $1;
     `;
 
-	const response = await client.query(SQL, [mapId]);
+	const response = await client.query<Layer>(SQL, [mapId]);
 
 	return response.rows;
 }
