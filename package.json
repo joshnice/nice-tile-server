@@ -1,11 +1,12 @@
 {
-  "name": "nice-map-tiles",
+  "name": "nice-tile-server",
   "version": "1.0.0",
   "description": "A tool to serve local map tiles",
   "workspaces": [
     "api",
     "frontend",
-    "database"
+    "database",
+    "types"
   ],
   "scripts": {
     "frontend": "npm run dev -w frontend",

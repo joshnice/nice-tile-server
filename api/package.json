@@ -12,6 +12,7 @@
 		"uuid": "^9.0.1"
 	},
 	"devDependencies": {
+		"@nice-tile-server/types": "@nice-tile-server/types",
 		"@types/mapbox__sphericalmercator": "^1.2.3",
 		"@types/node": "^20.12.12",
 		"@types/pg": "^8.10.9",

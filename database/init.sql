@@ -29,5 +29,15 @@ create table objects (
     constraint fk_layer_id foreign key (layer_id) references layers(id)
 );
 
+-- Style table
+create table layer_styles (
+    id uuid primary key,
+    layer_id uuid,
+    colour varchar,
+    size float,
+    opacity float,
+    constraint fk_layer_id foreign key (layer_id) references layers(id)
+);
+
 insert into maps (id, name)
 values ('e57ae4ce-f9c8-43ad-ad8a-97c529cdc256', 'First map');

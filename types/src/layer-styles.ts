@@ -1,4 +1,4 @@
-export type AllStyles = FillStyle | LineStyle | PointStyle;
+export type AllStyles = Partial<FillStyle & LineStyle & PointStyle>;
 
 export interface FillStyle {
     colour: string;
