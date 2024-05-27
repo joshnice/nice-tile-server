@@ -1,4 +1,4 @@
-import type { CreateLayer, Layer } from "../types/layer";
+import type { CreateLayer, Layer } from "@nice-tile-server/types";
 import type { RandomObjectProperty } from "../types/properties";
 import { useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";

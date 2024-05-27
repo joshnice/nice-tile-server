@@ -1,4 +1,4 @@
-import type { Layer, CreateLayer } from "../types/layer";
+import type { Layer, CreateLayer } from "@nice-tile-server/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons/faCircle";
 import { faDownload } from "@fortawesome/free-solid-svg-icons/faDownload";

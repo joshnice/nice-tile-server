@@ -1,5 +1,5 @@
+import type { CreateLayer, Layer } from "@nice-tile-server/types";
 import { useMemo, useState } from "react";
-import type { CreateLayer, Layer } from "../types/layer";
 import MinMaxComponent from "./min-max";
 import { HeaderText } from "./basic/headers";
 import CreateLayerLayerFormComponent from "./create-layer-form";
@@ -83,9 +83,8 @@ function LayerComponent({
 		<button
 			type="button"
 			key={layer.id}
-			className={`h-12 p-2 w-full border-solid border-slate-600 border-2 rounded-sm ${
-				selected ? "bg-slate-300" : "bg-white"
-			}`}
+			className={`h-12 p-2 w-full border-solid border-slate-600 border-2 rounded-sm ${selected ? "bg-slate-300" : "bg-white"
+				}`}
 			onClick={() => onLayerSelected(layer.id)}
 		>
 			{layer.name}

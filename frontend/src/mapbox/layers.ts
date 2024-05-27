@@ -1,5 +1,5 @@
 import type { Map } from "mapbox-gl";
-import type { Layer as CreateLayer } from "./../types/layer";
+import type { Layer as CreateLayer } from "@nice-tile-server/types";
 import type { Layer } from "./layers/layer";
 import { FillLayer } from "./layers/fill-layer";
 import { LineLayer } from "./layers/line-layer";
@@ -12,13 +12,13 @@ export class Layers {
 
     private readonly map: Map;
 
-    private readonly tileSourceId: string; 
+    private readonly tileSourceId: string;
 
     public selectedLayerId: string | null = null;
 
     private layers: { [layerId: string]: Layer } = {};
 
-	private readonly isDrawing: () => boolean;
+    private readonly isDrawing: () => boolean;
 
     constructor(map: Map, tileSourceId: string, isDrawing: () => boolean) {
         this.map = map;
@@ -41,7 +41,7 @@ export class Layers {
                 this.layers[layer.id] = new CircleLayer(this.map, layer.id, this.tileSourceId, this.isDrawing, layer.id, { colour });
                 this.layers[createLocalId(layer.id)] = new CircleLayer(this.map, createLocalId(layer.id), layer.id, this.isDrawing, undefined, { colour });
                 break;
-            default: 
+            default:
                 throw new Error(`Layer type ${layer.type} not handled`);
         }
     }

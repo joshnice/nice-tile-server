@@ -1,4 +1,4 @@
-import type { Layer } from "../types/layer";
+import type { Layer } from "@nice-tile-server/types";
 import { useState } from "react";
 import ModalComponent from "./modal";
 import { SubHeaderText } from "./basic/headers";

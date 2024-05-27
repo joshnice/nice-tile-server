@@ -1,6 +1,6 @@
 import type { Api } from "./api";
 import type { MapEvents, MapboxOptions } from "./mapbox-types";
-import type { Layer } from "../types/layer";
+import type { Layer } from "@nice-tile-server/types";
 import type { Feature, Polygon } from "geojson"
 import type { Drawing, SupportedGeometry } from "./drawing/drawing";
 import type { RandomObjectProperty } from "../types/properties";

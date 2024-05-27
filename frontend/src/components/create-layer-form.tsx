@@ -1,4 +1,4 @@
-import type { CreateLayer } from "../types/layer";
+import type { CreateLayer } from "@nice-tile-server/types";
 import { useState } from "react";
 import { SubHeaderText } from "./basic/headers";
 import ModalComponent from "./modal";
@@ -14,7 +14,8 @@ export default function CreateLayerLayerFormComponent({
 	handleCreateLayer: (layer: CreateLayer) => void;
 	handleClose: () => void;
 }) {
-	const [layer, setLayer] = useState<CreateLayer>({ name: "", type: "Fill" });
+	// Todo: add default styles
+	const [layer, setLayer] = useState<CreateLayer>({ name: "", type: "Fill", style: null });
 
 	return (
 		<ModalComponent

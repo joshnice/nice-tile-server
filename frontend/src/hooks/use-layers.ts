@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import type { Layer } from "../types/layer";
+import type { Layer } from "@nice-tile-server/types";
 
 const createKey = (mapId: string | null) => ["layers", mapId];
 
