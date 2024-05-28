@@ -1,5 +1,6 @@
 import { readFile as readFileNode, writeFile as writeFileNode, mkdir, rmdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { exec } from "node:child_process";
 
 export async function readFile(path: string, throwErrorIfNotFound = true) {
     try {
@@ -44,4 +45,17 @@ export async function createDirectory(path: string, folderName: string) {
     }
 }
 
+export function shellCommand(command: string) {
+    return new Promise<void>((res) => {
+        exec(command, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`exec error: ${error}`);
+                return;
+            }
+            console.log(`stdout: ${stdout}`);
+            console.error(`stderr: ${stderr}`);
+            res();
+        });
+    });
 
+}

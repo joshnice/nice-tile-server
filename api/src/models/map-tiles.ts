@@ -1,7 +1,6 @@
 import type { Feature, FeatureCollection } from "geojson";
-import { createGeoJSONFile, getLocalMapTile } from "../local-file-system/map-tiles";
+import { createGeoJSONFile, createMapTilesDirectory, getLocalMapTile, runTippecanoe } from "../local-file-system/map-tiles";
 import { listObjectsByMapId } from "./objects";
-import { PromiseAdapter } from "pg-promise";
 
 export function getMapTile(x: number, y: number, z: number) {
     return getLocalMapTile(x, y, z);
@@ -22,9 +21,11 @@ export async function createMapTiles(mapId: string) {
         features: parsedObjects,
     }
 
+    await createMapTilesDirectory(mapId);
+
     await createGeoJSONFile(mapId, featureCollection);
 
-    // Run tippiecannoe
+    await runTippecanoe(mapId);
 
 
     // Run mbtile util
