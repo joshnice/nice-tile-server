@@ -120,7 +120,7 @@ export class FillDrawing extends Drawing<Polygon> {
 			lat,
 		]);
 		const calculatedDistance = Math.hypot(
-			firstCoordinateCanvasPos.x - firstCoordinateCanvasPos.x,
+			firstCoordinateCanvasPos.x - latestClickCanvasPos.x,
 			firstCoordinateCanvasPos.y - latestClickCanvasPos.y,
 		);
 		return calculatedDistance <= distance;
