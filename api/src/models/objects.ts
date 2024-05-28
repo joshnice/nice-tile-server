@@ -1,4 +1,5 @@
 import type { Feature, Point } from "geojson";
+import type { DbObject } from "../types/db-object";
 import * as pg from "pg-promise";
 import { client } from "../db/connection";
 const SphericalMercator = require("@mapbox/sphericalmercator");
@@ -84,6 +85,16 @@ export async function listObjectsByLayerId(layerId: string) {
   `;
 
   const response = await client.query(SQL, [layerId]);
+
+  return response.rows;
+}
+
+export async function listObjectsByMapId(mapId: string) {
+  const SQL = `
+    select ST_AsGeoJSON(geom) as geom, properties, layer_id from objects o where o.map_id = $1   
+  `;
+
+  const response = await client.query<DbObject>(SQL, [mapId]);
 
   return response.rows;
 }

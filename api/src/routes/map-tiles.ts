@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { getMapTile } from "../models/map-tiles";
+import { createMapTiles, getMapTile } from "../models/map-tiles";
 
 export const mapTilesRoute = new Hono();
 
@@ -28,5 +28,17 @@ mapTilesRoute.get("/:z/:x/:y", async (ctx) => {
         console.error("Error fetching tile:", error);
         ctx.status(500);
         return ctx.json({ error: "Internal Server Error" });
+    }
+});
+
+mapTilesRoute.post("/:mapId", async (ctx) => {
+    try {
+        const mapId = ctx.req.param("mapId");
+        await createMapTiles(mapId);
+        ctx.status(200);
+        return ctx.text("Success");
+    } catch (err) {
+        ctx.status(500);
+        return ctx.json(err);
     }
 });
