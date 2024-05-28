@@ -1,14 +1,23 @@
-import { readFile as readFileNode, mkdir, rmdir } from "node:fs/promises";
+import { readFile as readFileNode, writeFile as writeFileNode, mkdir, rmdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 
 export async function readFile(path: string, throwErrorIfNotFound = true) {
     try {
+        // Todo: remove the options here
         const data = await readFileNode(path, { encoding: "hex" });
         return Uint8Array.from(Buffer.from(data, 'hex'));
     } catch (err) {
         if (throwErrorIfNotFound) {
             console.error(err);
         }
+    }
+}
+
+export async function writeFile(path: string, content: string) {
+    try {
+        const data = await writeFileNode(path, content);
+    } catch (err) {
+        console.error(err);
     }
 }
 
@@ -34,3 +43,5 @@ export async function createDirectory(path: string, folderName: string) {
         console.error(err);
     }
 }
+
+
