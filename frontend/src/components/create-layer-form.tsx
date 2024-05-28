@@ -4,6 +4,7 @@ import { SubHeaderText } from "./basic/headers";
 import ModalComponent from "./modal";
 import { TextInputComponent } from "./basic/inputs";
 import { SelectStringComponent } from "./basic/selects";
+import { createStyle } from "../helpers/style-helpers";
 
 export default function CreateLayerLayerFormComponent({
 	open,
@@ -14,8 +15,7 @@ export default function CreateLayerLayerFormComponent({
 	handleCreateLayer: (layer: CreateLayer) => void;
 	handleClose: () => void;
 }) {
-	// Todo: add default styles
-	const [layer, setLayer] = useState<CreateLayer>({ name: "", type: "Fill", style: null });
+	const [layer, setLayer] = useState<CreateLayer>({ name: "", type: "Fill", style: createStyle("Fill") });
 
 	return (
 		<ModalComponent
@@ -38,7 +38,7 @@ export default function CreateLayerLayerFormComponent({
 					<SelectStringComponent
 						value={layer.type}
 						options={["Fill", "Point", "Line"]}
-						onChange={(value) => setLayer({ ...layer, type: value })}
+						onChange={(value) => setLayer({ ...layer, type: value, style: createStyle(value) })}
 					/>
 				</div>
 			</div>
