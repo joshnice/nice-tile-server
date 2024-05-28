@@ -2,10 +2,18 @@ import type { CircleLayer as MapboxCircleLayer, Map } from "mapbox-gl";
 import type { PointStyle } from "@nice-tile-server/types";
 import { Layer } from "./layer";
 
-export class CircleLayer extends Layer<PointStyle> {
+export class CircleLayer extends Layer {
+
+	private readonly style: PointStyle;
+
 	constructor(map: Map, id: string, sourceId: string, isDrawing: () => boolean, style: PointStyle, sourceLayerId?: string) {
-		super(map, id, isDrawing, style);
+		super(map, id, isDrawing);
+		this.style = style;
 		this.createLayer(id, sourceId, style, sourceLayerId);
+	}
+
+	public getStyle(): PointStyle {
+		return this.style;
 	}
 
 	private createLayer(

@@ -3,10 +3,18 @@ import type { LineStyle } from "@nice-tile-server/types";
 import { Layer } from "./layer";
 
 
-export class LineLayer extends Layer<LineStyle> {
+export class LineLayer extends Layer {
+
+	private readonly style: LineStyle
+
 	constructor(map: Map, id: string, sourceId: string, isDrawing: () => boolean, style: LineStyle, sourceLayerId?: string) {
-		super(map, id, isDrawing, style);
+		super(map, id, isDrawing);
+		this.style = style;
 		this.createLayer(id, sourceId, style, sourceLayerId);
+	}
+
+	public getStyle(): LineStyle {
+		return this.style;
 	}
 
 	private createLayer(id: string, sourceId: string, style: LineStyle, sourceLayerId?: string) {

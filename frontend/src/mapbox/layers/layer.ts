@@ -1,25 +1,17 @@
-import type { BaseStyle } from "@nice-tile-server/types";
 import type { Map } from "mapbox-gl";
 
-export abstract class Layer<TStyle extends BaseStyle = BaseStyle> {
+export abstract class Layer {
 	public readonly map: Map;
 
 	public readonly id: string;
 
-	public readonly style: TStyle;
-
 	private readonly isDrawing: () => boolean;
 
-	constructor(map: Map, id: string, isDrawing: () => boolean, style: TStyle) {
+	constructor(map: Map, id: string, isDrawing: () => boolean) {
 		this.map = map;
 		this.id = id;
-		this.style = style;
 		this.mouseMoveEventListeners();
 		this.isDrawing = isDrawing;
-	}
-
-	public getStyle() {
-		return this.style;
 	}
 
 	public setVisibility(value: boolean) {

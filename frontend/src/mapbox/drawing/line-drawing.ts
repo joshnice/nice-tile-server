@@ -20,13 +20,15 @@ export class LineDrawing extends Drawing<LineString> {
 		super(map, onCreate, localSource, layer);
 
 		this.drawingSource = new GeoJsonSource(this.map, "line-drawing", null);
+
+		const mapboxStyle = layer.getStyle();
+
 		this.drawingLayer = new LineLayer(
 			this.map,
 			"line-drawing-layer",
 			"line-drawing",
 			() => true,
-			undefined,
-			{ ...this.baseLayer.getStyle() }
+			{ colour: mapboxStyle.colour, opacity: mapboxStyle.opacity, size: mapboxStyle.size }
 		);
 	}
 

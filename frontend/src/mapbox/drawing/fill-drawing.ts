@@ -29,11 +29,11 @@ export class FillDrawing extends Drawing<Polygon> {
 			"fill-drawing-layer",
 			"fill-drawing",
 			() => true,
-			{ colour: this.baseLayer.getStyle().colour as string, size: 5, opacity: 0.6 }
+			{ colour: layer.getStyle().colour, size: 5, opacity: 0.6 }
 		);
 
 		this.firstPointSource = new GeoJsonSource(this.map, "first-point", null);
-		this.firstPointLayer = new CircleLayer(this.map, "first-point-layer", "first-point", () => true, { size: COMPLETE_DRAWING_RADIUS, colour: this.baseLayer.getStyle().colour as string, opacity: 0.2, outlineWidth: 2 })
+		this.firstPointLayer = new CircleLayer(this.map, "first-point-layer", "first-point", () => true, { size: COMPLETE_DRAWING_RADIUS, colour: layer.getStyle().colour, opacity: 0.2, outlineWidth: 2 })
 		this.firstPointLayer.setVisibility(false);
 	}
 

@@ -2,10 +2,18 @@ import type { FillLayer as MapboxFillLayer, Map } from "mapbox-gl";
 import type { FillStyle } from "@nice-tile-server/types";
 import { Layer } from "./layer";
 
-export class FillLayer extends Layer<FillStyle> {
+export class FillLayer extends Layer {
+
+	private readonly style: FillStyle;
+
 	constructor(map: Map, id: string, sourceId: string, isDrawing: () => boolean, style: FillStyle, sourceLayerId?: string) {
-		super(map, id, isDrawing, style);
+		super(map, id, isDrawing);
+		this.style = style;
 		this.createLayer(id, sourceId, style, sourceLayerId);
+	}
+
+	public getStyle(): FillStyle {
+		return this.style;
 	}
 
 	private createLayer(
