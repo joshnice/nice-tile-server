@@ -29,12 +29,11 @@ export class FillDrawing extends Drawing<Polygon> {
 			"fill-drawing-layer",
 			"fill-drawing",
 			() => true,
-			undefined,
-			{ colour: this.baseLayer.getStyle().colour, width: 5, opacity: 0.6 }
+			{ colour: this.baseLayer.getStyle().colour as string, size: 5, opacity: 0.6 }
 		);
 
 		this.firstPointSource = new GeoJsonSource(this.map, "first-point", null);
-		this.firstPointLayer = new CircleLayer(this.map, "first-point-layer", "first-point", () => true, undefined, { radius: COMPLETE_DRAWING_RADIUS, colour: this.baseLayer.getStyle().colour, opacity: 0.2, outlineWidth: 2 }) 
+		this.firstPointLayer = new CircleLayer(this.map, "first-point-layer", "first-point", () => true, { size: COMPLETE_DRAWING_RADIUS, colour: this.baseLayer.getStyle().colour as string, opacity: 0.2, outlineWidth: 2 })
 		this.firstPointLayer.setVisibility(false);
 	}
 
@@ -65,9 +64,9 @@ export class FillDrawing extends Drawing<Polygon> {
 		}
 
 		if (this.drawingSourceCoordiantes.length > 1) {
-			
+
 			const completeDrawing = this.isUserCursorWithinDistanceOfFirstCoordinate(event.lngLat.lng, event.lngLat.lat, COMPLETE_DRAWING_RADIUS);
-			
+
 			if (this.drawingSourceCoordiantes.length > 2 && completeDrawing) {
 				// Complete drawing
 				this.drawingSource.resetSource();
@@ -107,7 +106,7 @@ export class FillDrawing extends Drawing<Polygon> {
 
 		if (this.drawingSourceCoordiantes.length > 2) {
 			const showCompleteCircle = this.isUserCursorWithinDistanceOfFirstCoordinate(event.lngLat.lng, event.lngLat.lat, COMPLETE_DRAWING_RADIUS * 2);
-			this.firstPointLayer.setVisibility(showCompleteCircle);	
+			this.firstPointLayer.setVisibility(showCompleteCircle);
 		}
 	}
 

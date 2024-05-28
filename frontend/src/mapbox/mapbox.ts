@@ -143,7 +143,7 @@ export class Mapbox {
 		const layer = this.layers.getLayer(layerId);
 		// Create layer and source for drawing
 		const drawingSource = new GeoJsonSource(this.map, "random-points", null);
-		const drawingLayer = new FillLayer(this.map, "random-points", drawingSource.id, this.isDrawing.bind(this));
+		const drawingLayer = new FillLayer(this.map, "random-points", drawingSource.id, this.isDrawing.bind(this), { colour: "red", opacity: 1 });
 
 		const onDrawingFinish = (object: Feature<Polygon>) => {
 			// Create random points

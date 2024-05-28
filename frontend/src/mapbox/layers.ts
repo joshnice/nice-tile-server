@@ -1,10 +1,9 @@
 import type { Map } from "mapbox-gl";
-import type { Layer as CreateLayer } from "@nice-tile-server/types";
-import type { Layer } from "./layers/layer";
+import type { Layer } from "@nice-tile-server/types";
+import type { Layer as MapboxLayer } from "./layers/layer";
 import { FillLayer } from "./layers/fill-layer";
 import { LineLayer } from "./layers/line-layer";
 import { CircleLayer } from "./layers/circle-layer";
-import { createRandomColour } from "../helpers/style-helpers";
 
 const createLocalId = (id: string) => `${id}-local`;
 
@@ -16,7 +15,7 @@ export class Layers {
 
     public selectedLayerId: string | null = null;
 
-    private layers: { [layerId: string]: Layer } = {};
+    private layers: { [layerId: string]: MapboxLayer } = {};
 
     private readonly isDrawing: () => boolean;
 
@@ -26,22 +25,22 @@ export class Layers {
         this.isDrawing = isDrawing;
     }
 
-    public addLayer(layer: CreateLayer) {
-        const colour = createRandomColour();
+    public addLayer(layer: Layer) {
         switch (layer.type) {
             case "Fill":
-                this.layers[layer.id] = new FillLayer(this.map, layer.id, this.tileSourceId, this.isDrawing, layer.id, { colour });
-                this.layers[createLocalId(layer.id)] = new FillLayer(this.map, createLocalId(layer.id), layer.id, this.isDrawing, undefined, { colour });
+                this.layers[layer.id] = new FillLayer(this.map, layer.id, this.tileSourceId, this.isDrawing, layer.style, layer.id);
+                this.layers[createLocalId(layer.id)] = new FillLayer(this.map, createLocalId(layer.id), layer.id, this.isDrawing, layer.style);
                 break;
             case "Line":
-                this.layers[layer.id] = new LineLayer(this.map, layer.id, this.tileSourceId, this.isDrawing, layer.id, { colour });
-                this.layers[createLocalId(layer.id)] = new LineLayer(this.map, createLocalId(layer.id), layer.id, this.isDrawing, undefined, { colour });
+                this.layers[layer.id] = new LineLayer(this.map, layer.id, this.tileSourceId, this.isDrawing, layer.style, layer.id);
+                this.layers[createLocalId(layer.id)] = new LineLayer(this.map, createLocalId(layer.id), layer.id, this.isDrawing, layer.style);
                 break;
             case "Point":
-                this.layers[layer.id] = new CircleLayer(this.map, layer.id, this.tileSourceId, this.isDrawing, layer.id, { colour });
-                this.layers[createLocalId(layer.id)] = new CircleLayer(this.map, createLocalId(layer.id), layer.id, this.isDrawing, undefined, { colour });
+                this.layers[layer.id] = new CircleLayer(this.map, layer.id, this.tileSourceId, this.isDrawing, layer.style, layer.id);
+                this.layers[createLocalId(layer.id)] = new CircleLayer(this.map, createLocalId(layer.id), layer.id, this.isDrawing, layer.style);
                 break;
             default:
+                // @ts-expect-error
                 throw new Error(`Layer type ${layer.type} not handled`);
         }
     }

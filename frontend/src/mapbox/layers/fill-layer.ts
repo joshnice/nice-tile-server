@@ -1,19 +1,10 @@
 import type { FillLayer as MapboxFillLayer, Map } from "mapbox-gl";
-import type { FillStyle } from "./styles";
+import type { FillStyle } from "@nice-tile-server/types";
 import { Layer } from "./layer";
 
-
-const defaultStyle: FillStyle = {
-	colour: "#6b71e3",
-	opacity: 0.6
-}
-
 export class FillLayer extends Layer<FillStyle> {
-	constructor(map: Map, id: string, sourceId: string, isDrawing: () => boolean, sourceLayerId?: string, styleOverrides?: Partial<FillStyle>) {
-		// Create a complete style
-		const style = {...defaultStyle, ...styleOverrides};
+	constructor(map: Map, id: string, sourceId: string, isDrawing: () => boolean, style: FillStyle, sourceLayerId?: string) {
 		super(map, id, isDrawing, style);
-
 		this.createLayer(id, sourceId, style, sourceLayerId);
 	}
 

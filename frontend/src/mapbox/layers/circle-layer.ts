@@ -1,17 +1,9 @@
 import type { CircleLayer as MapboxCircleLayer, Map } from "mapbox-gl";
-import type { CircleStyle } from "./styles";
+import type { PointStyle } from "@nice-tile-server/types";
 import { Layer } from "./layer";
 
-const defaultStyle: CircleStyle = {
-	colour: "#b3685b",
-	opacity: 0.9,
-	radius: 10,
-	outlineWidth: 0
-}
-
-export class CircleLayer extends Layer<CircleStyle> {
-	constructor(map: Map, id: string, sourceId: string, isDrawing: () => boolean, sourceLayerId?: string, styleOverrides?: Partial<CircleStyle>) {
-		const style = {...defaultStyle, ...styleOverrides};
+export class CircleLayer extends Layer<PointStyle> {
+	constructor(map: Map, id: string, sourceId: string, isDrawing: () => boolean, style: PointStyle, sourceLayerId?: string) {
 		super(map, id, isDrawing, style);
 		this.createLayer(id, sourceId, style, sourceLayerId);
 	}
@@ -19,7 +11,7 @@ export class CircleLayer extends Layer<CircleStyle> {
 	private createLayer(
 		id: string,
 		sourceId: string,
-		style: CircleStyle,
+		style: PointStyle,
 		sourceLayerId?: string,
 	): void {
 		const circleLayer: MapboxCircleLayer = {
@@ -28,9 +20,9 @@ export class CircleLayer extends Layer<CircleStyle> {
 			type: "circle",
 			paint: {
 				"circle-color": style.colour,
-				"circle-radius": style.radius,
+				"circle-radius": style.size,
 				"circle-opacity": style.opacity,
-				"circle-stroke-width": style.outlineWidth,
+				"circle-stroke-width": style.outlineWidth ?? 0,
 				"circle-stroke-color": style.colour
 			},
 		};

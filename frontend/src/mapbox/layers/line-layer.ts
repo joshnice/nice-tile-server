@@ -1,21 +1,11 @@
 import type { Map, LineLayer as MapboxLineLayer } from "mapbox-gl";
-import type { LineStyle } from "./styles";
+import type { LineStyle } from "@nice-tile-server/types";
 import { Layer } from "./layer";
 
-const defaultStyle: LineStyle = {
-	colour: "#0ba17e",
-	opacity: 0.7,
-	width: 10,
-	cap: "round",
-	join: "round"
-}
 
 export class LineLayer extends Layer<LineStyle> {
-	constructor(map: Map, id: string, sourceId: string, isDrawing: () => boolean, sourceLayerId?: string, styleOverrides?: Partial<LineStyle>) {
-		// Create a complete style
-		const style = {...defaultStyle, ...styleOverrides}
+	constructor(map: Map, id: string, sourceId: string, isDrawing: () => boolean, style: LineStyle, sourceLayerId?: string) {
 		super(map, id, isDrawing, style);
-
 		this.createLayer(id, sourceId, style, sourceLayerId);
 	}
 
@@ -25,12 +15,12 @@ export class LineLayer extends Layer<LineStyle> {
 			type: "line",
 			paint: {
 				"line-color": style.colour,
-				"line-width": style.width,
+				"line-width": style.size,
 				"line-opacity": style.opacity
 			},
 			layout: {
-				"line-join": style.join,
-				"line-cap": style.cap
+				"line-join": style.join ?? "round",
+				"line-cap": style.cap ?? "round"
 			},
 			source: sourceId,
 		};

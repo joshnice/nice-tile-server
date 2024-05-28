@@ -1,11 +1,11 @@
-import type { AllStyles, LayerType } from "@nice-tile-server/types";
+import type { LayerType } from "@nice-tile-server/types";
 
 export function createRandomColour() {
     const n = (Math.random() * 0xfffff * 1000000).toString(16);
     return `#${n.slice(0, 6)}`;
 };
 
-export function createStyle(type: LayerType): AllStyles {
+export function createStyle(type: LayerType) {
     switch (type) {
         case "Fill":
             return {

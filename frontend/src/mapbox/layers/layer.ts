@@ -1,5 +1,5 @@
+import type { BaseStyle } from "@nice-tile-server/types";
 import type { Map } from "mapbox-gl";
-import type { BaseStyle } from "./styles";
 
 export abstract class Layer<TStyle extends BaseStyle = BaseStyle> {
 	public readonly map: Map;
@@ -34,7 +34,7 @@ export abstract class Layer<TStyle extends BaseStyle = BaseStyle> {
 		});
 
 		this.map.on("mouseleave", this.id, (e) => {
-			if(!this.isDrawing()) {
+			if (!this.isDrawing()) {
 				const [feature] = this.map.queryRenderedFeatures(e.point);
 				if (feature == null || feature?.properties?.id == null) {
 					this.map.getCanvas().style.cursor = "";
