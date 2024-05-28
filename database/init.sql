@@ -39,5 +39,12 @@ create table layer_styles (
     constraint fk_layer_id foreign key (layer_id) references layers(id)
 );
 
+-- Map's tile sets table
+create table map_tile_set (
+    id uuid primary key,
+    map_id uuid,
+    constraint fk_map_id foreign key (map_id) references maps(id)
+);
+
 insert into maps (id, name)
 values ('e57ae4ce-f9c8-43ad-ad8a-97c529cdc256', 'First map');
