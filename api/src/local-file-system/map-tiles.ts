@@ -3,6 +3,10 @@ import { readFile, createDirectory, deleteDirectory, findDirectory, writeFile, s
 
 const basePath = "/home/joshnice/Documents/mapbox-tiles"
 
+function createChangeDirectoryCommand(mapId: string) {
+    return `cd ${basePath}/${mapId}`;
+}
+
 export async function getLocalMapTile(x: number, y: number, z: number) {
     const file = await readFile(`${basePath}/nice-tile-server/${z}/${x}/${y}.pbf`, false);
     return file;
@@ -24,8 +28,15 @@ export async function createGeoJSONFile(mapId: string, mapObjects: FeatureCollec
 }
 
 export async function runTippecanoe(mapId: string) {
-    const changeDirectoryCommand = `cd ${basePath}/${mapId}`;
+    const changeDirectoryCommand = createChangeDirectoryCommand(mapId);
     const tippecanoeCommand = `tippecanoe -o ${mapId}.mbtiles -l ${mapId} -n "${mapId}" -B19 -r1.5 -Z10 --force -z22 -D11 -d9 -an "${mapId}.json"`;
     const combinedCommand = `${changeDirectoryCommand} && ${tippecanoeCommand}`;
+    await shellCommand(combinedCommand);
+}
+
+export async function runMbUtil(mapId: string) {
+    const changeDirectoryCommand = createChangeDirectoryCommand(mapId);
+    const mbutilCommand = `mb-util ${mapId}.mbtiles --do_compression  --image_format=pbf --silent ./tiles`;
+    const combinedCommand = `${changeDirectoryCommand} && ${mbutilCommand}`;
     await shellCommand(combinedCommand);
 }

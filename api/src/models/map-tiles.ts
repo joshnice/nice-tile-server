@@ -1,5 +1,5 @@
 import type { Feature, FeatureCollection } from "geojson";
-import { createGeoJSONFile, createMapTilesDirectory, getLocalMapTile, runTippecanoe } from "../local-file-system/map-tiles";
+import { createGeoJSONFile, createMapTilesDirectory, getLocalMapTile, runMbUtil, runTippecanoe } from "../local-file-system/map-tiles";
 import { listObjectsByMapId } from "./objects";
 
 export function getMapTile(x: number, y: number, z: number) {
@@ -27,7 +27,7 @@ export async function createMapTiles(mapId: string) {
 
     await runTippecanoe(mapId);
 
+    await runMbUtil(mapId);
 
-    // Run mbtile util
     // Add to db
 }

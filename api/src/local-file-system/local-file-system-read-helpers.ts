@@ -28,7 +28,7 @@ export function findDirectory(path: string): boolean {
 
 export async function deleteDirectory(path: string, throwErrorIfNotFound = true): Promise<void> {
     try {
-        await rmdir(path);
+        await rmdir(path, { recursive: true });
     } catch (err) {
         if (throwErrorIfNotFound) {
             console.error(err);
