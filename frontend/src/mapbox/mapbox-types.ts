@@ -1,4 +1,4 @@
-import type { Subject } from "rxjs";
+import type { BehaviorSubject, Subject } from "rxjs";
 import type { Api } from "./api";
 
 export interface MapboxOptions {
@@ -9,4 +9,5 @@ export interface MapboxOptions {
 
 export interface MapEvents {
 	onObjectClicked: Subject<string | null>;
+	onMapLoaded: BehaviorSubject<boolean>;
 }

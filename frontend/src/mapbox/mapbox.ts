@@ -29,13 +29,15 @@ export class Mapbox {
 
 	private readonly events: MapEvents;
 
+	private readonly offlineMode = false;
+
 	private drawing: Drawing | null = null;
 
 	constructor(options: MapboxOptions) {
 		this.map = new Map({
 			container: options.containerElement,
 			center: [-0.54588, 53.22821],
-			style: "mapbox://styles/mapbox/streets-v11",
+			style: this.offlineMode ? { version: 8, layers: [], sources: {} } : "mapbox://styles/mapbox/streets-v11",
 			zoom: 15,
 			accessToken:
 				"pk.eyJ1Ijoiam9zaG5pY2U5OCIsImEiOiJja2VtcnFwNGQwbXdnMndvODNzYm9wNzE3In0.hNLvS8f4FVGbgnwF7Xepow",
@@ -52,11 +54,11 @@ export class Mapbox {
 
 		this.map.once("load", () => {
 			this.sources.addVectorSource(this.tileSourceId, this.api.createMapObjectTilesUrl());
-			// this.sources.addVectorSource("nice-tile-server", this.api.createMapTilesUrl());
+			this.events.onMapLoaded.next(true);
 		});
 
 		// this.map.once("idle", () => {
-		// 	new LineLayer(this.map, "nice-tile-server", "nice-tile-server", () => false, "nice-tile-server");
+		// 	this.events.onMapLoaded.next(true);
 		// });
 
 		this.map.on("click", (event) => {
@@ -73,16 +75,8 @@ export class Mapbox {
 	}
 
 	public addLayer(layer: Layer) {
-		// Then remove this
-		if (this.map.loaded()) {
-			this.sources.addGeoJsonSource(layer.id);
-			this.layers.addLayer(layer);
-		} else {
-			this.map.once("load", () => {
-				this.sources.addGeoJsonSource(layer.id);
-				this.layers.addLayer(layer);
-			});
-		}
+		this.sources.addGeoJsonSource(layer.id);
+		this.layers.addLayer(layer);
 	}
 
 	public onLayerSelected(layerId: string | null) {

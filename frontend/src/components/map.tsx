@@ -11,6 +11,7 @@ import useObjectSelected from "../hooks/use-object-selected";
 import PropertiesComponent from "./properties";
 import RandomObjectsComponent from "./random-objects";
 import useGeoJSON from "../hooks/use-geojson";
+import useMapLoaded from "../hooks/use-map-loaded";
 
 const baseUrl = "http://localhost:3000";
 
@@ -39,11 +40,29 @@ export default function MapComponent() {
 	};
 
 	const onLayersSuccess = (layers: Layer[]) => {
-		if (!initialLayers.current) {
+
+		const addLayersToMap = (layers: Layer[]) => {
 			layers.forEach((layer) => {
 				map.current?.addLayer(layer);
 			});
 		}
+
+		if (!initialLayers.current) {
+			// Map has already loaded and we need to add layers
+			if ($mapLoaded.current.value) {
+				addLayersToMap(layers);
+
+			} else {
+				// Map has not already loaded so wait for the map to load and then add the layers
+				const sub = $mapLoaded.current.subscribe((value) => {
+					if (value) {
+						addLayersToMap(layers);
+						sub.unsubscribe();
+					}
+				});
+			}
+		}
+
 		initialLayers.current = true;
 	};
 
@@ -56,6 +75,8 @@ export default function MapComponent() {
 		useLayers(selectedMap?.id ?? null, onLayersSuccess);
 
 	const { selectedObject, onObjectSelected } = useObjectSelected();
+
+	const { $mapLoaded } = useMapLoaded();
 
 	const { downloadLayer } = useGeoJSON();
 
@@ -72,12 +93,15 @@ export default function MapComponent() {
 
 	const handleMapSelected = (selectedMap: { id: string; name: string }) => {
 		map.current?.destory?.();
+		$mapLoaded.current.next(false);
+
 		if (mapElement.current != null) {
 			map.current = new Mapbox({
 				containerElement: mapElement.current,
 				api: new Api(selectedMap.id, baseUrl),
 				events: {
 					onObjectClicked: onObjectSelected,
+					onMapLoaded: $mapLoaded.current
 				},
 			});
 			initialLayers.current = false;
@@ -104,8 +128,8 @@ export default function MapComponent() {
 			mapId: selectedMapRef.current,
 		};
 
+		// Todo: Fix types
 		map.current?.addLayer(newLayer);
-
 		await createMapLayer(newLayer);
 		invalidateLayers();
 		handleLayerSelected(newLayer.id);
