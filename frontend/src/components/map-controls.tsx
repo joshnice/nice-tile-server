@@ -18,7 +18,8 @@ export default function MapControlsComponent({
 	onMapCreatedClick,
 	onLayerSelected,
 	onRandomPointsSelected,
-	donwloadLayer
+	downloadLayer,
+	makeMapTiles
 }: {
 	selectedLayer: string | null;
 	maps: { id: string; name: string }[];
@@ -29,7 +30,8 @@ export default function MapControlsComponent({
 	onLayerCreated: (type: LayerType, name: string) => void;
 	onLayerSelected: (id: string) => void;
 	onRandomPointsSelected: () => void;
-	donwloadLayer: (id: string | null) => void;
+	downloadLayer: (id: string | null) => void;
+	makeMapTiles: () => void;
 }) {
 	return (
 		<>
@@ -46,7 +48,7 @@ export default function MapControlsComponent({
 						<FontAwesomeIcon icon={faCircle} size="2xs" transform="down-15 " />
 						<FontAwesomeIcon icon={faCircle} size="2xs" transform="up-4" />
 					</IconButtonComponent>
-					<IconButtonComponent disabled={selectedLayer == null} onClick={() => donwloadLayer(selectedLayer)}>
+					<IconButtonComponent disabled={selectedLayer == null} onClick={() => downloadLayer(selectedLayer)}>
 						<FontAwesomeIcon icon={faDownload} size="2x" />
 					</IconButtonComponent>
 				</div>
@@ -57,6 +59,7 @@ export default function MapControlsComponent({
 					selectedMap={selectedMap}
 					onMapSelected={onMapSelected}
 					onMapCreatedClick={onMapCreatedClick}
+					makeMapTiles={makeMapTiles}
 				/>
 			</div>
 		</>

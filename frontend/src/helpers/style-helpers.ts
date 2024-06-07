@@ -1,4 +1,4 @@
-import type { AllStyles, FillStyle, LayerType, LineStyle, PointStyle } from "@nice-tile-server/types";
+import type { FillStyle, LineStyle, PointStyle } from "@nice-tile-server/types";
 
 export function createRandomColour() {
     const n = (Math.random() * 0xfffff * 1000000).toString(16);

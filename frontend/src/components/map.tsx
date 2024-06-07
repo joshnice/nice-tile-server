@@ -13,6 +13,7 @@ import RandomObjectsComponent from "./random-objects";
 import useGeoJSON from "../hooks/use-geojson";
 import useMapLoaded from "../hooks/use-map-loaded";
 import { createFillStyle, createLineStyle, createPointStyle } from "../helpers/style-helpers";
+import useMapTiles from "../hooks/use-map-tiles";
 
 const baseUrl = "http://localhost:3000";
 
@@ -71,6 +72,8 @@ export default function MapComponent() {
 
 	const { maps, isMapsLoading, createMap, invalidateMaps } =
 		useMaps(onMapsSuccess);
+
+	const { createMapTiles } = useMapTiles();
 
 	const { mapLayers, isMapLayersLoading, createMapLayer, invalidateLayers } =
 		useLayers(selectedMap?.id ?? null, onLayersSuccess);
@@ -184,6 +187,13 @@ export default function MapComponent() {
 		}
 	}
 
+	const handleMakeMapTiles = () => {
+		if (selectedMap == null) {
+			throw new Error("No map selected");
+		}
+		createMapTiles(selectedMap?.id);
+	}
+
 	// Clean up
 
 	useEffect(() => {
@@ -206,7 +216,8 @@ export default function MapComponent() {
 					onMapSelected={handleMapSelected}
 					onLayerSelected={handleLayerSelected}
 					onRandomPointsSelected={handleRandomPointsSelected}
-					donwloadLayer={handleDownloadLayer}
+					downloadLayer={handleDownloadLayer}
+					makeMapTiles={handleMakeMapTiles}
 				/>
 			)}
 			<div className="mapbox-map" ref={mapElement} />
