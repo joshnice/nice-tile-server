@@ -1,4 +1,4 @@
-import type { Layer, CreateLayer } from "@nice-tile-server/types";
+import type { Layer, LayerType } from "@nice-tile-server/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons/faCircle";
 import { faDownload } from "@fortawesome/free-solid-svg-icons/faDownload";
@@ -26,7 +26,7 @@ export default function MapControlsComponent({
 	mapLayers?: Layer[] | null;
 	onMapSelected: (map: { id: string; name: string }) => void;
 	onMapCreatedClick: () => void;
-	onLayerCreated: (layer: CreateLayer) => void;
+	onLayerCreated: (type: LayerType, name: string) => void;
 	onLayerSelected: (id: string) => void;
 	onRandomPointsSelected: () => void;
 	donwloadLayer: (id: string | null) => void;

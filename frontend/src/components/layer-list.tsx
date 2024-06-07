@@ -1,4 +1,4 @@
-import type { CreateLayer, Layer } from "@nice-tile-server/types";
+import type { Layer, LayerType } from "@nice-tile-server/types";
 import { useMemo, useState } from "react";
 import MinMaxComponent from "./min-max";
 import { HeaderText } from "./basic/headers";
@@ -13,16 +13,16 @@ export default function LayerListComponent({
 }: {
 	layers: Layer[] | null;
 	selectedLayerId: string | null;
-	onCreateLayer: (layer: CreateLayer) => void;
+	onCreateLayer: (type: LayerType, name: string) => void;
 	onLayerSelected: (id: string) => void;
 }) {
 	const [createLayerModal, setCreateLayerModal] = useState(false);
 
 	const [expand, setExpand] = useState(true);
 
-	const handleCreateLayer = (layer: CreateLayer) => {
+	const handleCreateLayer = (type: LayerType, name: string) => {
 		setCreateLayerModal(false);
-		onCreateLayer(layer);
+		onCreateLayer(type, name);
 	};
 
 	const handleClose = () => {

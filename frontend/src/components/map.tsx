@@ -1,4 +1,4 @@
-import type { CreateLayer, Layer } from "@nice-tile-server/types";
+import type { Layer, LayerType } from "@nice-tile-server/types";
 import type { RandomObjectProperty } from "../types/properties";
 import { useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
@@ -12,6 +12,7 @@ import PropertiesComponent from "./properties";
 import RandomObjectsComponent from "./random-objects";
 import useGeoJSON from "../hooks/use-geojson";
 import useMapLoaded from "../hooks/use-map-loaded";
+import { createFillStyle, createLineStyle, createPointStyle } from "../helpers/style-helpers";
 
 const baseUrl = "http://localhost:3000";
 
@@ -116,23 +117,51 @@ export default function MapComponent() {
 		handleMapSelected(map);
 	};
 
-	const handleLayerCreate = async (layer: CreateLayer) => {
+	const handleLayerCreate = async (type: LayerType, name: string) => {
 		if (selectedMapRef.current == null) {
 			return;
 		}
 
 		const layerId = uuid();
-		const newLayer = {
-			...layer,
+
+		const baseLayer = {
+			name,
 			id: layerId,
 			mapId: selectedMapRef.current,
-		};
+		}
 
-		// Todo: Fix types
-		map.current?.addLayer(newLayer);
-		await createMapLayer(newLayer);
+		let layer: Layer;
+
+		switch (type) {
+			case "Fill":
+				layer = {
+					...baseLayer,
+					type: "Fill",
+					style: createFillStyle(),
+				}
+				break;
+			case "Line":
+				layer = {
+					...baseLayer,
+					type: "Line",
+					style: createLineStyle(),
+				}
+				break;
+			case "Point":
+				layer = {
+					...baseLayer,
+					type: "Point",
+					style: createPointStyle(),
+				}
+				break;
+			default:
+				throw new Error(`Layer type: ${type} not handled`);
+		}
+
+		map.current?.addLayer(layer);
+		await createMapLayer(layer);
 		invalidateLayers();
-		handleLayerSelected(newLayer.id);
+		handleLayerSelected(layer.id);
 	};
 
 	const handleRandomPointsSelected = () => {

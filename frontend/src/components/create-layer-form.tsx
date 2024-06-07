@@ -1,10 +1,9 @@
-import type { CreateLayer } from "@nice-tile-server/types";
+import type { LayerType } from "@nice-tile-server/types";
 import { useState } from "react";
 import { SubHeaderText } from "./basic/headers";
 import ModalComponent from "./modal";
 import { TextInputComponent } from "./basic/inputs";
 import { SelectStringComponent } from "./basic/selects";
-import { createStyle } from "../helpers/style-helpers";
 
 export default function CreateLayerLayerFormComponent({
 	open,
@@ -12,16 +11,17 @@ export default function CreateLayerLayerFormComponent({
 	handleClose,
 }: {
 	open: boolean;
-	handleCreateLayer: (layer: CreateLayer) => void;
+	handleCreateLayer: (type: LayerType, name: string) => void;
 	handleClose: () => void;
 }) {
-	const [layer, setLayer] = useState<CreateLayer>({ name: "", type: "Fill", style: createStyle("Fill") });
+	const [name, setName] = useState<string>("");
+	const [type, setType] = useState<LayerType>("Fill");
 
 	return (
 		<ModalComponent
 			header="Create Layer"
 			submitButtonText="Add"
-			onSubmit={() => handleCreateLayer(layer)}
+			onSubmit={() => handleCreateLayer(type, name)}
 			onClose={handleClose}
 			open={open}
 		>
@@ -29,16 +29,16 @@ export default function CreateLayerLayerFormComponent({
 				<div className="flex flex-col gap-3">
 					<SubHeaderText title="Name" />
 					<TextInputComponent
-						value={layer.name}
-						onChange={(value) => setLayer({ ...layer, name: value })}
+						value={name}
+						onChange={setName}
 					/>
 				</div>
 				<div className="flex flex-col gap-3">
 					<SubHeaderText title="Type" />
 					<SelectStringComponent
-						value={layer.type}
+						value={type}
 						options={["Fill", "Point", "Line"]}
-						onChange={(value) => setLayer({ ...layer, type: value, style: createStyle(value) })}
+						onChange={setType}
 					/>
 				</div>
 			</div>
