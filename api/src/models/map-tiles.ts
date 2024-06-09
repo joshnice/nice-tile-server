@@ -8,7 +8,25 @@ export function getMapTile(x: number, y: number, z: number) {
     return getLocalMapTile(x, y, z);
 }
 
+export async function listMapTiles() {
+    const SQL = `
+        select 
+            mts.id,
+            m."name" 
+        from
+            map_tile_set mts
+        left join maps m 
+            on mts.map_id = m.id
+    `;
+
+    const response = await client.query(SQL);
+
+    return response.rows;
+}
+
 export async function createMapTiles(mapId: string) {
+
+    // Todo: change so instead of per map do per layer, for whole map and join the tiles
 
     // Get all map objects
     const mapObjects = await listObjectsByMapId(mapId);
