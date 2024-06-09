@@ -1,4 +1,4 @@
-import {
+import type {
 	VectorSource as MapboxVectorSource,
 	VectorSourceImpl as MapboxVecotorSourceImpl,
 } from "mapbox-gl";
@@ -9,6 +9,7 @@ export class VectorSource extends Source<
 	MapboxVecotorSourceImpl,
 	string
 > {
+
 	public createSource(tilesUrl: string): MapboxVectorSource {
 		return {
 			type: "vector",
@@ -22,5 +23,9 @@ export class VectorSource extends Source<
 		const tileUrl = source.tiles?.[0] ?? "";
 		const tilesUrl = tileUrl.split("?")[0];
 		source.setTiles([`${tilesUrl}?bustCache=${key}`]);
+	}
+
+	public updateSourceWithArray(): void {
+		throw new Error("Method not implemented.");
 	}
 }
