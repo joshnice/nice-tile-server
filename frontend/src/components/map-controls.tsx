@@ -11,6 +11,7 @@ export type Control = "Point" | "Line" | "Area";
 export default function MapControlsComponent({
 	selectedLayer,
 	maps,
+	mapTiles,
 	selectedMap,
 	mapLayers = [],
 	onMapSelected,
@@ -23,6 +24,7 @@ export default function MapControlsComponent({
 }: {
 	selectedLayer: string | null;
 	maps: { id: string; name: string }[];
+	mapTiles: { id: string; name: string }[];
 	selectedMap: { id: string; name: string };
 	mapLayers?: Layer[] | null;
 	onMapSelected: (map: { id: string; name: string }) => void;
@@ -56,6 +58,7 @@ export default function MapControlsComponent({
 			<div className="map-controls-container map-controls-container-right">
 				<MapListComponent
 					maps={maps}
+					mapTiles={mapTiles}
 					selectedMap={selectedMap}
 					onMapSelected={onMapSelected}
 					onMapCreatedClick={onMapCreatedClick}

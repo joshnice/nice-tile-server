@@ -73,7 +73,7 @@ export default function MapComponent() {
 	const { maps, isMapsLoading, createMap, invalidateMaps } =
 		useMaps(onMapsSuccess);
 
-	const { createMapTiles } = useMapTiles();
+	const { createMapTiles, mapTiles } = useMapTiles();
 
 	const { mapLayers, isMapLayersLoading, createMapLayer, invalidateLayers } =
 		useLayers(selectedMap?.id ?? null, onLayersSuccess);
@@ -208,6 +208,7 @@ export default function MapComponent() {
 			{selectedMap && !isMapsLoading && !isMapLayersLoading && (
 				<MapControlsComponent
 					maps={maps}
+					mapTiles={mapTiles}
 					selectedMap={selectedMap}
 					selectedLayer={selectedLayer}
 					mapLayers={mapLayers}

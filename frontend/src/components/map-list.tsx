@@ -1,26 +1,36 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTableCells } from "@fortawesome/free-solid-svg-icons/faTableCells";
 import { ButtonComponent, IconButtonComponent } from "./basic/buttons";
-import { SelectObjectComponent } from "./basic/selects";
+import { SelectObjectComponentWithGroups } from "./basic/selects";
+import { useMemo } from "react";
 
 export default function MapListComponent({
 	maps,
+	mapTiles,
 	selectedMap,
 	onMapSelected,
 	onMapCreatedClick,
 	makeMapTiles,
 }: {
 	maps: { id: string; name: string }[];
+	mapTiles: { id: string; name: string }[];
 	selectedMap: { id: string; name: string };
 	onMapSelected: (map: { id: string; name: string }) => void;
 	onMapCreatedClick: () => void;
 	makeMapTiles: () => void;
 }) {
+
+	const combinedGroups = useMemo(() => {
+		return [{ name: "Maps", options: maps ?? [] }, { name: "Map tiles", options: mapTiles ?? [] }]
+	}, [maps?.length, mapTiles?.length])
+
+	console.log("combinedGroups", combinedGroups);
+
 	return (
 		<>
-			<SelectObjectComponent
+			<SelectObjectComponentWithGroups
 				value={selectedMap}
-				options={maps}
+				groups={combinedGroups}
 				onChange={onMapSelected}
 			/>
 			<ButtonComponent
