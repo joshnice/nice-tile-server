@@ -3,7 +3,8 @@ import { createMapTiles, getMapTile, listMapTiles } from "../models/map-tiles";
 
 export const mapTilesRoute = new Hono();
 
-mapTilesRoute.get("/:z/:x/:y", async (ctx) => {
+mapTilesRoute.get(":mapId/:z/:x/:y", async (ctx) => {
+    const mapId = ctx.req.param("mapId");
     const x = ctx.req.param("x");
     const y = ctx.req.param("y");
     const z = ctx.req.param("z");
@@ -13,7 +14,7 @@ mapTilesRoute.get("/:z/:x/:y", async (ctx) => {
     const numZ = Number.parseInt(z, 10);
 
     try {
-        const objectTile = await getMapTile(numX, numY, numZ);
+        const objectTile = await getMapTile(numX, numY, numZ, mapId);
 
         if (objectTile) {
             ctx.status(200);

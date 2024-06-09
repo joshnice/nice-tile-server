@@ -3,15 +3,17 @@ import { v4 as uuid } from "uuid";
 import { createGeoJSONFile, createMapTilesDirectory, getLocalMapTile, runMbUtil, runTippecanoe } from "../local-file-system/map-tiles";
 import { listObjectsByMapId } from "./objects";
 import { client } from "../db/connection";
+import { DbMapTileToMapTile } from "../maps/DbMapTile-to-MapTile";
 
-export function getMapTile(x: number, y: number, z: number) {
-    return getLocalMapTile(x, y, z);
+export function getMapTile(x: number, y: number, z: number, mapId: string) {
+    return getLocalMapTile(x, y, z, mapId);
 }
 
 export async function listMapTiles() {
     const SQL = `
         select 
             mts.id,
+            mts.map_id,
             m."name" 
         from
             map_tile_set mts
@@ -21,7 +23,7 @@ export async function listMapTiles() {
 
     const response = await client.query(SQL);
 
-    return response.rows;
+    return response.rows.map(DbMapTileToMapTile);
 }
 
 export async function createMapTiles(mapId: string) {

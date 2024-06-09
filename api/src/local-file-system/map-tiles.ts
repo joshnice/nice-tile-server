@@ -7,8 +7,8 @@ function createChangeDirectoryCommand(mapId: string) {
     return `cd ${basePath}/${mapId}`;
 }
 
-export async function getLocalMapTile(x: number, y: number, z: number) {
-    const file = await readFile(`${basePath}/nice-tile-server/${z}/${x}/${y}.pbf`, false);
+export async function getLocalMapTile(x: number, y: number, z: number, mapId: string) {
+    const file = await readFile(`${basePath}/${mapId}/${z}/${x}/${y}.pbf`, false);
     return file;
 }
 
