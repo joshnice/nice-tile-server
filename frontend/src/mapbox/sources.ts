@@ -1,5 +1,4 @@
 import type { Map } from "mapbox-gl";
-import type { Api } from "./api";
 import { VectorSource } from "./sources/vector-source";
 import { GeoJsonSource } from "./sources/geojson-source";
 
@@ -7,16 +6,14 @@ export class Sources {
 
     private readonly map: Map;
 
-    private readonly api: Api;
 
 
     private tileSources: { [sourceId: string]: VectorSource } = {};
 
     private geoJsonSource: { [sourceId: string]: GeoJsonSource } = {};
 
-    constructor(map: Map, api: Api) {
+    constructor(map: Map) {
         this.map = map;
-        this.api = api;
     }
 
     public addVectorSource(id: string, url: string) {
