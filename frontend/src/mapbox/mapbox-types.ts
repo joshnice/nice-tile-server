@@ -5,6 +5,7 @@ export interface MapboxOptions {
 	containerElement: HTMLDivElement;
 	api: Api;
 	events: MapEvents;
+	mapType: string;
 }
 
 export interface MapEvents {

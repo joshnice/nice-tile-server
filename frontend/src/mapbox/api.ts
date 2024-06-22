@@ -32,8 +32,15 @@ export class Api {
 		});
 	}
 
-	public createMapObjectTilesUrl() {
-		return `http://localhost:3000/object/${this.mapId}/{z}/{x}/{y}`;
+	public createMapObjectTilesUrl(type: string) {
+		switch (type) {
+			case "map":
+				return `http://localhost:3000/object/${this.mapId}/{z}/{x}/{y}`;
+			case "tile":
+				return `http://localhost:3000/map-tiles/${this.mapId}/{z}/{x}/{y}`
+			default:
+				throw new Error(`Type: ${type} is not handled`);
+		}
 	}
 
 	public createMapTilesUrl() {

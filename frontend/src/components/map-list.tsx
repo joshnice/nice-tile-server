@@ -14,21 +14,22 @@ export default function MapListComponent({
 }: {
 	maps: { id: string; name: string }[];
 	mapTiles: { id: string; name: string }[];
-	selectedMap: { id: string; name: string };
-	onMapSelected: (map: { id: string; name: string }) => void;
+	selectedMap: { id: string; name: string, type: string, mapId?: string };
+	onMapSelected: (map: { id: string; name: string, type: string, mapId?: string }) => void;
 	onMapCreatedClick: () => void;
 	makeMapTiles: () => void;
 }) {
 
 	const combinedGroups = useMemo(() => {
-		return [{ name: "Maps", options: maps ?? [] }, { name: "Map tiles", options: mapTiles ?? [] }]
+		return [
+			{ name: "Maps", options: maps?.map((map) => ({ ...map, type: "map" })) ?? [] },
+			{ name: "Map tiles", options: mapTiles?.map((tile) => ({ ...tile, type: "tile" })) ?? [] }
+		]
 	}, [maps?.length, mapTiles?.length])
-
-	console.log("combinedGroups", combinedGroups);
 
 	return (
 		<>
-			<SelectObjectComponentWithGroups
+			<SelectObjectComponentWithGroups<{ id: string; name: string, type: string, mapId?: string }>
 				value={selectedMap}
 				groups={combinedGroups}
 				onChange={onMapSelected}

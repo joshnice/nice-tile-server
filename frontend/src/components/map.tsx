@@ -27,7 +27,11 @@ export default function MapComponent() {
 	const [selectedMap, setSelectedMap] = useState<{
 		id: string;
 		name: string;
+		type: string;
+		mapId?: string;
 	} | null>(null);
+
+
 	const [randomObjects, setRandomObjects] = useState<boolean>(false);
 
 	// Map state
@@ -37,7 +41,7 @@ export default function MapComponent() {
 
 	const onMapsSuccess = (maps: { id: string; name: string }[]) => {
 		if (selectedMapRef.current == null && maps[0] != null) {
-			handleMapSelected(maps[0]);
+			handleMapSelected({ ...maps[0], type: "map" });
 		}
 	};
 
@@ -53,7 +57,6 @@ export default function MapComponent() {
 			// Map has already loaded and we need to add layers
 			if ($mapLoaded.current.value) {
 				addLayersToMap(layers);
-
 			} else {
 				// Map has not already loaded so wait for the map to load and then add the layers
 				const sub = $mapLoaded.current.subscribe((value) => {
@@ -76,7 +79,7 @@ export default function MapComponent() {
 	const { createMapTiles, mapTiles } = useMapTiles();
 
 	const { mapLayers, isMapLayersLoading, createMapLayer, invalidateLayers } =
-		useLayers(selectedMap?.id ?? null, onLayersSuccess);
+		useLayers(selectedMap?.mapId ?? selectedMap?.id ?? null, onLayersSuccess);
 
 	const { selectedObject, onObjectSelected } = useObjectSelected();
 
@@ -95,26 +98,30 @@ export default function MapComponent() {
 		map.current?.onLayerSelected(id);
 	};
 
-	const handleMapSelected = (selectedMap: { id: string; name: string }) => {
+	const handleMapSelected = (newlySelectedMap: { id: string; name: string, type: string, mapId?: string }) => {
 		map.current?.destory?.();
 		$mapLoaded.current.next(false);
+		initialLayers.current = false;
 
 		if (mapElement.current != null) {
 			map.current = new Mapbox({
 				containerElement: mapElement.current,
-				api: new Api(selectedMap.id, baseUrl),
+				api: new Api(newlySelectedMap.mapId ?? newlySelectedMap.id, baseUrl),
+				mapType: newlySelectedMap.type,
 				events: {
 					onObjectClicked: onObjectSelected,
 					onMapLoaded: $mapLoaded.current
 				},
 			});
-			initialLayers.current = false;
-			setSelectedMap(selectedMap);
+			if (newlySelectedMap.type === "tile" && selectedMap != null && newlySelectedMap.mapId === selectedMap.id && mapLayers != null) {
+				onLayersSuccess(mapLayers);
+			}
+			setSelectedMap(newlySelectedMap);
 		}
 	};
 
 	const handleMapCreate = async () => {
-		const map = { id: uuid(), name: `New Map ${maps.length}` };
+		const map = { id: uuid(), name: `New Map ${maps.length}`, type: "map" };
 		await createMap(map.id, map.name);
 		invalidateMaps();
 		handleMapSelected(map);

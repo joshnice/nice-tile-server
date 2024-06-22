@@ -25,9 +25,9 @@ export default function MapControlsComponent({
 	selectedLayer: string | null;
 	maps: { id: string; name: string }[];
 	mapTiles: { id: string; name: string }[];
-	selectedMap: { id: string; name: string };
+	selectedMap: { id: string; name: string, type: string, mapId?: string };
 	mapLayers?: Layer[] | null;
-	onMapSelected: (map: { id: string; name: string }) => void;
+	onMapSelected: (map: { id: string; name: string, type: string, mapId?: string }) => void;
 	onMapCreatedClick: () => void;
 	onLayerCreated: (type: LayerType, name: string) => void;
 	onLayerSelected: (id: string) => void;

@@ -47,19 +47,15 @@ export class Mapbox {
 		this.api = options.api;
 		this.events = options.events;
 
-		this.sources = new Sources(this.map, this.api);
+		this.sources = new Sources(this.map);
 		this.layers = new Layers(this.map, this.tileSourceId, this.isDrawing.bind(this));
 
 		this.map.doubleClickZoom.disable();
 
 		this.map.once("load", () => {
-			this.sources.addVectorSource(this.tileSourceId, this.api.createMapObjectTilesUrl());
+			this.sources.addVectorSource(this.tileSourceId, this.api.createMapObjectTilesUrl(options.mapType));
 			this.events.onMapLoaded.next(true);
 		});
-
-		// this.map.once("idle", () => {
-		// 	this.events.onMapLoaded.next(true);
-		// });
 
 		this.map.on("click", (event) => {
 			// Only allow selection when not drawing
