@@ -4,38 +4,43 @@ import { ButtonComponent, IconButtonComponent } from "../basic/buttons";
 import { SelectObjectComponentWithGroups } from "../basic/selects";
 import { useMemo } from "react";
 import type { Map, MapTile } from "@nice-tile-server/types";
-
-type CombinedMap = Map | MapTile;
+import { useGlobalState } from "../../context/global-context";
 
 export default function MapListComponent({
 	maps,
 	mapTiles,
-	selectedMap,
-	onMapSelected,
 	onMapCreatedClick,
 	makeMapTiles,
 }: {
 	maps: Map[];
 	mapTiles: MapTile[];
-	selectedMap: CombinedMap;
-	onMapSelected: (map: CombinedMap) => void;
 	onMapCreatedClick: () => void;
 	makeMapTiles: () => void;
 }) {
+
+	const { $selectedMap } = useGlobalState();
 
 	const combinedGroups = useMemo(() => {
 		return [
 			{ name: "Maps", options: maps?.map((map) => ({ ...map, type: "map" } as Map)) ?? [] },
 			{ name: "Map tiles", options: mapTiles?.map((tile) => ({ ...tile, type: "tile" } as MapTile)) ?? [] }
 		]
-	}, [maps?.length, mapTiles?.length])
+	}, [maps?.length, mapTiles?.length]);
+
+	const handleMapChange = (selectedMap: Map | MapTile) => {
+		$selectedMap?.next(selectedMap)
+	}
+
+	if ($selectedMap?.value == null) {
+		return <></>
+	}
 
 	return (
 		<>
-			<SelectObjectComponentWithGroups<CombinedMap>
-				value={selectedMap}
+			<SelectObjectComponentWithGroups<Map | MapTile>
+				value={$selectedMap?.value}
 				groups={combinedGroups}
-				onChange={onMapSelected}
+				onChange={handleMapChange}
 			/>
 			<ButtonComponent
 				onClick={onMapCreatedClick}

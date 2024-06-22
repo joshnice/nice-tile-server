@@ -12,9 +12,7 @@ export default function MapControlsComponent({
 	selectedLayer,
 	maps,
 	mapTiles,
-	selectedMap,
 	mapLayers = [],
-	onMapSelected,
 	onLayerCreated,
 	onMapCreatedClick,
 	onLayerSelected,
@@ -25,9 +23,7 @@ export default function MapControlsComponent({
 	selectedLayer: string | null;
 	maps: Map[];
 	mapTiles: MapTile[];
-	selectedMap: Map | MapTile;
 	mapLayers?: Layer[] | null;
-	onMapSelected: (map: Map | MapTile) => void;
 	onMapCreatedClick: () => void;
 	onLayerCreated: (type: LayerType, name: string) => void;
 	onLayerSelected: (id: string) => void;
@@ -59,8 +55,6 @@ export default function MapControlsComponent({
 				<MapListComponent
 					maps={maps}
 					mapTiles={mapTiles}
-					selectedMap={selectedMap}
-					onMapSelected={onMapSelected}
 					onMapCreatedClick={onMapCreatedClick}
 					makeMapTiles={makeMapTiles}
 				/>

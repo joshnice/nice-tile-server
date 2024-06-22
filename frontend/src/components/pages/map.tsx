@@ -14,6 +14,7 @@ import useGeoJSON from "../../hooks/use-geojson";
 import useMapLoaded from "../../hooks/use-map-loaded";
 import { createFillStyle, createLineStyle, createPointStyle } from "../../helpers/style-helpers";
 import useMapTiles from "../../hooks/use-map-tiles";
+import { GlobalContext } from "../../context/global-context";
 
 const baseUrl = "http://localhost:3000";
 
@@ -208,17 +209,15 @@ export default function MapPageComponent() {
 	}, []);
 
 	return (
-		<>
+		<GlobalContext.Provider value={{ $selectedMap: $selectedMap.current }}>
 			{$selectedMap.current.value && !isMapsLoading && maps != null && mapTiles != null && !isMapLayersLoading && (
 				<MapControlsComponent
 					maps={maps}
 					mapTiles={mapTiles}
-					selectedMap={$selectedMap.current.value}
 					selectedLayer={selectedLayer}
 					mapLayers={mapLayers}
 					onLayerCreated={handleLayerCreate}
 					onMapCreatedClick={handleMapCreate}
-					onMapSelected={(map) => $selectedMap.current.next(map)}
 					onLayerSelected={handleLayerSelected}
 					onRandomPointsSelected={handleRandomPointsSelected}
 					downloadLayer={handleDownloadLayer}
@@ -237,6 +236,6 @@ export default function MapPageComponent() {
 					onClose={() => setRandomObjects(false)}
 				/>
 			)}
-		</>
+		</GlobalContext.Provider>
 	);
 }
