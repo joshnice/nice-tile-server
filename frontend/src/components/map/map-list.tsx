@@ -3,6 +3,9 @@ import { faTableCells } from "@fortawesome/free-solid-svg-icons/faTableCells";
 import { ButtonComponent, IconButtonComponent } from "../basic/buttons";
 import { SelectObjectComponentWithGroups } from "../basic/selects";
 import { useMemo } from "react";
+import type { Map, MapTile } from "@nice-tile-server/types";
+
+type CombinedMap = Map | MapTile;
 
 export default function MapListComponent({
 	maps,
@@ -12,24 +15,24 @@ export default function MapListComponent({
 	onMapCreatedClick,
 	makeMapTiles,
 }: {
-	maps: { id: string; name: string }[];
-	mapTiles: { id: string; name: string }[];
-	selectedMap: { id: string; name: string, type: string, mapId?: string };
-	onMapSelected: (map: { id: string; name: string, type: string, mapId?: string }) => void;
+	maps: Map[];
+	mapTiles: MapTile[];
+	selectedMap: CombinedMap;
+	onMapSelected: (map: CombinedMap) => void;
 	onMapCreatedClick: () => void;
 	makeMapTiles: () => void;
 }) {
 
 	const combinedGroups = useMemo(() => {
 		return [
-			{ name: "Maps", options: maps?.map((map) => ({ ...map, type: "map" })) ?? [] },
-			{ name: "Map tiles", options: mapTiles?.map((tile) => ({ ...tile, type: "tile" })) ?? [] }
+			{ name: "Maps", options: maps?.map((map) => ({ ...map, type: "map" } as Map)) ?? [] },
+			{ name: "Map tiles", options: mapTiles?.map((tile) => ({ ...tile, type: "tile" } as MapTile)) ?? [] }
 		]
 	}, [maps?.length, mapTiles?.length])
 
 	return (
 		<>
-			<SelectObjectComponentWithGroups<{ id: string; name: string, type: string, mapId?: string }>
+			<SelectObjectComponentWithGroups<CombinedMap>
 				value={selectedMap}
 				groups={combinedGroups}
 				onChange={onMapSelected}

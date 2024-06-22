@@ -1,9 +1,10 @@
+import type { MapTile } from "@nice-tile-server/types";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const createKey = () => ["map-tiles"];
 
 export default function useMapTiles(): {
-    mapTiles: { id: string, name: string }[],
+    mapTiles: MapTile[],
     isMapTilesLoading: boolean,
     createMapTiles: (mapId: string) => Promise<void>
     invalidateMapTiles: () => void;

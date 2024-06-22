@@ -1,4 +1,4 @@
-import type { Layer, LayerType } from "@nice-tile-server/types";
+import type { Layer, LayerType, MapTile, Map } from "@nice-tile-server/types";
 import type { RandomObjectProperty } from "../../types/properties";
 import { useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
@@ -18,32 +18,20 @@ import useMapTiles from "../../hooks/use-map-tiles";
 const baseUrl = "http://localhost:3000";
 
 export default function MapPageComponent() {
+	// Force renrender of component when map is changed
+	const [rerender, setRerender] = useState(false);
+
 	// Map
 	const map = useRef<Mapbox | null>();
 	const mapElement = useRef<HTMLDivElement>(null);
 
 	// Controls
 	const [selectedLayer, setSelectedLayer] = useState<string | null>(null);
-	const [selectedMap, setSelectedMap] = useState<{
-		id: string;
-		name: string;
-		type: string;
-		mapId?: string;
-	} | null>(null);
-
 
 	const [randomObjects, setRandomObjects] = useState<boolean>(false);
 
 	// Map state
-	const selectedMapRef = useRef<string | null>();
-	selectedMapRef.current = selectedMap?.id;
 	const initialLayers = useRef(false);
-
-	const onMapsSuccess = (maps: { id: string; name: string }[]) => {
-		if (selectedMapRef.current == null && maps[0] != null) {
-			handleMapSelected({ ...maps[0], type: "map" });
-		}
-	};
 
 	const onLayersSuccess = (layers: Layer[]) => {
 
@@ -73,13 +61,23 @@ export default function MapPageComponent() {
 
 	// Hooks
 
-	const { maps, isMapsLoading, createMap, invalidateMaps } =
-		useMaps(onMapsSuccess);
+	const { maps, isMapsLoading, $selectedMap, createMap, invalidateMaps } = useMaps();
+
+	useEffect(() => {
+		const sub = $selectedMap.current.subscribe((value) => {
+			if (value != null) {
+				handleMapSelected(value);
+			}
+		});
+		return () => {
+			sub.unsubscribe();
+		}
+	}, [$selectedMap.current]);
 
 	const { createMapTiles, mapTiles } = useMapTiles();
 
 	const { mapLayers, isMapLayersLoading, createMapLayer, invalidateLayers } =
-		useLayers(selectedMap?.mapId ?? selectedMap?.id ?? null, onLayersSuccess);
+		useLayers($selectedMap.current.value?.mapId ?? null, onLayersSuccess);
 
 	const { selectedObject, onObjectSelected } = useObjectSelected();
 
@@ -98,7 +96,8 @@ export default function MapPageComponent() {
 		map.current?.onLayerSelected(id);
 	};
 
-	const handleMapSelected = (newlySelectedMap: { id: string; name: string, type: string, mapId?: string }) => {
+	const handleMapSelected = (newlySelectedMap: Map | MapTile) => {
+		invalidateLayers();
 		map.current?.destory?.();
 		$mapLoaded.current.next(false);
 		initialLayers.current = false;
@@ -106,38 +105,36 @@ export default function MapPageComponent() {
 		if (mapElement.current != null) {
 			map.current = new Mapbox({
 				containerElement: mapElement.current,
-				api: new Api(newlySelectedMap.mapId ?? newlySelectedMap.id, baseUrl),
+				api: new Api(newlySelectedMap.mapId, baseUrl),
 				mapType: newlySelectedMap.type,
 				events: {
 					onObjectClicked: onObjectSelected,
 					onMapLoaded: $mapLoaded.current
 				},
 			});
-			if (newlySelectedMap.type === "tile" && selectedMap != null && newlySelectedMap.mapId === selectedMap.id && mapLayers != null) {
-				onLayersSuccess(mapLayers);
-			}
-			setSelectedMap(newlySelectedMap);
+
+			setRerender(!rerender);
 		}
 	};
 
 	const handleMapCreate = async () => {
-		const map = { id: uuid(), name: `New Map ${maps.length}`, type: "map" };
+		const mapId = uuid()
+		const map: Map = { id: mapId, name: `New Map ${maps?.length}`, type: "map", mapId: mapId };
 		await createMap(map.id, map.name);
 		invalidateMaps();
-		handleMapSelected(map);
+		$selectedMap.current.next(map);
 	};
 
 	const handleLayerCreate = async (type: LayerType, name: string) => {
-		if (selectedMapRef.current == null) {
-			return;
-		}
 
-		const layerId = uuid();
+		if ($selectedMap.current.value == null) {
+			throw new Error("Selected map not set");
+		}
 
 		const baseLayer = {
 			name,
-			id: layerId,
-			mapId: selectedMapRef.current,
+			id: uuid(),
+			mapId: $selectedMap.current.value?.id,
 		}
 
 		let layer: Layer;
@@ -195,10 +192,10 @@ export default function MapPageComponent() {
 	}
 
 	const handleMakeMapTiles = () => {
-		if (selectedMap == null) {
+		if ($selectedMap.current.value == null) {
 			throw new Error("No map selected");
 		}
-		createMapTiles(selectedMap?.id);
+		createMapTiles($selectedMap.current.value?.id);
 	}
 
 	// Clean up
@@ -212,16 +209,16 @@ export default function MapPageComponent() {
 
 	return (
 		<>
-			{selectedMap && !isMapsLoading && !isMapLayersLoading && (
+			{$selectedMap.current.value && !isMapsLoading && maps != null && mapTiles != null && !isMapLayersLoading && (
 				<MapControlsComponent
 					maps={maps}
 					mapTiles={mapTiles}
-					selectedMap={selectedMap}
+					selectedMap={$selectedMap.current.value}
 					selectedLayer={selectedLayer}
 					mapLayers={mapLayers}
 					onLayerCreated={handleLayerCreate}
 					onMapCreatedClick={handleMapCreate}
-					onMapSelected={handleMapSelected}
+					onMapSelected={(map) => $selectedMap.current.next(map)}
 					onLayerSelected={handleLayerSelected}
 					onRandomPointsSelected={handleRandomPointsSelected}
 					downloadLayer={handleDownloadLayer}
