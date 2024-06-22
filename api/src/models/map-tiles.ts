@@ -1,7 +1,7 @@
 import type { Feature, FeatureCollection } from "geojson";
 import { v4 as uuid } from "uuid";
 import { createGeoJSONFile, createMapTilesDirectory, getLocalMapTile, joinTiles, runMbUtil, runTippecanoe } from "../local-file-system/map-tiles";
-import { listObjectsByLayerId, listObjectsByMapId } from "./objects";
+import { listObjectsByLayerId } from "./objects";
 import { client } from "../db/connection";
 import { DbMapTileToMapTile } from "../maps/DbMapTile-to-MapTile";
 import { getMapLayers } from "./layers";

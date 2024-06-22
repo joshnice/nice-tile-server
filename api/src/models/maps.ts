@@ -1,4 +1,5 @@
 import { client } from "../db/connection";
+import { DbMapTileToMap } from "../maps/DbMap-to-Map";
 
 export async function getMap(id: string) {
 	const SQL = `
@@ -19,12 +20,12 @@ export async function postMap(map: { id: string; name: string }) {
 	await client.query(SQL, [map.id, map.name]);
 }
 
-export async function getAllMaps() {
+export async function listMaps() {
 	const SQL = `        
         select * from maps
     `;
 
 	const response = await client.query(SQL);
 
-	return response.rows;
+	return response.rows.map(DbMapTileToMap);
 }

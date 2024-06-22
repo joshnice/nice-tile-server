@@ -1,11 +1,11 @@
 import { Hono } from "hono";
-import { getAllMaps, getMap, postMap } from "../models/maps";
+import { listMaps, getMap, postMap } from "../models/maps";
 import { validator } from "hono/validator";
 
 export const mapsRoute = new Hono();
 
 mapsRoute.get("", async (ctx) => {
-	const map = await getAllMaps();
+	const map = await listMaps();
 
 	return ctx.json(map);
 });
