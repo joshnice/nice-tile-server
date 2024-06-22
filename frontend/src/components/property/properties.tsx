@@ -1,4 +1,4 @@
-import { type Column, TableComponent } from "./basic/table";
+import { type Column, TableComponent } from "../basic/table";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 

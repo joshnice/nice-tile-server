@@ -3,10 +3,10 @@ import type {
 	RandomObjectStaticValue,
 	RandomObjectRandomNumber,
 	RandomObjectSetValue,
-} from "../types/properties";
-import { SubHeaderText, MinorHeaderText } from "./basic/headers";
-import { TextInputComponent, NumberInputComponent } from "./basic/inputs";
-import { TableComponent } from "./basic/table";
+} from "../../types/properties";
+import { SubHeaderText, MinorHeaderText } from "../basic/headers";
+import { TextInputComponent, NumberInputComponent } from "../basic/inputs";
+import { TableComponent } from "../basic/table";
 
 export function StaticValueProperty({
 	value,

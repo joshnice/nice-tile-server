@@ -1,9 +1,9 @@
 import type { Layer, LayerType } from "@nice-tile-server/types";
 import { useMemo, useState } from "react";
-import MinMaxComponent from "./min-max";
-import { HeaderText } from "./basic/headers";
+import MinMaxComponent from "../common/min-max";
+import { HeaderText } from "../basic/headers";
 import CreateLayerLayerFormComponent from "./create-layer-form";
-import { ButtonComponent } from "./basic/buttons";
+import { ButtonComponent } from "../basic/buttons";
 
 export default function LayerListComponent({
 	layers = [],

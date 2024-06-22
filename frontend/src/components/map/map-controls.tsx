@@ -2,9 +2,9 @@ import type { Layer, LayerType } from "@nice-tile-server/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons/faCircle";
 import { faDownload } from "@fortawesome/free-solid-svg-icons/faDownload";
-import LayerListComponent from "./layer-list";
+import LayerListComponent from "../layer/layer-list";
 import MapListComponent from "./map-list";
-import { IconButtonComponent } from "./basic/buttons";
+import { IconButtonComponent } from "../basic/buttons";
 
 export type Control = "Point" | "Line" | "Area";
 

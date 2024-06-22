@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTableCells } from "@fortawesome/free-solid-svg-icons/faTableCells";
-import { ButtonComponent, IconButtonComponent } from "./basic/buttons";
-import { SelectObjectComponentWithGroups } from "./basic/selects";
+import { ButtonComponent, IconButtonComponent } from "../basic/buttons";
+import { SelectObjectComponentWithGroups } from "../basic/selects";
 import { useMemo } from "react";
 
 export default function MapListComponent({

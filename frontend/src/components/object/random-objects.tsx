@@ -1,16 +1,16 @@
 import type { Layer } from "@nice-tile-server/types";
 import { useState } from "react";
-import ModalComponent from "./modal";
-import { SubHeaderText } from "./basic/headers";
-import { NumberInputComponent } from "./basic/inputs";
-import { SelectObjectComponent, SelectStringComponent } from "./basic/selects";
-import type { RandomObjectProperty, PropertyType } from "../types/properties";
-import { createRandomObjectProperty } from "../helpers/random-object-property-helpers";
+import ModalComponent from "../common/modal";
+import { SubHeaderText } from "../basic/headers";
+import { NumberInputComponent } from "../basic/inputs";
+import { SelectObjectComponent, SelectStringComponent } from "../basic/selects";
+import type { RandomObjectProperty, PropertyType } from "../../types/properties";
+import { createRandomObjectProperty } from "../../helpers/random-object-property-helpers";
 import {
 	StaticValueProperty,
 	RandomNumberProperty,
 	SetValueProperty,
-} from "./property-value-selectors";
+} from "../property/property-value-selectors";
 
 export default function RandomObjectsComponent({
 	open,

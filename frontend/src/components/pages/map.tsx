@@ -1,23 +1,23 @@
 import type { Layer, LayerType } from "@nice-tile-server/types";
-import type { RandomObjectProperty } from "../types/properties";
+import type { RandomObjectProperty } from "../../types/properties";
 import { useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
-import { Mapbox } from "../mapbox/mapbox";
-import MapControlsComponent from "./map-controls";
-import { Api } from "../mapbox/api";
-import useMaps from "../hooks/use-maps";
-import useLayers from "../hooks/use-layers";
-import useObjectSelected from "../hooks/use-object-selected";
-import PropertiesComponent from "./properties";
-import RandomObjectsComponent from "./random-objects";
-import useGeoJSON from "../hooks/use-geojson";
-import useMapLoaded from "../hooks/use-map-loaded";
-import { createFillStyle, createLineStyle, createPointStyle } from "../helpers/style-helpers";
-import useMapTiles from "../hooks/use-map-tiles";
+import { Mapbox } from "../../mapbox/mapbox";
+import MapControlsComponent from "../map/map-controls";
+import { Api } from "../../mapbox/api";
+import useMaps from "../../hooks/use-maps";
+import useLayers from "../../hooks/use-layers";
+import useObjectSelected from "../../hooks/use-object-selected";
+import PropertiesComponent from "../property/properties";
+import RandomObjectsComponent from "../object/random-objects";
+import useGeoJSON from "../../hooks/use-geojson";
+import useMapLoaded from "../../hooks/use-map-loaded";
+import { createFillStyle, createLineStyle, createPointStyle } from "../../helpers/style-helpers";
+import useMapTiles from "../../hooks/use-map-tiles";
 
 const baseUrl = "http://localhost:3000";
 
-export default function MapComponent() {
+export default function MapPageComponent() {
 	// Map
 	const map = useRef<Mapbox | null>();
 	const mapElement = useRef<HTMLDivElement>(null);

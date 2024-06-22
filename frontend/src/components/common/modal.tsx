@@ -1,7 +1,7 @@
 import { useMemo, type PropsWithChildren } from "react";
 import { createPortal } from "react-dom";
-import { HeaderText } from "./basic/headers";
-import { ButtonComponent } from "./basic/buttons";
+import { HeaderText } from "../basic/headers";
+import { ButtonComponent } from "../basic/buttons";
 
 type Size = "small" | "medium" | "large";
 

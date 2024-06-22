@@ -1,9 +1,9 @@
 import type { LayerType } from "@nice-tile-server/types";
 import { useState } from "react";
-import { SubHeaderText } from "./basic/headers";
-import ModalComponent from "./modal";
-import { TextInputComponent } from "./basic/inputs";
-import { SelectStringComponent } from "./basic/selects";
+import { SubHeaderText } from "../basic/headers";
+import ModalComponent from "../common/modal";
+import { TextInputComponent } from "../basic/inputs";
+import { SelectStringComponent } from "../basic/selects";
 
 export default function CreateLayerLayerFormComponent({
 	open,

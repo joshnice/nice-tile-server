@@ -1,4 +1,4 @@
-import MapComponent from "./components/map";
+import MapPageComponent from "./components/pages/map";
 import "./App.css";
 import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -9,7 +9,7 @@ function App() {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<div className="map-container">
-				<MapComponent />
+				<MapPageComponent />
 			</div>
 		</QueryClientProvider>
 	);
