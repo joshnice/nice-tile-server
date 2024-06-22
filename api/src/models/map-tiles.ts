@@ -1,9 +1,10 @@
 import type { Feature, FeatureCollection } from "geojson";
 import { v4 as uuid } from "uuid";
-import { createGeoJSONFile, createMapTilesDirectory, getLocalMapTile, runMbUtil, runTippecanoe } from "../local-file-system/map-tiles";
-import { listObjectsByMapId } from "./objects";
+import { createGeoJSONFile, createMapTilesDirectory, getLocalMapTile, joinTiles, runMbUtil, runTippecanoe } from "../local-file-system/map-tiles";
+import { listObjectsByLayerId, listObjectsByMapId } from "./objects";
 import { client } from "../db/connection";
 import { DbMapTileToMapTile } from "../maps/DbMapTile-to-MapTile";
+import { getMapLayers } from "./layers";
 
 export function getMapTile(x: number, y: number, z: number, mapId: string) {
     return getLocalMapTile(x, y, z, mapId);
@@ -30,24 +31,32 @@ export async function createMapTiles(mapId: string) {
 
     // Todo: change so instead of per map do per layer, for whole map and join the tiles
 
-    // Get all map objects
-    const mapObjects = await listObjectsByMapId(mapId);
-
-    const parsedObjects: Feature[] = mapObjects.map((object) => {
-        const feature = JSON.parse(object.geom);
-        return { ...feature, properties: object.properties, id: object.id }
-    });
-
-    const featureCollection: FeatureCollection = {
-        type: "FeatureCollection",
-        features: parsedObjects,
-    }
+    // Get all resources for maps
+    const layers = await getMapLayers(mapId);
 
     await createMapTilesDirectory(mapId);
 
-    await createGeoJSONFile(mapId, featureCollection);
+    const createLayerMbTilesRequests = layers.map(async (layer) => {
+        const mapObjects = await listObjectsByLayerId(layer.id);
 
-    await runTippecanoe(mapId);
+        const parsedObjects: Feature[] = mapObjects.map((object) => {
+            const feature = JSON.parse(object.geom);
+            return { ...feature, properties: object.properties, id: object.id }
+        });
+
+        const featureCollection: FeatureCollection = {
+            type: "FeatureCollection",
+            features: parsedObjects,
+        }
+
+        await createGeoJSONFile(layer.id, mapId, featureCollection);
+
+        await runTippecanoe(layer.id, mapId);
+    });
+
+    await Promise.all(createLayerMbTilesRequests);
+
+    await joinTiles(layers.map((l) => l.id), mapId);
 
     await runMbUtil(mapId);
 

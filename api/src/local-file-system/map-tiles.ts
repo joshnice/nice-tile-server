@@ -22,15 +22,25 @@ export async function createMapTilesDirectory(mapId: string) {
     await createDirectory(basePath, mapId);
 }
 
-export async function createGeoJSONFile(mapId: string, mapObjects: FeatureCollection) {
-    const path = `${basePath}/${mapId}/${mapId}.json`;
+export async function createGeoJSONFile(layerId: string, mapId: string, mapObjects: FeatureCollection) {
+    const path = `${basePath}/${mapId}/${layerId}.json`;
     await writeFile(path, JSON.stringify(mapObjects));
 }
 
-export async function runTippecanoe(mapId: string) {
+export async function runTippecanoe(layerId: string, mapId: string) {
     const changeDirectoryCommand = createChangeDirectoryCommand(mapId);
-    const tippecanoeCommand = `tippecanoe -o ${mapId}.mbtiles -l ${mapId} -n "${mapId}" -B19 -r1.5 -Z10 --force -z22 -D11 -d9 -an "${mapId}.json"`;
+    const tippecanoeCommand = `tippecanoe -o ${layerId}.mbtiles -l ${layerId} -n "${layerId}" -B19 -r1.5 -Z10 --force -z22 -D11 -d9 -an "${layerId}.json"`;
     const combinedCommand = `${changeDirectoryCommand} && ${tippecanoeCommand}`;
+    await shellCommand(combinedCommand);
+}
+
+export async function joinTiles(layerIds: string[], mapId: string) {
+    const changeDirectoryCommand = createChangeDirectoryCommand(mapId);
+    // tile-join -o tracts-final.mbtiles tracts-filtered.mbtiles tracts-added.mbtiles
+    const layerIdsWithExtension = layerIds.map((layer) => `${layer}.mbtiles`);
+    const joinTilesCommand = `tile-join -o ${mapId}.mbtiles ${layerIdsWithExtension.join(" ")}`;
+    console.log("joinTilesCommand", joinTilesCommand);
+    const combinedCommand = `${changeDirectoryCommand} && ${joinTilesCommand}`
     await shellCommand(combinedCommand);
 }
 
