@@ -8,7 +8,7 @@ function createChangeDirectoryCommand(mapId: string) {
 }
 
 export async function getLocalMapTile(x: number, y: number, z: number, mapId: string) {
-    const file = await readFile(`${basePath}/${mapId}/${z}/${x}/${y}.pbf`, false);
+    const file = await readFile(`${basePath}/${mapId}/tiles/${z}/${x}/${y}.pbf`, false);
     return file;
 }
 
