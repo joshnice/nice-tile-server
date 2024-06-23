@@ -1,6 +1,6 @@
 import type { Map, MapTile } from "@nice-tile-server/types"
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRef, useState, type MutableRefObject } from "react";
+import { useRef, type MutableRefObject } from "react";
 import { BehaviorSubject } from "rxjs";
 
 const KEY = ["maps"];

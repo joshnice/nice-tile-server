@@ -135,12 +135,24 @@ export class Mapbox {
 		const drawingSource = new GeoJsonSource(this.map, "random-points", null);
 		const drawingLayer = new FillLayer(this.map, "random-points", drawingSource.id, this.isDrawing.bind(this), { colour: "red", opacity: 1 });
 
-		const onDrawingFinish = (object: Feature<Polygon>) => {
+		const onDrawingFinish = async (object: Feature<Polygon>) => {
 			// Create random points
-			const features = generateRandomObjects(layer, amount, object, properties);
+			const maxAmount = 10000;
+			let total = 0;
+			const iterations = amount / maxAmount;
+
 			const source = this.sources.getSource(layerId);
-			source.updateSourceWithArray(features);
-			this.api.createObjects(features);
+
+			for (let index = 1; index < iterations + 1; index++) {
+				let amountToCreate = maxAmount;
+				total += maxAmount;
+				if (total > amount) {
+					amountToCreate = total % amount;
+				}
+				const features = generateRandomObjects(layer, amountToCreate, object, properties);
+				source.updateSourceWithArray(features);
+				await this.api.createObjects(features);
+			}
 
 			// Remove all drawing layers and sources
 			this.drawing?.remove();
