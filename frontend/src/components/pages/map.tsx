@@ -26,12 +26,9 @@ export default function MapPageComponent() {
 	const mapElement = useRef<HTMLDivElement>(null);
 
 	// Controls
-	const [selectedLayer, setSelectedLayer] = useState<string | null>(null);
-
 	const [randomObjects, setRandomObjects] = useState<boolean>(false);
 
 	// Hooks
-
 	const { maps, isMapsLoading, $selectedMap, createMap, invalidateMaps } = useMaps();
 
 	useEffect(() => {
@@ -47,22 +44,24 @@ export default function MapPageComponent() {
 
 	const { createMapTiles, mapTiles } = useMapTiles();
 
-	const { mapLayers, isMapLayersLoading, $onLayersLoaded, createMapLayer, invalidateLayers } = useLayers($selectedMap.current);
+	const { mapLayers, isMapLayersLoading, $onLayersLoaded, $selectedLayer, createMapLayer, invalidateLayers } = useLayers($selectedMap.current);
+
+	useEffect(() => {
+		const sub = $selectedLayer.current.subscribe((layer) => {
+			if (layer != null) {
+				map.current?.onLayerSelected(layer?.id);
+			}
+		});
+		return () => {
+			sub.unsubscribe();
+		}
+	}, [$selectedLayer.current])
 
 	const { selectedObject, onObjectSelected } = useObjectSelected();
 
 	const { downloadLayer } = useGeoJSON();
 
 	// External events
-
-	const handleLayerSelected = (id: string) => {
-		if (selectedLayer === id) {
-			setSelectedLayer(null);
-		} else {
-			setSelectedLayer(id);
-		}
-		map.current?.onLayerSelected(id);
-	};
 
 	const handleMapSelected = (newlySelectedMap: Map | MapTile) => {
 		if (mapElement.current != null) {
@@ -134,7 +133,7 @@ export default function MapPageComponent() {
 
 		map.current?.addLayer(layer);
 		await createMapLayer(layer);
-		handleLayerSelected(layer.id);
+		$selectedLayer.current.next(layer);
 	};
 
 	const handleRandomPointsSelected = () => {
@@ -146,12 +145,12 @@ export default function MapPageComponent() {
 		amount: number,
 		properties: RandomObjectProperty[],
 	) => {
-		setSelectedLayer(null);
+		$selectedLayer.current.next(null);
 		map.current?.onRandomObjectsSelected(layerId, amount, properties);
 		setRandomObjects(false);
 	};
 
-	const handleDownloadLayer = (layerId: string | null) => {
+	const handleDownloadLayer = (layerId: string | undefined) => {
 		if (layerId) {
 			downloadLayer(layerId);
 		}
@@ -174,16 +173,14 @@ export default function MapPageComponent() {
 	}, []);
 
 	return (
-		<GlobalContext.Provider value={{ $selectedMap: $selectedMap.current }}>
+		<GlobalContext.Provider value={{ $selectedMap: $selectedMap.current, $selectedLayer: $selectedLayer.current }}>
 			{$selectedMap.current.value && !isMapsLoading && maps != null && mapTiles != null && !isMapLayersLoading && (
 				<MapControlsComponent
 					maps={maps}
 					mapTiles={mapTiles}
-					selectedLayer={selectedLayer}
 					mapLayers={mapLayers}
 					onLayerCreated={handleLayerCreate}
 					onMapCreatedClick={handleMapCreate}
-					onLayerSelected={handleLayerSelected}
 					onRandomPointsSelected={handleRandomPointsSelected}
 					downloadLayer={handleDownloadLayer}
 					makeMapTiles={handleMakeMapTiles}

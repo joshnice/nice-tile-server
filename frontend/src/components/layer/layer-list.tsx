@@ -1,21 +1,20 @@
 import type { Layer, LayerType } from "@nice-tile-server/types";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import MinMaxComponent from "../common/min-max";
 import { HeaderText } from "../basic/headers";
 import CreateLayerLayerFormComponent from "./create-layer-form";
 import { ButtonComponent } from "../basic/buttons";
+import { useGlobalState } from "../../context/global-context";
 
 export default function LayerListComponent({
 	layers = [],
-	selectedLayerId,
 	onCreateLayer,
-	onLayerSelected,
 }: {
 	layers: Layer[] | null;
-	selectedLayerId: string | null;
 	onCreateLayer: (type: LayerType, name: string) => void;
-	onLayerSelected: (id: string) => void;
 }) {
+	const { $selectedLayer } = useGlobalState();
+
 	const [createLayerModal, setCreateLayerModal] = useState(false);
 
 	const [expand, setExpand] = useState(true);
@@ -29,11 +28,6 @@ export default function LayerListComponent({
 		setCreateLayerModal(false);
 	};
 
-	const selectedLayer = useMemo(
-		() => layers?.find((l) => l.id === selectedLayerId),
-		[layers, selectedLayerId],
-	);
-
 	return (
 		<div className="layers-list">
 			<MinMaxComponent value={expand} onClick={() => setExpand(!expand)} />
@@ -44,17 +38,13 @@ export default function LayerListComponent({
 						<LayerComponent
 							key={layer.id}
 							layer={layer}
-							selected={layer.id === selectedLayerId}
-							onLayerSelected={onLayerSelected}
 						/>
 					))
 				) : (
 					<>
-						{selectedLayer && (
+						{$selectedLayer?.value && (
 							<LayerComponent
-								layer={selectedLayer}
-								onLayerSelected={onLayerSelected}
-								selected
+								layer={$selectedLayer.value}
 							/>
 						)}
 					</>
@@ -76,16 +66,26 @@ export default function LayerListComponent({
 
 function LayerComponent({
 	layer,
-	selected,
-	onLayerSelected,
-}: { layer: Layer; selected: boolean; onLayerSelected: (id: string) => void }) {
+}: { layer: Layer; }) {
+	const { $selectedLayer } = useGlobalState();
+	const [selected, setSelected] = useState(false);
+
+	useEffect(() => {
+		const sub = $selectedLayer?.subscribe((selectedLayer) => {
+			setSelected(selectedLayer?.id === layer.id);
+		})
+		return () => {
+			sub?.unsubscribe();
+		}
+	}, [$selectedLayer])
+
 	return (
 		<button
 			type="button"
 			key={layer.id}
 			className={`h-12 p-2 w-full border-solid border-slate-600 border-2 rounded-sm ${selected ? "bg-slate-300" : "bg-white"
 				}`}
-			onClick={() => onLayerSelected(layer.id)}
+			onClick={() => $selectedLayer?.next(layer)}
 		>
 			{layer.name}
 		</button>
