@@ -39,7 +39,6 @@ export async function joinTiles(layerIds: string[], mapId: string) {
     // tile-join -o tracts-final.mbtiles tracts-filtered.mbtiles tracts-added.mbtiles
     const layerIdsWithExtension = layerIds.map((layer) => `${layer}.mbtiles`);
     const joinTilesCommand = `tile-join -o ${mapId}.mbtiles ${layerIdsWithExtension.join(" ")}`;
-    console.log("joinTilesCommand", joinTilesCommand);
     const combinedCommand = `${changeDirectoryCommand} && ${joinTilesCommand}`
     await shellCommand(combinedCommand);
 }

@@ -28,21 +28,24 @@ export async function listMapTiles() {
 }
 
 export async function createMapTiles(mapId: string) {
-
-    // Todo: change so instead of per map do per layer, for whole map and join the tiles
-
     // Get all resources for maps
     const layers = await getMapLayers(mapId);
 
-    await createMapTilesDirectory(mapId);
+    const layersAmount = layers.length;
+    console.log("Got layers, total amount: ", layersAmount);
 
-    const createLayerMbTilesRequests = layers.map(async (layer) => {
+    await createMapTilesDirectory(mapId);
+    console.log("Created new directory");
+
+    const createLayerMbTilesRequests = layers.map(async (layer, index) => {
+        console.log("Processing layer number: ", index);
         const mapObjects = await listObjectsByLayerId(layer.id);
 
         const parsedObjects: Feature[] = mapObjects.map((object) => {
             const feature = JSON.parse(object.geom);
             return { ...feature, properties: object.properties, id: object.id }
         });
+        console.log(`Created feature collection with ${parsedObjects.length} for layer ${index}`);
 
         const featureCollection: FeatureCollection = {
             type: "FeatureCollection",
@@ -50,15 +53,19 @@ export async function createMapTiles(mapId: string) {
         }
 
         await createGeoJSONFile(layer.id, mapId, featureCollection);
+        console.log("Created GeoJSON file for layer ", index);
 
         await runTippecanoe(layer.id, mapId);
+        console.log("Ran tippecanoe file for layer ", index);
     });
 
     await Promise.all(createLayerMbTilesRequests);
 
     await joinTiles(layers.map((l) => l.id), mapId);
+    console.log("Joined tiles");
 
     await runMbUtil(mapId);
+    console.log("Ran mbutil");
 
     const mapTiles = await getMapTiles(mapId);
 
