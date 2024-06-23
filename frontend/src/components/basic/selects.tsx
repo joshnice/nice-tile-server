@@ -93,6 +93,13 @@ export function SelectObjectComponentWithGroups<
 							</option>
 						))
 					}
+					{
+						group.options.length === 0 && (
+							<option disabled>
+								None
+							</option>
+						)
+					}
 				</optgroup>
 			))}
 		</select>
