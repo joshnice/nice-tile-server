@@ -15,6 +15,8 @@ import { CircleLayer } from "./layers/circle-layer";
 import { LineLayer } from "./layers/line-layer";
 import { GeoJsonSource } from "./sources/geojson-source";
 import { generateRandomObjects } from "../helpers/geojson-helpers";
+import { first, type Subject } from "rxjs";
+import { waitUntilMapHasLoaded } from "./utils/map-loading";
 
 export class Mapbox {
 	private readonly map: Map;
@@ -51,23 +53,8 @@ export class Mapbox {
 		this.layers = new Layers(this.map, this.tileSourceId, this.isDrawing.bind(this));
 
 		this.map.doubleClickZoom.disable();
-
-		this.map.once("load", () => {
-			this.sources.addVectorSource(this.tileSourceId, this.api.createMapObjectTilesUrl(options.mapType));
-			this.events.onMapLoaded.next(true);
-		});
-
-		this.map.on("click", (event) => {
-			// Only allow selection when not drawing
-			if (this.drawing != null) return;
-
-			const [feature] = this.map.queryRenderedFeatures(event.point);
-			if (feature != null) {
-				this.events.onObjectClicked.next(feature.properties?.id);
-			} else {
-				this.events.onObjectClicked.next(null)
-			}
-		});
+		this.addExternalEvents(options.events.onLayersLoaded);
+		this.addMapboxEvents(options.mapType);
 	}
 
 	public addLayer(layer: Layer) {
@@ -167,6 +154,35 @@ export class Mapbox {
 
 	private isDrawing() {
 		return this.drawing != null;
+	}
+
+	private addExternalEvents(onLayersLoaded: Subject<Layer[]>) {
+		const onLayersLoadedSub = onLayersLoaded.pipe(first()).subscribe((layers) => {
+			waitUntilMapHasLoaded(this.map, () => {
+				layers.forEach((layer) => {
+					this.addLayer(layer);
+				})
+				onLayersLoadedSub.unsubscribe();
+			})
+		});
+	}
+
+	private addMapboxEvents(mapType: "map" | "tile") {
+		this.map.once("load", () => {
+			this.sources.addVectorSource(this.tileSourceId, this.api.createMapObjectTilesUrl(mapType));
+		});
+
+		this.map.on("click", (event) => {
+			// Only allow selection when not drawing
+			if (this.drawing != null) return;
+
+			const [feature] = this.map.queryRenderedFeatures(event.point);
+			if (feature != null) {
+				this.events.onObjectClicked.next(feature.properties?.id);
+			} else {
+				this.events.onObjectClicked.next(null)
+			}
+		});
 	}
 
 	public destory() {

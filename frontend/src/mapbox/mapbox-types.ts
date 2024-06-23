@@ -1,14 +1,15 @@
-import type { BehaviorSubject, Subject } from "rxjs";
+import type { Subject } from "rxjs";
 import type { Api } from "./api";
+import type { Layer } from "@nice-tile-server/types";
 
 export interface MapboxOptions {
 	containerElement: HTMLDivElement;
 	api: Api;
 	events: MapEvents;
-	mapType: string;
+	mapType: "map" | "tile";
 }
 
 export interface MapEvents {
 	onObjectClicked: Subject<string | null>;
-	onMapLoaded: BehaviorSubject<boolean>;
+	onLayersLoaded: Subject<Layer[]>;
 }

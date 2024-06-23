@@ -11,7 +11,6 @@ import useObjectSelected from "../../hooks/use-object-selected";
 import PropertiesComponent from "../property/properties";
 import RandomObjectsComponent from "../object/random-objects";
 import useGeoJSON from "../../hooks/use-geojson";
-import useMapLoaded from "../../hooks/use-map-loaded";
 import { createFillStyle, createLineStyle, createPointStyle } from "../../helpers/style-helpers";
 import useMapTiles from "../../hooks/use-map-tiles";
 import { GlobalContext } from "../../context/global-context";
@@ -31,35 +30,6 @@ export default function MapPageComponent() {
 
 	const [randomObjects, setRandomObjects] = useState<boolean>(false);
 
-	// Map state
-	const initialLayers = useRef(false);
-
-	const onLayersSuccess = (layers: Layer[]) => {
-
-		const addLayersToMap = (layers: Layer[]) => {
-			layers.forEach((layer) => {
-				map.current?.addLayer(layer);
-			});
-		}
-
-		if (!initialLayers.current) {
-			// Map has already loaded and we need to add layers
-			if ($mapLoaded.current.value) {
-				addLayersToMap(layers);
-			} else {
-				// Map has not already loaded so wait for the map to load and then add the layers
-				const sub = $mapLoaded.current.subscribe((value) => {
-					if (value) {
-						addLayersToMap(layers);
-						sub.unsubscribe();
-					}
-				});
-			}
-		}
-
-		initialLayers.current = true;
-	};
-
 	// Hooks
 
 	const { maps, isMapsLoading, $selectedMap, createMap, invalidateMaps } = useMaps();
@@ -77,12 +47,9 @@ export default function MapPageComponent() {
 
 	const { createMapTiles, mapTiles } = useMapTiles();
 
-	const { mapLayers, isMapLayersLoading, createMapLayer, invalidateLayers } =
-		useLayers($selectedMap.current.value?.mapId ?? null, onLayersSuccess);
+	const { mapLayers, isMapLayersLoading, $onLayersLoaded, createMapLayer, invalidateLayers } = useLayers($selectedMap.current);
 
 	const { selectedObject, onObjectSelected } = useObjectSelected();
-
-	const { $mapLoaded } = useMapLoaded();
 
 	const { downloadLayer } = useGeoJSON();
 
@@ -98,19 +65,18 @@ export default function MapPageComponent() {
 	};
 
 	const handleMapSelected = (newlySelectedMap: Map | MapTile) => {
-		invalidateLayers();
-		map.current?.destory?.();
-		$mapLoaded.current.next(false);
-		initialLayers.current = false;
-
 		if (mapElement.current != null) {
+
+			invalidateLayers();
+			map.current?.destory?.();
+
 			map.current = new Mapbox({
 				containerElement: mapElement.current,
 				api: new Api(newlySelectedMap.mapId, baseUrl),
 				mapType: newlySelectedMap.type,
 				events: {
 					onObjectClicked: onObjectSelected,
-					onMapLoaded: $mapLoaded.current
+					onLayersLoaded: $onLayersLoaded.current,
 				},
 			});
 
@@ -168,7 +134,6 @@ export default function MapPageComponent() {
 
 		map.current?.addLayer(layer);
 		await createMapLayer(layer);
-		invalidateLayers();
 		handleLayerSelected(layer.id);
 	};
 
