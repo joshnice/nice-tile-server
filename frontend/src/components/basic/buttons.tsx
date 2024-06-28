@@ -2,11 +2,13 @@ import type { PropsWithChildren } from "react";
 
 export function ButtonComponent({
 	text,
+	disabled = false,
 	onClick,
 	className = "",
-}: { text: string; className?: string; onClick: () => void }) {
+}: { text: string; disabled?: boolean; className?: string; onClick: () => void }) {
 	return (
 		<button
+			disabled={disabled}
 			className={`w-28 h-10 border-2 border-slate-600 bg-white hover:bg-slate-300 text-lg ${className}`}
 			type="button"
 			onClick={onClick}

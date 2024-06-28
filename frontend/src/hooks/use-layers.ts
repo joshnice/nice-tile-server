@@ -19,6 +19,7 @@ export default function useLayers($selectedMap: BehaviorSubject<Map | MapTile | 
 
 	useEffect(() => {
 		const sub = $selectedMap.pipe(pairwise()).subscribe(([previousSelectedMap]) => {
+			$selectedLayer.current.next(null);
 			if (previousSelectedMap != null) {
 				invalidateLayers(previousSelectedMap?.mapId);
 			}

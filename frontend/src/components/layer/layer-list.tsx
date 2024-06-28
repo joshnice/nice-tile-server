@@ -13,7 +13,7 @@ export default function LayerListComponent({
 	layers: Layer[] | null;
 	onCreateLayer: (type: LayerType, name: string) => void;
 }) {
-	const { $selectedLayer } = useGlobalState();
+	const { $selectedLayer, $selectedMap } = useGlobalState();
 
 	const [createLayerModal, setCreateLayerModal] = useState(false);
 
@@ -51,9 +51,10 @@ export default function LayerListComponent({
 				)}
 			</div>
 			<ButtonComponent
+				disabled={$selectedMap?.value?.type === "tile"}
 				text="Create Layer"
 				onClick={() => setCreateLayerModal(true)}
-				className="!w-full"
+				className="!w-full disabled:text-gray-400 disabled:border-gray-400 disabled:cursor-default disabled:hover:bg-white"
 			/>
 			<CreateLayerLayerFormComponent
 				open={createLayerModal}
@@ -67,8 +68,9 @@ export default function LayerListComponent({
 function LayerComponent({
 	layer,
 }: { layer: Layer; }) {
-	const { $selectedLayer } = useGlobalState();
+	const { $selectedLayer, $selectedMap } = useGlobalState();
 	const [selected, setSelected] = useState(false);
+	const [disableLayerSelection, setDisableLayerSelected] = useState(false);
 
 	useEffect(() => {
 		const sub = $selectedLayer?.subscribe((selectedLayer) => {
@@ -77,13 +79,23 @@ function LayerComponent({
 		return () => {
 			sub?.unsubscribe();
 		}
-	}, [$selectedLayer])
+	}, [$selectedLayer]);
+
+	useEffect(() => {
+		const sub = $selectedMap?.subscribe((selectedMap) => {
+			setDisableLayerSelected(selectedMap?.type === "tile");
+		});
+		return () => {
+			sub?.unsubscribe();
+		}
+	}, [$selectedMap])
 
 	return (
 		<button
+			disabled={disableLayerSelection}
 			type="button"
 			key={layer.id}
-			className={`h-12 p-2 w-full border-solid border-slate-600 border-2 rounded-sm ${selected ? "bg-slate-300" : "bg-white"
+			className={`h-12 p-2 w-full border-solid border-slate-600 border-2 rounded-sm disabled:text-gray-400 disabled:border-gray-400 disabled:cursor-default ${selected ? "bg-slate-300" : "bg-white"
 				}`}
 			onClick={() => $selectedLayer?.next(layer)}
 		>
