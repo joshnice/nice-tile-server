@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import type { Layer, LayerType, Map, MapTile } from "@nice-tile-server/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons/faCircle";
@@ -29,6 +30,17 @@ export default function MapControlsComponent({
 	makeMapTiles: () => void;
 }) {
 	const { $selectedLayer } = useGlobalState();
+	const [disabledButtons, setDisabledButtons] = useState(true);
+
+	useEffect(() => {
+		const sub = $selectedLayer?.subscribe((selectedLayer) => {
+			setDisabledButtons(!selectedLayer);
+		})
+		return () => {
+			sub?.unsubscribe();
+		}
+	}, [$selectedLayer])
+
 	return (
 		<>
 			<div className="map-controls-container map-controls-container-left">
@@ -37,12 +49,12 @@ export default function MapControlsComponent({
 					onCreateLayer={onLayerCreated}
 				/>
 				<div className="flex gap-2">
-					<IconButtonComponent disabled={$selectedLayer?.value == null} onClick={onRandomPointsSelected}>
+					<IconButtonComponent disabled={disabledButtons} onClick={onRandomPointsSelected}>
 						<FontAwesomeIcon icon={faCircle} size="2xs" transform="up-12 " />
 						<FontAwesomeIcon icon={faCircle} size="2xs" transform="down-15 " />
 						<FontAwesomeIcon icon={faCircle} size="2xs" transform="up-4" />
 					</IconButtonComponent>
-					<IconButtonComponent disabled={$selectedLayer?.value == null} onClick={() => downloadLayer($selectedLayer?.value?.id)}>
+					<IconButtonComponent disabled={disabledButtons} onClick={() => downloadLayer($selectedLayer?.value?.id)}>
 						<FontAwesomeIcon icon={faDownload} size="2x" />
 					</IconButtonComponent>
 				</div>
