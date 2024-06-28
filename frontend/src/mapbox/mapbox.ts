@@ -17,6 +17,7 @@ import { GeoJsonSource } from "./sources/geojson-source";
 import { generateRandomObjects } from "../helpers/geojson-helpers";
 import { first, type Subject } from "rxjs";
 import { waitUntilMapHasLoaded } from "./utils/map-loading";
+import { FpsCounter } from "./utils/fps-counter";
 
 export class Mapbox {
 	private readonly map: Map;
@@ -32,6 +33,8 @@ export class Mapbox {
 	private readonly events: MapEvents;
 
 	private readonly offlineMode = false;
+
+	private readonly fpsCounter: FpsCounter;
 
 	private drawing: Drawing | null = null;
 
@@ -55,6 +58,9 @@ export class Mapbox {
 		this.map.doubleClickZoom.disable();
 		this.addExternalEvents(options.events.onLayersLoaded);
 		this.addMapboxEvents(options.mapType);
+
+		this.fpsCounter = new FpsCounter();
+		this.fpsCounter.start();
 	}
 
 	public addLayer(layer: Layer) {
@@ -187,5 +193,6 @@ export class Mapbox {
 
 	public destory() {
 		this.map.remove();
+		this.fpsCounter.stop();
 	}
 }
