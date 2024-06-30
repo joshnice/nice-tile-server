@@ -2,7 +2,9 @@ import { Client } from "pg";
 
 export const client = new Client({
 	database: "nice-tile-server",
-	host: "localhost",
+	host: "db",
+	// Needs to be selected when running in dev mode
+	// host: "localhost",
 	user: "admin",
 	password: "password",
 });
