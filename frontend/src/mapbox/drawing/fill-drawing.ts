@@ -47,6 +47,10 @@ export class FillDrawing extends Drawing<Polygon> {
 		this.map.on("click", this.onClickReference);
 	}
 
+	public onDoubleClick(): void {
+		// Do nothing
+	}
+
 	public onMouseMove(): void {
 		this.onMouseMoveReference = this.onMouseMoveHandler.bind(this);
 		this.map.on("mousemove", this.onMouseMoveReference);

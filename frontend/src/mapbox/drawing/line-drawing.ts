@@ -8,10 +8,6 @@ import { LineLayer } from "../layers/line-layer";
 export class LineDrawing extends Drawing<LineString> {
 	private drawingSourceCoordiantes: LineString["coordinates"] = [];
 
-	private clickedRecently = false;
-
-	private isDoubleClick = false;
-
 	public drawingLayer: LineLayer;
 
 	public drawingSource: GeoJsonSource;
@@ -34,12 +30,18 @@ export class LineDrawing extends Drawing<LineString> {
 
 	public addEventListeners(): void {
 		this.onClick();
+		this.onDoubleClick();
 		this.onMouseMove();
 	}
 
 	public onClick(): void {
-		this.onClickReference = this.onClickHandler.bind(this);
+		this.onClickReference = this.onSingleClickHandler.bind(this);
 		this.map.on("click", this.onClickReference);
+	}
+
+	public onDoubleClick(): void {
+		this.onDoubleClickReference = this.onDoubleClickHandler.bind(this);
+		this.map.on("dblclick", this.onDoubleClickReference);
 	}
 
 	public onMouseMove(): void {
@@ -47,27 +49,7 @@ export class LineDrawing extends Drawing<LineString> {
 		this.map.on("mousemove", this.onMouseMoveReference);
 	}
 
-	private async onClickHandler(event: MapMouseEvent & EventData) {
-		if (this.clickedRecently) {
-			this.isDoubleClick = true;
-			this.onDoubleClick(event);
-			await new Promise<void>((res) => setTimeout(() => res(), 250));
-			this.isDoubleClick = false;
-			this.clickedRecently = false;
-		} else {
-			this.clickedRecently = true;
-
-			await new Promise<void>((res) => setTimeout(() => res(), 250));
-
-			this.clickedRecently = false;
-
-			if (!this.isDoubleClick) {
-				this.onSingleClick(event);
-			}
-		}
-	}
-
-	private onSingleClick(event: MapMouseEvent & EventData) {
+	private onSingleClickHandler(event: MapMouseEvent & EventData) {
 		this.drawingSourceCoordiantes = [
 			...this.drawingSourceCoordiantes,
 			event.lngLat.toArray(),
@@ -79,11 +61,10 @@ export class LineDrawing extends Drawing<LineString> {
 		}
 	}
 
-	private onDoubleClick(event: MapMouseEvent & EventData) {
-		const newObject = createLineFeature([
-			...this.drawingSourceCoordiantes,
-			event.lngLat.toArray(),
-		], this.baseLayer.id);
+	private onDoubleClickHandler() {
+		// Remove last point as it is duplicated due to single click event
+		this.drawingSourceCoordiantes.pop();
+		const newObject = createLineFeature(this.drawingSourceCoordiantes, this.baseLayer.id);
 		this.localSource.updateSource(newObject);
 		this.drawingSource.resetSource();
 		this.drawingSourceCoordiantes = [];

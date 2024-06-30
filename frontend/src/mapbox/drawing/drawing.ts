@@ -6,7 +6,7 @@ import type { Layer } from "../layers/layer";
 export type SupportedGeometry = Polygon | LineString | Point;
 
 export abstract class Drawing<TGeometry extends SupportedGeometry = SupportedGeometry> {
-	
+
 	public readonly map: Map;
 
 	public readonly onCreate: (object: Feature<TGeometry>) => void;
@@ -22,6 +22,10 @@ export abstract class Drawing<TGeometry extends SupportedGeometry = SupportedGeo
 	// Todo: fix any type
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	public onClickReference: any;
+
+	// Todo: fix any type
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	public onDoubleClickReference: any;
 
 	// Todo: fix any type
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -45,10 +49,13 @@ export abstract class Drawing<TGeometry extends SupportedGeometry = SupportedGeo
 
 	public abstract onClick(): void;
 
+	public abstract onDoubleClick(): void;
+
 	public abstract onMouseMove(): void;
 
 	public remove() {
 		this.map.off("click", this.onClickReference);
+		this.map.off("dblclick", this.onDoubleClickReference);
 		this.map.off("mousemove", this.onMouseMoveReference);
 		this.drawingLayer?.remove();
 		this.drawingSource?.remove();

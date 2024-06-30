@@ -6,7 +6,6 @@ import { Drawing } from "./drawing";
 import { createPointFeature } from "../../helpers/geojson-helpers";
 
 export class PointDrawing extends Drawing<Point> {
-
 	constructor(map: Map, onCreate: (feature: Feature<Point>) => void, localSource: GeoJsonSource, layer: CircleLayer) {
 		super(map, onCreate, localSource, layer);
 	}
@@ -18,6 +17,10 @@ export class PointDrawing extends Drawing<Point> {
 	public onClick(): void {
 		this.onClickReference = this.onClickHandler.bind(this);
 		this.map.on("click", this.onClickReference);
+	}
+
+	public onDoubleClick(): void {
+		// Do nothing
 	}
 
 	private async onClickHandler(event: MapMouseEvent & EventData) {
