@@ -9,8 +9,9 @@ export class FpsCounter {
         let previousMeasurement = performance.now();
         const fn = () => {
             const currentMeasurement = performance.now();
+            // Get the amount of time in seconds between this render and the last
             const fps = 1000 / (currentMeasurement - previousMeasurement);
-            this.fpsValues?.pushValue(fps);
+            this.fpsValues?.pushValue(fps, currentMeasurement);
             previousMeasurement = currentMeasurement;
             requestAnimationFrame(fn);
         }
@@ -29,36 +30,40 @@ export class FpsCounter {
 
 class FpsValues {
 
-    private values: number[];
+    private fpsValuesSinceLastUpdate: number[] = [];
 
-    private total = 0;
+    private lastUpdate = performance.now();
 
     private valueDisplayElement: HTMLParagraphElement = document.createElement("p");
 
     private containerElement: HTMLDivElement = document.createElement("div");
 
     constructor() {
-        this.values = [];
         this.createFpsElements();
     }
 
-    public pushValue(value: number) {
-        if (this.values.length >= 60) {
-            const firstValue = this.values.shift() ?? 0;
-            this.total = this.total - firstValue + value;
-        } else {
-            this.total += value;
-        }
+    public pushValue(latestFpsValue: number, timeOfLatestValue: number) {
+        if (this.lastUpdate + 1000 <= timeOfLatestValue) {
+            // Work out average of previous FPS values
+            const total = this.fpsValuesSinceLastUpdate.reduce((total, value) => total + value, 0);
+            const average = total / this.fpsValuesSinceLastUpdate.length;
 
-        this.values.push(value);
-        const average = this.total / this.values.length
-        this.valueDisplayElement.innerText = average.toFixed(2);
+            // Rest values
+            this.lastUpdate = timeOfLatestValue;
+            this.fpsValuesSinceLastUpdate = [];
+
+            // Display Fps Total
+            this.valueDisplayElement.innerText = average.toFixed(0);
+        } else {
+            // Add it to the total
+            this.fpsValuesSinceLastUpdate.push(latestFpsValue);
+        }
     }
 
     private createFpsElements() {
         this.containerElement.style.position = "absolute";
         this.containerElement.style.top = "0px";
-        this.containerElement.style.left = "0px";
+        this.containerElement.style.right = "0px";
         this.containerElement.style.width = "40px";
         this.containerElement.style.height = "20px";
         this.containerElement.style.backgroundColor = "black";
