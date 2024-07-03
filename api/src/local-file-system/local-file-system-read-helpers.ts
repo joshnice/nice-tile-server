@@ -36,9 +36,9 @@ export async function deleteDirectory(path: string, throwErrorIfNotFound = true)
     }
 }
 
-export async function createDirectory(path: string, folderName: string) {
+export async function createDirectory(folderName: string) {
     try {
-        const fullPath = `${path}/${folderName}`;
+        const fullPath = `${folderName}`;
         await mkdir(fullPath);
     } catch (err) {
         console.error(err);

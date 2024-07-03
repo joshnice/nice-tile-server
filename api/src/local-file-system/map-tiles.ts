@@ -1,29 +1,27 @@
 import type { FeatureCollection } from "geojson";
 import { readFile, createDirectory, deleteDirectory, findDirectory, writeFile, shellCommand } from "./local-file-system-read-helpers";
 
-const basePath = "/home/joshnice/Documents/mapbox-tiles"
 
 function createChangeDirectoryCommand(mapId: string) {
-    return `cd ${basePath}/${mapId}`;
+    return `cd ${mapId}`;
 }
 
 export async function getLocalMapTile(x: number, y: number, z: number, mapId: string) {
-    const file = await readFile(`${basePath}/${mapId}/tiles/${z}/${x}/${y}.pbf`, false);
+    const file = await readFile(`${mapId}/tiles/${z}/${x}/${y}.pbf`, false);
     return file;
 }
 
 export async function createMapTilesDirectory(mapId: string) {
-    const path = `${basePath}/${mapId}`;
-    const mapHasTilesDirectory = findDirectory(path);
+    const mapHasTilesDirectory = findDirectory(mapId);
     if (mapHasTilesDirectory) {
-        await deleteDirectory(path);
+        await deleteDirectory(mapId);
     }
 
-    await createDirectory(basePath, mapId);
+    await createDirectory(mapId);
 }
 
 export async function createGeoJSONFile(layerId: string, mapId: string, mapObjects: FeatureCollection) {
-    const path = `${basePath}/${mapId}/${layerId}.json`;
+    const path = `${mapId}/${layerId}.json`;
     await writeFile(path, JSON.stringify(mapObjects));
 }
 

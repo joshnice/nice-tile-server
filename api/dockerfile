@@ -3,7 +3,21 @@ FROM node:lts-buster
  
 # Create app directory
 WORKDIR /usr/src/app
- 
+
+RUN git clone https://github.com/mapbox/tippecanoe.git && \
+    cd tippecanoe && \
+    ls -a && \
+    make -j && \
+    make install
+
+RUN apt-get update -y
+
+RUN apt-get upgrade -y
+
+RUN apt-get install python-setuptools -y
+
+RUN git clone https://github.com/mapbox/mbutil.git && cd mbutil && python setup.py install
+
 # Copy dependency definitions
 COPY package.json ./package.json
  
